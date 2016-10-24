@@ -11,7 +11,7 @@ physics.setGravity( 0, 0 )
 local backGroup
 local createGroupChatButton
 local viewGroupsButton
-
+local viewjoinedgroup
 local function gotoCreateGroupChat()
 	composer.removeScene( "creategroupchat" )
     composer.gotoScene( "creategroupchat", { time=800, effect="crossFade" })
@@ -19,6 +19,10 @@ end
 local function gotoViewGroup()
 	composer.removeScene("viewgroup")
 	composer.gotoScene("viewgroup")
+end
+local function gotoJoinedGroup()
+	composer.removeScene("viewjoinedgroup")
+	composer.gotoScene("viewjoinedgroup")
 end
 function scene:create( event )
 
@@ -42,9 +46,12 @@ function scene:create( event )
 	createGroupChatButton:setFillColor( 0.75, 0.78, 1 )
 	viewGroupsButton = display.newText(sceneGroup,"View Groups",display.contentCenterX,500,native.systemFont,44)
 	viewGroupsButton:setFillColor(0.75, 0.78, 1)
+	viewjoinedgroup = display.newText(sceneGroup,"View Joined Groups",display.contentCenterX,550,native.systemFont,44)
+	viewjoinedgroup:setFillColor(0.75, 0.78, 1)
 
 	createGroupChatButton:addEventListener("tap", gotoCreateGroupChat)
 	viewGroupsButton:addEventListener("tap",gotoViewGroup)
+	viewjoinedgroup:addEventListener("tap",gotoJoinedGroup)
 end
 
 

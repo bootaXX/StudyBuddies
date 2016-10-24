@@ -26,6 +26,21 @@ app.get("/studybuddies/groupchat/insert/:gname", function(req,res){
 	console.log('Insert groupname in groupchat');
 	res.send('Inserted '+req.params.gname+' into groupchat');
 });
+//for viewing of groups
+app.get("/viewjoinedgroups/:userid",function(req,res){
+	var results = [];
+	var query = client.query("SELECT groupname from gc where userid="+req.params.userid+";");
+
+	query.on('row', (row) => {
+      results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'groups':results});
+      done();
+    });    
+
+    console.log("viewing joined groups..");
+});
 //for registration of user, insert into buddy
 app.get("/studybuddies/buddy/insert/:username/:password/:fname/:lname", function(req,res){
 	client.query("insert into buddy(username,password,fname,lname) values ('"+req.params.username+"','"+req.params.password+"','"+req.params.fname+"','"+req.params.lname+"');");
