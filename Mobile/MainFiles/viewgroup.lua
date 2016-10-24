@@ -4,15 +4,12 @@ local scene = composer.newScene()
 local widget = require( "widget" )
 local json = require("json");
 
-local labelUsername
-local labelPassword
-local labelFeedback
-local textUsername
-local textPassword
 local res
 local decres
 
 local dgroupname
+local joingrouptext
+local joingroupbutton
 
 
 	
@@ -53,8 +50,12 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 200
 
+	joingrouptext = native.newTextField(375, 300, 400, 60)
+	sceneGroup:insert( joingrouptext)
+	joingrouptext.size = 20
+	joingrouptext.x = 350
 
-
+	joingroupbutton = display.newText(sceneGroup,"JOIN",600,300)
 
 	
 
@@ -86,11 +87,11 @@ function scene:show( event )
 				decres = json.decode(event.response)
 				local i=1
 				res = decres.chat[1].groupname
-				while res do
-					dgroupname = display.newText( sceneGroup, res, display.contentCenterX, 300+(30*(i-1)), native.systemFont, 30 )
+				while decres.chat[i] do
+					res = decres.chat[i].groupname
+					dgroupname = display.newText( sceneGroup, res, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
 					sceneGroup:insert( dgroupname )
 					i = i+1
-					res = decres.chat[i].groupname
 				end
 				-- res = decres.chat[1].groupname
 				-- print(res)
