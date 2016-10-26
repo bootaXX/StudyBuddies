@@ -109,8 +109,8 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var buf = new Buffer(1024);
 	var gname = req.params.gname;
+	var results = [];
 
-	var json="";
 	console.log("Going to open an existing file");
 	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
@@ -127,9 +127,9 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 			// Print only read bytes to avoid junk.
 			if(bytes > 0){
 				console.log("Original: "+buf.slice(0, bytes).toString());
-				json = buf.slice(0, bytes).toString();
-				console.log("JSON read: "+json);
-				return res.send({'message':json})
+				var json = buf.slice(0, bytes).toString();
+				results.push(json);
+				res.send({'messages':results});
 			}
 			// Close the opened file.
 			fs.close(fd, function(err){
