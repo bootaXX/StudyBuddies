@@ -104,6 +104,9 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 	});
 });
 
+//load messages
+
+
 app.listen(8080, function(){
 	console.log("Server at port 8080");
 });

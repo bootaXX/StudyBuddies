@@ -5,6 +5,9 @@ local physics = require( "physics" )
 physics.start()
 physics.setGravity( 0, 0 )
 
+local _W = display.viewableContentWidth
+local _H = display.viewableContentHeight
+
 gap = _H * 0.65;
 size = _W * 0.0375;
 gap2 = _H*0.05
@@ -94,7 +97,6 @@ end
 
 
 function scene:create (e)
-	search:removeSelf()
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 	physics.pause()

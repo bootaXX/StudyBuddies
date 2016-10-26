@@ -91,6 +91,7 @@ function scene:create( event )
 					username = username
 				}
 			}
+			composer.removeScene("sendmsg")
 			composer.gotoScene("sendmsg", options)
 			print("Pressed")
 		end
@@ -133,6 +134,7 @@ function scene:show( event )
 		sceneGroup:insert( textJoinGroup )
 		textJoinGroup.size = 38
 		textJoinGroup.placeholder = "Groupname"
+		textJoinGroup:addEventListener("userInput", textJoinGroup)
 
 		function textJoinGroup:userInput(event)
 			if event.phase == "began" then
@@ -163,11 +165,10 @@ function scene:show( event )
 		network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
 
 		local function viewGroups( event )
-			-- print(tostring(event.time/1000).." seconds")
+			-- body
 		end
 
 		Runtime:addEventListener("enterFrame", viewGroups)
-		textJoinGroup:addEventListener("userInput", textJoinGroup)
 	end
 end
 

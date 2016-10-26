@@ -81,6 +81,7 @@ function scene:show(event)
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
+		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
