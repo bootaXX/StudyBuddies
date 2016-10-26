@@ -109,8 +109,8 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var buf = new Buffer(1024);
 	var gname = req.params.gname;
+	var results = [];
 
-	var json="";
 	console.log("Going to open an existing file");
 	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
