@@ -7,7 +7,9 @@ local json = require("json");
 local res
 local decres
 local dgroupname
+
 local uid
+local username
 
 local textJoinGroup
 local groupname
@@ -39,7 +41,8 @@ local function gotoCreateGroupChat()
 		effect = "crossFade",
 		time = 800,
 		params = {
-			uid = uid
+			uid = uid,
+			username = username
 		}
 	}
     composer.gotoScene( "creategroupchat", options)
@@ -50,7 +53,8 @@ function scene:create( event )
 	local sceneGroup = self.view
 
 	uid = event.params.uid -- userid of current user
-	print(uid)
+	username = event.params.username -- username of current user
+	print(uid .. ": " .. username)
 
 	backGroup = display.newGroup()
 	sceneGroup:insert(backGroup)
@@ -83,10 +87,11 @@ function scene:create( event )
 				effect = "crossFade",
 				time = 800,
 				params = {
-					uid = uid
+					uid = uid,
+					username = username
 				}
 			}
-			--composer.gotoScene("groupchat", options)
+			composer.gotoScene("sendmsg", options)
 			print("Pressed")
 		end
 	end

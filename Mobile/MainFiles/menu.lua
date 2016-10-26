@@ -48,7 +48,8 @@ local function gotoLogin()
 					effect = "crossFade",
 					time = 800,
 					params = {
-						uid = infos[1].userid
+						uid = infos[1].userid,
+						username = infos[1].username
 					}
 				}
 				print(jsonstr)

@@ -11,8 +11,9 @@ local labelGroupname
 local createButton
 local textGroupname
 local gnameni
-local uid
 
+local uid
+local username
 local function gotoCreateGroup()
 	local function networkListener( event )
 		if ( event.isError ) then
@@ -28,7 +29,8 @@ local function gotoCreateGroup()
 		effect = "crossFade",
 		time = 800,
 		params = {
-			uid = uid
+			uid = uid,
+			username = username
 		}
 	}
 	composer.gotoScene("viewgroup", options)

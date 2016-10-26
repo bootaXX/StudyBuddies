@@ -4,9 +4,16 @@ local widget = require("widget")
 local physics = require( "physics" )
 physics.start()
 physics.setGravity( 0, 0 )
+local _W = display.viewableContentWidth
+local _H = display.viewableContentHeight
 
-gap = _H * 0.65;
-size = _W * 0.0375;
+local textMessage
+local message
+local backButton
+local i = 1
+
+local uid
+local username
 
 local function fieldHandler( textField )
 	return function( event )
@@ -29,81 +36,27 @@ local function fieldHandler( textField )
 	end
 end
 
-
-
----------------------------------------------------------------------
--- local upath = system.pathForFile("Username.txt", system.DocumentsDirectory)
--- 	local ufile = io.open(upath, "a+")
--- 	if not ufile then
--- 		print("File Error: " .. errorString)
--- 	else 
--- 		local ucontents = ufile:read("*a")
-
--- 		local path = system.pathForFile("Message.txt", system.DocumentsDirectory)
--- 		local file = io.open(path, "a+")
-
--- 		if not file then
--- 			print("File Error: " .. errorString)
--- 		else 
--- 			local contents = file:read("*a")
-
--- 			local msg = display.newText(ucontents .. ": " .. contents .. "\n", 0,0, "unicode.arialr.ttf", _W*0.05)
--- 			msg.anchorX = 0;
--- 			msg.x = _W * 0.150
--- 			msg.y = _H * 0.32;
--- 			msg:setTextColor(0,0,0)
-
--- 			 print( "Contents of " .. path .. "\n" .. contents )
-
--- 		    -- Close the file handle
--- 		    	io.close( file )
--- 		    	--file = nil
--- 			end
--- 		end
-	
-		--end
-
-local path = system.pathForFile( "Message.txt", system.DocumentsDirectory )
-local upath = system.pathForFile("Username.txt", system.DocumentsDirectory)
-
-local ufile = io.open(upath, "r")
-if not ufile then
-	print("File Error: " .. errorString)
-else
-	local ucon = ufile:read("*a")
-
--- 	local msg = display.newText(ucontents .. ": " .. contents .. "\n", 0,0, "unicode.arialr.ttf", _W*0.05)
--- 	msg.anchorX = 0;
--- 	msg.x = _W * 0.150
--- 	msg.y = _H * 0.3;
--- 	msg:setTextColor(0,0,0)
--- end
-local gap = _H * 0.05 
-msgy = _H * 0.3
-
-for line in io.lines( path ) do
-
-    print( line )
-    local msg = display.newText(ucon .. ": ".. line, 0, 0, "unicode.arialr.ttf", _W*0.05)
-	msg.anchorX = 0
-	msg.x = _W * 0.150
-	msg.y = msgy
-	msg:setTextColor(0,0,0)
-	msgy = msgy + gap
-end 
+local function backtoViewGroup(sceneGroup)
+	composer.removeScene( "viewgroup" )
+	local options = {
+		parent = sceneGroup,
+		effect = "crossFade",
+		time = 800,
+		params = {
+			uid = uid,
+			username = username
+		}
+	}
+    composer.gotoScene( "viewgroup", options)
 end
 
-local function printMsg()
-	
------------send msg
-
-end
-
-function scene:create (e)
-	search:removeSelf()
+function scene:create (event)
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 	physics.pause()
+
+	uid = event.params.uid
+	username = event.params.username
 
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
@@ -115,38 +68,10 @@ function scene:create (e)
 	local minibg = display.newRect(backGroup, display.contentCenterX, display.contentCenterY * 1.09, _W*0.9, _H*0.60)
 	minibg:setFillColor(1,0,0)
 	minibg.alpha = 0
-	--scrollView:insert(minibg)
 
-	local sendmsg = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
-	sendmsg:addEventListener("userInput", fieldHandler(function() return sendmsg end))
-	sceneGroup:insert(sendmsg)
-	sendmsg.placeholder = "Message"
-	sendmsg.size = 63;
-
-	local send = display.newImageRect(sceneGroup, "send.png", _W * 0.1, _H * 0.063 )
-	send.x = _W * 0.82
-	send.y = _H * 0.9
-	send:addEventListener("tap", printMsg)	
-
-	function sendmsg:userInput(e)
-		if e.phase == "began" then
-			e.target.text =''
-		elseif e.phase == "ended" then
-		-- 	local path = system.pathForFile( "txtMessage.txt", system.DocumentsDirectory )
-
-
-  --      		local file = io.open( path, "w" )
-  --      		file:write( e.target.text)
-	 --       		io.close( file )
-	 --       		file = nil 
-		-- 	--labelFeedback.text = "Thank you" .. " " .. event.target.text
-		elseif event.phase == "Submitted" then
-			--	labelFeedback.text = "Hello".. " " .. event.target.text
-			--  elseif event.phase == "editing" then
-			--	labelFeedback.text = event.startPosition 
-			file = nil
-		end
-	end
+	backButton = display.newText( sceneGroup, "Back", 100, 50, native.systemFont, 44 )
+	backButton:setFillColor( 0.75, 0.78, 1 )
+	backButton:addEventListener("tap", backtoViewGroup)	
 end
 
 function scene:show(event)
@@ -158,6 +83,45 @@ function scene:show(event)
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
+		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
+		sceneGroup:insert(textMessage)
+		textMessage.placeholder = "Message"
+		textMessage.size = 40;
+
+		local send = display.newImageRect(sceneGroup, "send.png", _W * 0.1, _H * 0.063 )
+		send.x = _W * 0.82
+		send.y = _H * 0.9
+		send:addEventListener("tap", send)
+
+		function textMessage:userInput(event)
+			if event.phase == "began" then
+				print("began")
+				event.target.text =''
+			elseif event.phase == "ended" then
+				message = event.target.text
+			elseif event.phase == "submitted" then
+				send.tap(event)
+				event.target.text = ''
+			end
+		end
+
+		function send:tap(event)
+			print(message)
+			local options = {
+				parent =sceneGroup,
+				text = username .. ": " .. message,
+				x = display.contentCenterX,
+				y = 400+(30*(i-1)),
+				font =native.systemFont,
+				fontSize = 30
+			}
+			i = i+1
+			local messageText = display.newText(options)
+			messageText:setFillColor(1,0,0)
+		end
+
+		textMessage:addEventListener("userInput", textMessage)
 	end
 end
 
@@ -169,8 +133,8 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		-- txtMessage:removeSelf()
-		-- txtMessage = nil
+		textMessage:removeSelf()
+		textMessage = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end
