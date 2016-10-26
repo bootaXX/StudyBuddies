@@ -87,7 +87,7 @@ function scene:show( event )
 				end
 			end
 		end
-		network.request( ("http://localhost:8080/viewjoinedgroups/1"), "GET", networkListener)
+		network.request( ("http://localhost:8080/viewjoinedgroups/2"), "GET", networkListener)
 	end
 end
 
