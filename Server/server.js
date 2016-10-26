@@ -4,11 +4,12 @@ var options = {promiseLib: Promise};
 var pgp = require('pg-promise')(options);
 var pg = require('pg');
 var path = require('path');
-var connectionString = 'postgres://postgres:12345@localhost:5432/studybuddies';
+var connectionString = 'postgres://postgres:rdr1598@localhost:5432/studybuddies';
 var app = express();
 var fs = require('fs');
 var URL = require('url-parse');
 var url = require('url');
+
 const results=[];
 
 
@@ -20,7 +21,7 @@ app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
 	client.query("insert into groupchat(groupname) values ('"+req.params.gname+"');");
 
 	var data = "Halloo!!"
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", data, function (err) {
+	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/testing"+req.params.gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
@@ -105,7 +106,41 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 });
 
 //load messages
+app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
+	var buf = new Buffer(1024);
+	var gname = req.params.gname;
 
+	var json="";
+	console.log("Going to open an existing file");
+	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
+		if (err) {
+			return console.error(err);
+		}
+		
+		console.log("File opened successfully!");
+		console.log("Going to read the file");
+
+		fs.read(fd, buf, 0, buf.length, 0, function(err, bytes){
+			if (err){
+				console.log(err);
+			}
+			// Print only read bytes to avoid junk.
+			if(bytes > 0){
+				console.log("Original: "+buf.slice(0, bytes).toString());
+				json = buf.slice(0, bytes).toString();
+				console.log("JSON read: "+json);
+				return res.send({'message':json})
+			}
+			// Close the opened file.
+			fs.close(fd, function(err){
+				if (err){
+					console.log(err);
+				}
+				console.log("File closed successfully.");
+			});
+		});
+	});
+});
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");
