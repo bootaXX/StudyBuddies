@@ -2,6 +2,8 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require("widget")
 local physics = require( "physics" )
+local json = require("json")
+
 physics.start()
 physics.setGravity( 0, 0 )
 local _W = display.viewableContentWidth
@@ -14,6 +16,9 @@ local i = 1
 
 local uid
 local username
+local groupname
+local loadedmessage
+local decres
 
 local function fieldHandler( textField )
 	return function( event )
@@ -79,8 +84,35 @@ function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 
+	groupname = event.params.groupname
+	username = event.params.username
+
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				loadedmessage = event.response
+				print(loadedmessage)
+				loadMessages(loadedmessage)
+			end
+		end
+
+		function loadMessages(message)
+			local options = {
+				parent =sceneGroup,
+				text = message,
+				x = display.contentCenterX,
+				y = 340,
+				font =native.systemFont,
+				fontSize = 30
+			}
+			local messageText = display.newText(options)
+			messageText:setFillColor(1,0,0)
+		end
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
@@ -120,6 +152,17 @@ function scene:show(event)
 			i = i+1
 			local messageText = display.newText(options)
 			messageText:setFillColor(1,0,0)
+			-- Code here runs when the scene is still off screen (but is about to come on screen)
+				local function networkListener( event )
+					if ( event.isError ) then
+						print( "Network error: ", event.response )
+					else
+						print(event.response)
+					end
+				end
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+
 		end
 
 		textMessage:addEventListener("userInput", textMessage)

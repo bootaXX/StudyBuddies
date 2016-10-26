@@ -4,7 +4,7 @@ var options = {promiseLib: Promise};
 var pgp = require('pg-promise')(options);
 var pg = require('pg');
 var path = require('path');
-var connectionString = 'postgres://postgres:rdr1598@localhost:5432/studybuddies';
+var connectionString = 'postgres://postgres:12345@localhost:5432/studybuddies';
 var app = express();
 var fs = require('fs');
 var URL = require('url-parse');
@@ -21,7 +21,7 @@ app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
 	client.query("insert into groupchat(groupname) values ('"+req.params.gname+"');");
 
 	var data = "Halloo!!"
-	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/testing"+req.params.gname+".txt", data, function (err) {
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
@@ -112,7 +112,7 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 
 	var json="";
 	console.log("Going to open an existing file");
-	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -126,10 +126,8 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 			}
 			// Print only read bytes to avoid junk.
 			if(bytes > 0){
-				console.log("Original: "+buf.slice(0, bytes).toString());
 				json = buf.slice(0, bytes).toString();
-				console.log("JSON read: "+json);
-				return res.send({'message':json})
+				return res.send(json);
 			}
 			// Close the opened file.
 			fs.close(fd, function(err){
@@ -139,6 +137,14 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 				console.log("File closed successfully.");
 			});
 		});
+	});
+});
+
+//write messages
+app.get("/studybuddies/groupchat/writemessage/:gname/:message", function(req,res){
+	console.log("Opening file");
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
+		res.send("Message written");
 	});
 });
 

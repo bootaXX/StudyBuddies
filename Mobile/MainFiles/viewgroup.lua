@@ -88,7 +88,8 @@ function scene:create( event )
 				time = 800,
 				params = {
 					uid = uid,
-					username = username
+					username = username,
+					groupname = groupname
 				}
 			}
 			composer.removeScene("sendmsg")
@@ -150,6 +151,7 @@ function scene:show( event )
 			if ( event.isError ) then
 				print( "Network error: ", event.response )
 			else
+				print(event.response)
 				decres = json.decode(event.response)
 				local i=1
 				while decres.chat[i] do
