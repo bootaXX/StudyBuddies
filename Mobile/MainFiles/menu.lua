@@ -18,7 +18,7 @@ local pword
 
 local function gotoRegister()
 	composer.removeScene("register")
-    composer.gotoScene( "register", { time=800, effect="crossFade" })
+    composer.gotoScene( "register", { time=600, effect="crossFade" })
 end
 
 local function onComplete( event )
@@ -46,7 +46,7 @@ local function gotoLogin()
 				local infos = json.decode(jsonstr)
 				local options = {
 					effect = "crossFade",
-					time = 800,
+					time = 600,
 					params = {
 						uid = infos[1].userid,
 						username = infos[1].username

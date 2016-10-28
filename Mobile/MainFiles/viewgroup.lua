@@ -13,6 +13,7 @@ local username
 
 local textJoinGroup
 local groupname
+local timerperform
 
 local function fieldHandler( textField )
 	return function( event )
@@ -35,17 +36,41 @@ local function fieldHandler( textField )
 	end
 end
 
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
 local function gotoCreateGroupChat()
 	composer.removeScene( "creategroupchat" )
 	local options = {
 		effect = "crossFade",
-		time = 800,
+		time = 600,
 		params = {
 			uid = uid,
 			username = username
 		}
 	}
     composer.gotoScene( "creategroupchat", options)
+end
+
+local function logout(sceneGroup)
+	composer.removeScene( "viewgroup" )
+	local options = {
+		parent = sceneGroup,
+		effect = "crossFade",
+		time = 600,
+		params = {
+			uid = uid,
+			username = username
+		}
+	}
+	timer.pause(timerperform)
+	composer.removeScene("menu")
+    composer.gotoScene( "menu", options)
 end
 
 function scene:create( event )
@@ -67,6 +92,10 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 200
 
+	backButton = display.newText( sceneGroup, "Logout", 100, 50, native.systemFont, 44 )
+	backButton:setFillColor( 0.75, 0.78, 1 )
+	backButton:addEventListener("tap", logout)	
+
 	createGroupChatButton = display.newText( sceneGroup, "Create Group", display.contentCenterX, 950, native.systemFont, 44 )
 	createGroupChatButton:setFillColor( 0.75, 0.78, 1 )
 	createGroupChatButton:addEventListener("tap", gotoCreateGroupChat)
@@ -78,23 +107,28 @@ function scene:create( event )
 				if ( event.isError ) then
 					print( "Network error: ", event.response )
 				else
-					print( "RESPONSE: ", event.response )
+					local reply = json.decode(event.response)
+					local replymessage = reply.callback
+					if(replymessage == "invalid") then
+						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
+					else
+						local options = {
+							effect = "crossFade",
+							time = 600,
+							params = {
+								uid = uid,
+								username = username,
+								groupname = groupname
+							}
+						}
+						timer.pause(timerperform)
+						composer.removeScene("sendmsg")
+						composer.gotoScene("sendmsg", options)
+					end
 				end
 			end
 			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
 			network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-			local options = {
-				effect = "crossFade",
-				time = 800,
-				params = {
-					uid = uid,
-					username = username,
-					groupname = groupname
-				}
-			}
-			composer.removeScene("sendmsg")
-			composer.gotoScene("sendmsg", options)
-			print("Pressed")
 		end
 	end
 
@@ -151,7 +185,6 @@ function scene:show( event )
 			if ( event.isError ) then
 				print( "Network error: ", event.response )
 			else
-				print(event.response)
 				decres = json.decode(event.response)
 				local i=1
 				while decres.chat[i] do
@@ -163,14 +196,16 @@ function scene:show( event )
 			end
 		end
 
-		--network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
 		network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
 
-		local function viewGroups( event )
+		local function reloadGroups( event )
 			-- body
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
 		end
 
-		Runtime:addEventListener("enterFrame", viewGroups)
+		timerperform = timer.performWithDelay(1000, reloadGroups, 0)
 	end
 end
 

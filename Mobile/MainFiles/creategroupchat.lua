@@ -42,6 +42,21 @@ local function gotoCheck()
 	-- body
 end
 
+local function backtoViewGroup(sceneGroup)
+	composer.removeScene( "viewgroup" )
+	local options = {
+		parent = sceneGroup,
+		effect = "crossFade",
+		time = 600,
+		params = {
+			uid = uid,
+			username = username
+		}
+	}
+	composer.removeScene("viewgroup")
+    composer.gotoScene( "viewgroup", options)
+end
+
 function scene:create( event )
 
 	local sceneGroup = self.view
@@ -63,11 +78,15 @@ function scene:create( event )
 
 	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 520, native.systemFont, 44 )
 	createButton:setFillColor( 0.75, 0.78, 1 )
+
 	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 450, native.systemFont, 44 )
 	checkButton:setFillColor( 0.75, 0.78, 1 )
-
 	createButton:addEventListener("tap", gotoCreateGroup)
 	checkButton:addEventListener("tap", gotoCheck)
+
+	backButton = display.newText( sceneGroup, "Back", 100, 50, native.systemFont, 44 )
+	backButton:setFillColor( 0.75, 0.78, 1 )
+	backButton:addEventListener("tap", backtoViewGroup)	
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )

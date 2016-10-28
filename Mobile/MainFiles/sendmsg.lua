@@ -19,6 +19,8 @@ local username
 local groupname
 local loadedmessage
 local decres
+local messageText
+local timerperform
 
 local function fieldHandler( textField )
 	return function( event )
@@ -46,12 +48,14 @@ local function backtoViewGroup(sceneGroup)
 	local options = {
 		parent = sceneGroup,
 		effect = "crossFade",
-		time = 800,
+		time = 600,
 		params = {
 			uid = uid,
 			username = username
 		}
 	}
+	timer.pause(timerperform)
+	composer.removeScene("viewgroup")
     composer.gotoScene( "viewgroup", options)
 end
 
@@ -77,6 +81,12 @@ function scene:create (event)
 	backButton = display.newText( sceneGroup, "Back", 100, 50, native.systemFont, 44 )
 	backButton:setFillColor( 0.75, 0.78, 1 )
 	backButton:addEventListener("tap", backtoViewGroup)	
+
+	function  background:tap(event)
+		native.setKeyboardFocus( nil )
+	end
+
+	background:addEventListener("tap", background)
 end
 
 function scene:show(event)
@@ -87,32 +97,20 @@ function scene:show(event)
 	groupname = event.params.groupname
 	username = event.params.username
 
+	-- local scrollView = widget.newScrollView(
+	--    {
+	--         x = display.contentCenterX,
+	--         y = display.contentCenterY * 0.8,
+	--         width = display.viewableContentWidth * 0.75,
+	--         height = display.viewableContentHeight * 0.7,
+	--         horizontalScrollDisabled = true,
+	--         listener = scrollListener
+	--     }
+	-- )
+	-- sceneGroup:insert(scrollView)
+
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				loadedmessage = event.response
-				print(loadedmessage)
-				loadMessages(loadedmessage)
-			end
-		end
-
-		function loadMessages(message)
-			local options = {
-				parent =sceneGroup,
-				text = message,
-				x = display.contentCenterX,
-				y = 340,
-				font =native.systemFont,
-				fontSize = 30
-			}
-			local messageText = display.newText(options)
-			messageText:setFillColor(1,0,0)
-		end
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
@@ -122,11 +120,6 @@ function scene:show(event)
 		textMessage.placeholder = "Message"
 		textMessage.size = 40;
 
-		local send = display.newImageRect(sceneGroup, "send.png", _W * 0.1, _H * 0.063 )
-		send.x = _W * 0.82
-		send.y = _H * 0.9
-		send:addEventListener("tap", send)
-
 		function textMessage:userInput(event)
 			if event.phase == "began" then
 				print("began")
@@ -134,37 +127,101 @@ function scene:show(event)
 			elseif event.phase == "ended" then
 				message = event.target.text
 			elseif event.phase == "submitted" then
-				send.tap(event)
-				event.target.text = ''
 			end
 		end
 
-		function send:tap(event)
-			print(message)
-			local options = {
-				parent =sceneGroup,
-				text = username .. ": " .. message,
-				x = display.contentCenterX,
-				y = 400+(30*(i-1)),
-				font =native.systemFont,
-				fontSize = 30
-			}
-			i = i+1
-			local messageText = display.newText(options)
-			messageText:setFillColor(1,0,0)
-			-- Code here runs when the scene is still off screen (but is about to come on screen)
+		local function handleButtonEvent( event )
+			if(event.phase == "ended") then
 				local function networkListener( event )
 					if ( event.isError ) then
 						print( "Network error: ", event.response )
 					else
-						print(event.response)
+						print( "RESPONSE: ", event.response )
 					end
 				end
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
-
+				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+				network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+			end
 		end
 
+		local sendmessageButton = widget.newButton(
+			{
+				x = 600,
+				y = 920,
+				shape = "rect",
+				id = "sendbutton",
+				label = "Send",
+				fontSize = 25,
+				fillColor = { default={ 1, 0.5, 0.5, 0.5 }, over={ 1, 0.2, 0.5, 1 } },
+				onEvent = handleButtonEvent
+			}
+		)
+		sceneGroup:insert(sendmessageButton)
+
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				decres = json.decode(event.response)
+				loadedmessage = decres.message
+				i = decres.lines
+				loadMessages(loadedmessage)
+			end
+		end
+
+		function loadMessages(message)
+			local options = {
+				parent =sceneGroup,
+				text = message,
+				y = display.screenOriginY + 230,
+				x = display.viewableContentHeight * 0.4,
+				anchorX = display.viewableContentWidth * 0.5,
+				anchorY = display.viewableContentHeight * 0.5,
+				font =native.systemFont,
+				fontSize = 30
+			}
+			messageText = display.newText(options)
+			messageText:setFillColor(1,0,0)
+			-- scrollView:insert(messageText)
+		end
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+
+		-- function send:tap(event)
+		-- 	-- local options = {
+		-- 	-- 	parent =sceneGroup,
+		-- 	-- 	text = username .. ": " .. message,
+		-- 	-- 	x = display.viewableContentWidth * 0.3,
+		-- 	-- 	y = display.viewableContentHeight * 0.1 + (30*(i)),
+		-- 	-- 	anchorX = display.viewableContentWidth * 0.5,
+		-- 	-- 	font =native.systemFont,
+		-- 	-- 	fontSize = 30
+		-- 	-- }
+		-- 	-- i = i+1
+		-- 	-- local messageText = display.newText(options)
+		-- 	-- messageText:setFillColor(1,0,0)	
+		-- 	-- scrollView:insert(messageText)	
+		-- 	-- Code here runs when the scene is still off screen (but is about to come on screen)
+		-- 		local function networkListener( event )
+		-- 			if ( event.isError ) then
+		-- 				print( "Network error: ", event.response )
+		-- 			else
+		-- 				print(event.response)
+		-- 			end
+		-- 		end
+		-- 	-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+		-- 	network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+
+		-- end
+
+		local function reloadMessage( event )
+			-- body
+			display.remove(messageText)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+		end
+
+		timerperform = timer.performWithDelay(500, reloadMessage, 0)	
 		textMessage:addEventListener("userInput", textMessage)
 	end
 end

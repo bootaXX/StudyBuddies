@@ -36,7 +36,7 @@ local function gotoWelcome()
 	-- network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
 	network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
 
-	composer.gotoScene("menu", { time=800, effect="crossFade" })
+	composer.gotoScene("menu", { time=600, effect="crossFade" })
 end
 
 local function gotoCheck()

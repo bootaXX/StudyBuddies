@@ -20,7 +20,7 @@ client.connect();
 app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
 	client.query("insert into groupchat(groupname) values ('"+req.params.gname+"');");
 
-	var data = "Halloo!!"
+	var data = req.params.gname + "\n";
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
@@ -79,7 +79,16 @@ app.get("/studybuddies/groupchat/select",function(req,res){
 //join groupchat, if .. insert into junctable
 app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 	client.query("select groupid from groupchat where groupname = '" + req.params.gname+ "';", function (err, result){
-		if(result.rows[0].groupid != null){
+		console.log(result.rows);
+		if(result.rows == ""){
+			console.log("Here")
+			var reply = {
+				'callback' : "invalid"
+			}
+			res.send(reply);
+			console.log("Groupchat does not exist");
+		}
+		else{
 			var gid = result.rows[0].groupid;
 			console.log("groupid = " + gid);
 			client.query("select userid from junctable where groupid = '" + gid + "';", function (err, result){
@@ -91,16 +100,18 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 				if (bool) {
 					client.query("insert into junctable (userid, groupid) values (" + req.params.uid + "," + gid +");");
 					console.log("Inserted into junctable");
-					res.send("Inserted into junctable");
+					var reply = {
+						'callback' : "valid"
+					}
+					res.send(reply);
 				}
 				else{
-					res.send("In group already");
+					var reply = {
+						'callback' : "valid"
+					}
+					res.send(reply);
 				}
 			});
-		}
-		else{
-			res.send("Groupchat does not exist");
-			console.log("Groupchat does not exist");
 		}
 	});
 });
@@ -127,7 +138,12 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 			// Print only read bytes to avoid junk.
 			if(bytes > 0){
 				json = buf.slice(0, bytes).toString();
-				return res.send(json);
+				var index = json.split("\n").length - 1;
+				jsonstr = {
+					"message" : json,
+					"lines" : index
+				}
+				return res.send(jsonstr);
 			}
 			// Close the opened file.
 			fs.close(fd, function(err){
