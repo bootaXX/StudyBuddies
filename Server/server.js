@@ -159,11 +159,19 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 //write messages
 app.get("/studybuddies/groupchat/writemessage/:gname/:message", function(req,res){
 	console.log("Opening file");
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
 		res.send("Message written");
 	});
 });
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");
+});
+
+//post question
+app.get("/studybuddies/groupchat/postquestion/:gname/:question",function(req,res){
+	console.log("Opening file for questions");
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
+		res.send("Question written");
+	});
 });
