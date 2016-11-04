@@ -21,7 +21,7 @@ app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
 	client.query("insert into groupchat(groupname) values ('"+req.params.gname+"');");
 
 	var data = req.params.gname + "\n";
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", data, function (err) {
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
@@ -123,7 +123,7 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var results = [];
 
 	console.log("Going to open an existing file");
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/testing/"+req.params.gname+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}

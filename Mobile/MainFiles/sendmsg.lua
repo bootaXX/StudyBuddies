@@ -97,18 +97,6 @@ function scene:show(event)
 	groupname = event.params.groupname
 	username = event.params.username
 
-	-- local scrollView = widget.newScrollView(
-	--    {
-	--         x = display.contentCenterX,
-	--         y = display.contentCenterY * 0.8,
-	--         width = display.viewableContentWidth * 0.75,
-	--         height = display.viewableContentHeight * 0.7,
-	--         horizontalScrollDisabled = true,
-	--         listener = scrollListener
-	--     }
-	-- )
-	-- sceneGroup:insert(scrollView)
-
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
 		
@@ -168,6 +156,8 @@ function scene:show(event)
 				loadMessages(loadedmessage)
 			end
 		end
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
 
 		function loadMessages(message)
 			local options = {
@@ -182,43 +172,30 @@ function scene:show(event)
 			}
 			messageText = display.newText(options)
 			messageText:setFillColor(1,0,0)
-			-- scrollView:insert(messageText)
 		end
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
 
-		-- function send:tap(event)
-		-- 	-- local options = {
-		-- 	-- 	parent =sceneGroup,
-		-- 	-- 	text = username .. ": " .. message,
-		-- 	-- 	x = display.viewableContentWidth * 0.3,
-		-- 	-- 	y = display.viewableContentHeight * 0.1 + (30*(i)),
-		-- 	-- 	anchorX = display.viewableContentWidth * 0.5,
-		-- 	-- 	font =native.systemFont,
-		-- 	-- 	fontSize = 30
-		-- 	-- }
-		-- 	-- i = i+1
-		-- 	-- local messageText = display.newText(options)
-		-- 	-- messageText:setFillColor(1,0,0)	
-		-- 	-- scrollView:insert(messageText)	
-		-- 	-- Code here runs when the scene is still off screen (but is about to come on screen)
-		-- 		local function networkListener( event )
-		-- 			if ( event.isError ) then
-		-- 				print( "Network error: ", event.response )
-		-- 			else
-		-- 				print(event.response)
-		-- 			end
-		-- 		end
-		-- 	-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
-		-- 	network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
-
-		-- end
 
 		local function reloadMessage( event )
 			-- body
-			display.remove(messageText)
+			local decres2
+			local length = 1
+			local lddmessage
+			local function networkListener1( event )
+				if (event.isError) then
+					print("Network error: ", event.response)
+				else
+					decres2 = json.decode(event.response)
+					length = decres2.lines
+					lddmessage = decres2.message
+					if(length ~= i) then
+						display.remove(messageText)
+						loadMessages(lddmessage)
+					end
+				end
+			end
+
 			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 		end
 
 		timerperform = timer.performWithDelay(500, reloadMessage, 0)	

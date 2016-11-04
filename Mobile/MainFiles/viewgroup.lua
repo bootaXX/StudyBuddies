@@ -4,8 +4,10 @@ local scene = composer.newScene()
 local widget = require( "widget" )
 local json = require("json");
 
-local res
-local decres
+local response1
+local decodedresponse1
+local response2
+local decodedresponse2
 local dgroupname
 
 local uid
@@ -54,6 +56,7 @@ local function gotoCreateGroupChat()
 			username = username
 		}
 	}
+	timer.cancel(timerperform)
     composer.gotoScene( "creategroupchat", options)
 end
 
@@ -68,7 +71,7 @@ local function logout(sceneGroup)
 			username = username
 		}
 	}
-	timer.pause(timerperform)
+	timer.cancel(timerperform)
 	composer.removeScene("menu")
     composer.gotoScene( "menu", options)
 end
@@ -158,6 +161,7 @@ function scene:show( event )
 
 	local sceneGroup = self.view
 	local phase = event.phase
+	local checker
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
@@ -185,14 +189,15 @@ function scene:show( event )
 			if ( event.isError ) then
 				print( "Network error: ", event.response )
 			else
-				decres = json.decode(event.response)
+				decodedresponse1 = json.decode(event.response)
 				local i=1
-				while decres.chat[i] do
-					res = decres.chat[i].groupname
-					dgroupname = display.newText( sceneGroup, res, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
+				while decodedresponse1.chat[i] do
+					response1 = decodedresponse1.chat[i].groupname
+					dgroupname = display.newText( sceneGroup, response1, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
 					sceneGroup:insert( dgroupname )
 					i = i+1
 				end
+				checker = i
 			end
 		end
 
@@ -202,9 +207,30 @@ function scene:show( event )
 		local function reloadGroups( event )
 			-- body
 			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
-		end
+			network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener2)
 
+			local function networkListener2( event )
+				if (event.isError) then
+					print("Network error: ", event.response)
+				else
+					decodedresponse2 = json.decode(event.response)
+					if(decodedresponse2.chat[checker].groupname ~= decodedresponse1.chat[checker].groupname) then
+						timer.cancel(timerperform)
+						local options = {
+							parent = sceneGroup,
+							time = 600,
+							params = {
+								uid = uid,
+								username = username
+							}
+						}
+						timer.cancel(timerperform)
+						composer.removeScene("viewgroup")
+					    composer.gotoScene( "viewgroup", options)
+					end
+				end
+			end
+		end
 		timerperform = timer.performWithDelay(1000, reloadGroups, 0)
 	end
 end
