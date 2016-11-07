@@ -56,7 +56,7 @@ local function gotoCreateGroupChat()
 			username = username
 		}
 	}
-	timer.cancel(timerperform)
+	timer.pause(timerperform)
     composer.gotoScene( "creategroupchat", options)
 end
 

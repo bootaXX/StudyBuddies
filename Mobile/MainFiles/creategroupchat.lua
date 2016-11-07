@@ -22,8 +22,10 @@ local function gotoCreateGroup()
 			print ( "RESPONSE: " .. event.response )
 		end
 	end
+	local params = {}
+	params.body = "gname="..gnameni.."&uid="..uid
 	-- network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert/"..gnameni.."/"..uid, "GET", networkListener)
-	network.request( "http://localhost:8080/studybuddies/groupchat/insert/"..gnameni.."/"..uid, "GET", networkListener)
+	network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
 
 	local options = {
 		effect = "crossFade",

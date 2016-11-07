@@ -18,19 +18,21 @@ client.connect();
 const results=[];
 
 //for create group, insert into groupchat
-app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
-	client.query("insert into groupchat(groupname) values ('"+req.params.gname+"');");
+app.post("/studybuddies/groupchat/insert", function(req,res){
+	var gname = req.body.gname
+	var uid = req.body.uid
+	client.query("insert into groupchat(groupname) values ('"+gname+"');");
 
-	var data = req.params.gname + "\n";
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", data, function (err) {
+	var data = gname + "\n";
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
 	});
-
-	var groupid = client.query("select groupid from groupchat where groupname = '" + req.params.gname+ "';", function (err, result){
+	//insert in junctable
+	var groupid = client.query("select groupid from groupchat where groupname = '" + gname+ "';", function (err, result){
 		console.log(result.rows[0].groupid);
-		client.query("insert into junctable (userid, groupid) values (" + req.params.uid + "," + result.rows[0].groupid +");");
+		client.query("insert into junctable (userid, groupid) values (" + uid + "," + result.rows[0].groupid +");");
 	});
 
 	console.log('Insert groupname in groupchat');
