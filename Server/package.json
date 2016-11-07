@@ -10,15 +10,16 @@
   "author": "Pauline Saraña",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "*",
+    "fs": "*",
+    "http": "*",
+    "httpdispatcher": "*",
+    "path": "*",
     "pg": "*",
     "pg-promise": "*",
-    "prompt" : "*",
-    "http" : "*",
-    "httpdispatcher" : "*",
-    "path" : "*",
-    "fs" : "*",
-    "url-parse": "*",
-    "url" : "*"
+    "prompt": "*",
+    "url": "*",
+    "url-parse": "*"
   }
 }

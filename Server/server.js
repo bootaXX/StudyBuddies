@@ -9,12 +9,13 @@ var app = express();
 var fs = require('fs');
 var URL = require('url-parse');
 var url = require('url');
-
-const results=[];
-
-
 var client = new pg.Client(connectionString);
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 client.connect();
+const results=[];
 
 //for create group, insert into groupchat
 app.get("/studybuddies/groupchat/insert/:gname/:uid", function(req,res){
@@ -157,21 +158,29 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 });
 
 //write messages
-app.get("/studybuddies/groupchat/writemessage/:gname/:message", function(req,res){
+app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	console.log("Opening file");
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
-		res.send("Message written");
+	var gname = req.body.groupnamesent
+	var uname = req.body.usernamesent
+	var message = req.body.messagesent
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+message , function(err, fd){
+		var reps = {
+			"message" : "Message written",
+			"validation" : "Good"
+		}
+		return res.send(reps);
 	});
-});
-
-app.listen(8080, function(){
-	console.log("Server at port 8080");
 });
 
 //post question
 app.get("/studybuddies/groupchat/postquestion/:gname/:question",function(req,res){
 	console.log("Opening file for questions");
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
 		res.send("Question written");
 	});
+});
+
+
+app.listen(8080, function(){
+	console.log("Server at port 8080");
 });

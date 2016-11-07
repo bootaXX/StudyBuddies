@@ -127,8 +127,10 @@ function scene:show(event)
 						print( "RESPONSE: ", event.response )
 					end
 				end
-				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
-				network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage/"..groupname.."/"..username..": "..message), "GET", networkListener)
+				local params = {}
+				params.body = "messagesent="..message.."&groupnamesent="..groupname.."&usernamesent="..username
+				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
 			end
 		end
 
