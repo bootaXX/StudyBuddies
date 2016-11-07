@@ -127,6 +127,7 @@ function scene:show(event)
 						print( "RESPONSE: ", event.response )
 					end
 				end
+
 				local params = {}
 				params.body = "messagesent="..message.."&groupnamesent="..groupname.."&usernamesent="..username
 				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
@@ -148,18 +149,18 @@ function scene:show(event)
 		)
 		sceneGroup:insert(sendmessageButton)
 
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				decres = json.decode(event.response)
-				loadedmessage = decres.message
-				i = decres.lines
-				loadMessages(loadedmessage)
-			end
-		end
+		-- local function networkListener( event )
+		-- 	if ( event.isError ) then
+		-- 		print( "Network error: ", event.response )
+		-- 	else
+		-- 		decres = json.decode(event.response)
+		-- 		loadedmessage = decres.message
+		-- 		i = decres.lines
+		-- 		loadMessages(loadedmessage)
+		-- 	end
+		-- end
 		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
 
 		function loadMessages(message)
 			local options = {
@@ -196,7 +197,7 @@ function scene:show(event)
 				end
 			end
 
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 		end
 
