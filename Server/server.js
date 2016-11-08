@@ -121,7 +121,7 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 
 //load messages
 app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
-	var buf = new Buffer(1024);
+	var buf = new Buffer(10240000);
 	var gname = req.params.gname;
 	var results = [];
 
@@ -175,13 +175,59 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 });
 
 //post question
-app.get("/studybuddies/groupchat/postquestion/:gname/:question",function(req,res){
-	console.log("Opening file for questions");
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
-		res.send("Question written");
+app.post("/studybuddies/groupchat/postquestion", function(req,res){
+	console.log("Opening file");
+	var gname = req.body.groupnamesent
+	var uname = req.body.usernamesent
+	var message = req.body.question
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+gname+".txt","\n"+uname+": "+question , function(err, fd){
+		var reps = {
+			"message" : "Message written",
+			"validation" : "Good"
+		}
+		return res.send(reps);
 	});
 });
 
+//load questions
+app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
+	var buf = new Buffer(10240000);
+	var gname = req.params.gname;
+	var results = [];
+
+	console.log("Going to open an existing file");
+	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt", 'r+', function(err, fd) {
+		if (err) {
+			return console.error(err);
+		}
+		
+		console.log("File opened successfully!");
+		console.log("Going to read the file");
+
+		fs.read(fd, buf, 0, buf.length, 0, function(err, bytes){
+			if (err){
+				console.log(err);
+			}
+			// Print only read bytes to avoid junk.
+			if(bytes > 0){
+				json = buf.slice(0, bytes).toString();
+				var index = json.split("\n").length - 1;
+				jsonstr = {
+					"message" : json,
+					"lines" : index
+				}
+				return res.send(jsonstr);
+			}
+			// Close the opened file.
+			fs.close(fd, function(err){
+				if (err){
+					console.log(err);
+				}
+				console.log("File closed successfully.");
+			});
+		});
+	});
+});
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");
