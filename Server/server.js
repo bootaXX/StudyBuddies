@@ -175,8 +175,10 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 });
 
 //post question
-app.get("/studybuddies/groupchat/postquestion/:gname/:question",function(req,res){
+app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	console.log("Opening file for questions");
+	var gname = req.body.gname;
+	var question = req.body.question;
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
 		res.send("Question written");
 	});
