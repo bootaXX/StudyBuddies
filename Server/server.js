@@ -184,6 +184,46 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	});
 });
 
+//load message
+app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
+	var buf = new Buffer(1024);
+	var gname = req.params.gname;
+	var results = [];
+
+	console.log("Going to open an existing file");
+	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt", 'r+', function(err, fd) {
+		if (err) {
+			return console.error(err);
+		}
+		
+		console.log("File opened successfully!");
+		console.log("Going to read the file");
+
+		fs.read(fd, buf, 0, buf.length, 0, function(err, bytes){
+			if (err){
+				console.log(err);
+			}
+			// Print only read bytes to avoid junk.
+			if(bytes > 0){
+				json = buf.slice(0, bytes).toString();
+				var index = json.split("\n").length - 1;
+				jsonstr = {
+					"questions" : json,
+					"lines" : index
+				}
+				return res.send(jsonstr);
+			}
+			// Close the opened file.
+			fs.close(fd, function(err){
+				if (err){
+					console.log(err);
+				}
+				console.log("File closed successfully.");
+			});
+		});
+	});
+});
+
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");
