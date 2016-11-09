@@ -1,9 +1,2 @@
+gname2
 
-uname2: wee
-uname2: hey
-uname2: hoy
-uname2: well
-uname2: will
-uname2: woll
-uname2: talibs
-uname3: bad man na uyy

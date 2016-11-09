@@ -1,13 +1,2 @@
 gname1
 
-bootaX: free
-bootaX: sex
-bootaX: ngau man ni
-uname2: shet
-uname2: hi
-uname2: hello
-uname2: hello
-bootaX: cge daw
-bootaX: char
-bootaX: maupay
-uname2: hey
