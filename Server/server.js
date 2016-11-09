@@ -174,17 +174,22 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	});
 });
 
-//post question
-app.post("/studybuddies/groupchat/postquestion",function(req,res){
-	console.log("Opening file for questions");
-	var gname = req.body.gname;
-	var question = req.body.question;
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
-		res.send("Question written");
+//post questions
+app.post("/studybuddies/groupchat/postquestions", function(req,res){
+	console.log("Opening file");
+	var gname = req.body.groupnamesent
+	var uname = req.body.usernamesent
+	var questions = req.body.questionsent
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+gname+".txt","\n"+uname+": "+questions , function(err, fd){
+		var reps = {
+			"questions" : "Questions written",
+			"validation" : "Good"
+		}
+		return res.send(reps);
 	});
 });
 
-//load message
+//load questions
 app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
 	var buf = new Buffer(1024);
 	var gname = req.params.gname;
@@ -223,7 +228,20 @@ app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
 		});
 	});
 });
-
+// write answer
+app.post("/studybuddies/groupchat/writeanswer", function(req,res){
+	console.log("Opening file");
+	var gname = req.body.groupnamesent
+	var uname = req.body.usernamesent
+	var answer = req.body.answersent
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+answer , function(err, fd){
+		var reps = {
+			"answer" : "Message written",
+			"validation" : "Good"
+		}
+		return res.send(reps);
+	});
+});
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");
