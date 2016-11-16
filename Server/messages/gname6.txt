@@ -1,3 +1,5 @@
-gname2
+gname6
 *******************************************
-uname4: yey! first message
+uname6: hello
+uname3: hi
+uname6: yey 

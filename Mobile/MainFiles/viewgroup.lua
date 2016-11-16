@@ -2,7 +2,7 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
-local json = require("json");
+local json = require("json")
 
 local response1
 local decodedresponse1
@@ -12,28 +12,27 @@ local dgroupname
 
 local uid
 local username
+local groupname
+local gid
 
 local textJoinGroup
-local groupname
 local timerperform
+
+local UIGroup
+UIGroup = display.newGroup()
+UIGroup.y = -5
 
 local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
-			-- This is the "keyboard has appeared" event
-			-- In some cases you may want to adjust the interface when the keyboard appears.
-		
-		elseif ( "ended" == event.phase ) then
-			-- This event is called when the user stops editing a field: for example, when they touch a different field
-			
+			 -- Transition group upward to y=50
+        transition.to( UIGroup, { time=100, y=-250} )
 		elseif ( "editing" == event.phase ) then
-		
-		elseif ( "submitted" == event.phase ) then
-			-- This event occurs when the user presses the "return" key (if available) on the onscreen keyboard
-			--print( textField().text )
-			
-			-- Hide keyboard
-			native.setKeyboardFocus( nil )
+
+		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
+            native.setKeyboardFocus( nil )
+            -- Transition group back down to y=300
+            transition.to( UIGroup, { time = 100, y = -5})
 		end
 	end
 end
@@ -50,7 +49,7 @@ local function gotoCreateGroupChat()
 	composer.removeScene( "creategroupchat" )
 	local options = {
 		effect = "crossFade",
-		time = 600,
+		time = 300,
 		params = {
 			uid = uid,
 			username = username
@@ -61,11 +60,10 @@ local function gotoCreateGroupChat()
 end
 
 local function logout(sceneGroup)
-	composer.removeScene( "viewgroup" )
 	local options = {
 		parent = sceneGroup,
 		effect = "crossFade",
-		time = 600,
+		time = 300,
 		params = {
 			uid = uid,
 			username = username
@@ -91,7 +89,7 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "study.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 
@@ -112,26 +110,28 @@ function scene:create( event )
 				else
 					local reply = json.decode(event.response)
 					local replymessage = reply.callback
+					gid = reply.gid
 					if(replymessage == "invalid") then
 						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
 					else
 						local options = {
 							effect = "crossFade",
-							time = 600,
+							time = 300,
 							params = {
 								uid = uid,
 								username = username,
-								groupname = groupname
+								groupname = groupname,
+								gid = gid
 							}
 						}
-						timer.pause(timerperform)
-						composer.removeScene("sendmsg")
-						composer.gotoScene("sendmsg", options)
+						timer.cancel(timerperform)
+						composer.removeScene("choice")
+						composer.gotoScene("choice", options)
 					end
 				end
 			end
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
 		end
 	end
 
@@ -201,13 +201,13 @@ function scene:show( event )
 			end
 		end
 
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
 
 		local function reloadGroups( event )
 			-- body
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener2)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener2)
 
 			local function networkListener2( event )
 				if (event.isError) then
@@ -218,7 +218,7 @@ function scene:show( event )
 						timer.cancel(timerperform)
 						local options = {
 							parent = sceneGroup,
-							time = 600,
+							time = 300,
 							params = {
 								uid = uid,
 								username = username

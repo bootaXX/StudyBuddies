@@ -23,7 +23,7 @@ app.post("/studybuddies/groupchat/insert", function(req,res){
 	var uid = req.body.uid
 	client.query("insert into groupchat(groupname) values ('"+gname+"');");
 
-	var data = gname + "\n";
+	var data = gname + "\n" + "*******************************************";
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
@@ -36,7 +36,7 @@ app.post("/studybuddies/groupchat/insert", function(req,res){
 	});
 
 	console.log('Insert groupname in groupchat');
-	res.send('Inserted '+req.params.gname+' into groupchat');
+	res.send('Inserted '+req.body.gname+' into groupchat');
 });
 
 //for registration of user, insert into buddy
@@ -76,7 +76,7 @@ app.get("/studybuddies/groupchat/select",function(req,res){
       return res.send({'chat':results});
       done();
     });    
-    console.log("viewing..");
+    console.log("viewing groupnames..");
 });
 
 //join groupchat, if .. insert into junctable
@@ -104,13 +104,15 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 					client.query("insert into junctable (userid, groupid) values (" + req.params.uid + "," + gid +");");
 					console.log("Inserted into junctable");
 					var reply = {
-						'callback' : "valid"
+						'callback' : "valid",
+						'gid' : gid
 					}
 					res.send(reply);
 				}
 				else{
 					var reply = {
-						'callback' : "valid"
+						'callback' : "valid",
+						'gid' : gid
 					}
 					res.send(reply);
 				}
@@ -141,7 +143,7 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 			// Print only read bytes to avoid junk.
 			if(bytes > 0){
 				json = buf.slice(0, bytes).toString();
-				var index = json.split("\n").length - 1;
+				var index = json.split("\n").length;
 				jsonstr = {
 					"message" : json,
 					"lines" : index
@@ -176,22 +178,29 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 
 //post question
 app.post("/studybuddies/groupchat/postquestion",function(req,res){
-	console.log("Opening file for questions");
-	var gname = req.body.gname;
+	console.log("Creating file for questions");
+	var gid = req.body.gid;
 	var question = req.body.question;
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt","\n"+req.params.message , function(err, fd){
+	var subject =req.body.subject;
+	var answer = req.body.answer;
+	var username = req.body.username;
+
+	client.query("insert into group_questions(groupid, subject, answer, username) values ('"+gid+"','"+subject+"','"+answer+"','"+username+"');");
+	console.log("Inserted question");
+	var data = question + " by: "+username+"\n"+"*******************************************";
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
 		res.send("Question written");
 	});
 });
 
-//load message
-app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
+//load questions
+app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 	var buf = new Buffer(1024);
-	var gname = req.params.gname;
+	var subject = req.params.subject;
 	var results = [];
 
 	console.log("Going to open an existing file");
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+req.params.gname+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -206,9 +215,9 @@ app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
 			// Print only read bytes to avoid junk.
 			if(bytes > 0){
 				json = buf.slice(0, bytes).toString();
-				var index = json.split("\n").length - 1;
+				var index = json.split("\n").length;
 				jsonstr = {
-					"questions" : json,
+					"answers" : json,
 					"lines" : index
 				}
 				return res.send(jsonstr);
@@ -224,6 +233,35 @@ app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
 	});
 });
 
+//view questions
+app.get("/studybuddies/groupchat/viewquestions/:gid",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var query = client.query("SELECT subject from group_questions where groupid = " + gid + ";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'chat':results});
+      done();
+    });   
+	console.log("viewing questions..");
+});
+
+//write answer
+app.post("/studybuddies/groupchat/writeanswer", function(req,res){
+	console.log("Opening file");
+	var subject = req.body.subjectsent
+	var uname = req.body.usernamesent
+	var answer = req.body.answersent
+	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
+		var reps = {
+			"message" : "Message written",
+			"validation" : "Good"
+		}
+		return res.send(reps);
+	});
+});
 
 app.listen(8080, function(){
 	console.log("Server at port 8080");

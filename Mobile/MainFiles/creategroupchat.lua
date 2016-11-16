@@ -1,8 +1,6 @@
-
 local composer = require( "composer" )
-
 local scene = composer.newScene()
-
+local widget = require("widget")
 local physics = require( "physics" )
 physics.start()
 physics.setGravity( 0, 0 )
@@ -14,7 +12,7 @@ local gnameni
 
 local uid
 local username
-local function gotoCreateGroup()
+local function createGroup()
 	local function networkListener( event )
 		if ( event.isError ) then
 			print( "Network error: ", event.response )
@@ -24,12 +22,12 @@ local function gotoCreateGroup()
 	end
 	local params = {}
 	params.body = "gname="..gnameni.."&uid="..uid
-	-- network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert/"..gnameni.."/"..uid, "GET", networkListener)
-	network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	-- network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
 
 	local options = {
 		effect = "crossFade",
-		time = 800,
+		time = 300,
 		params = {
 			uid = uid,
 			username = username
@@ -39,63 +37,38 @@ local function gotoCreateGroup()
 	-- body
 end
 
+local function backtoViewGroup( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "crossFade",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username
+			}
+		}
+		composer.removeScene("viewgroup")
+		composer.gotoScene("viewgroup", options)
+	end
+end
+
 local function gotoCheck()
 	print("Check")
 	-- body
 end
 
-local function backtoViewGroup(sceneGroup)
-	composer.removeScene( "viewgroup" )
-	local options = {
-		parent = sceneGroup,
-		effect = "crossFade",
-		time = 600,
-		params = {
-			uid = uid,
-			username = username
-		}
-	}
-	composer.removeScene("viewgroup")
-    composer.gotoScene( "viewgroup", options)
-end
-
-function scene:create( event )
-
-	local sceneGroup = self.view
-	-- Code here runs when the scene is first created but has not yet appeared on screen
-	physics.pause()
-
-	backGroup = display.newGroup()  -- Display group for the background image
-	sceneGroup:insert( backGroup )
-
-	uid = event.params.uid -- userid of current user
-	print(uid)
-
-	local background = display.newImageRect( backGroup, "background.png", 800, 1400 )
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
-
-	labelGroupname = display.newText( sceneGroup, "Groupname:", 217, 300, native.systemFont, 40)
-	sceneGroup:insert( labelGroupname )
-
-	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 520, native.systemFont, 44 )
-	createButton:setFillColor( 0.75, 0.78, 1 )
-
-	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 450, native.systemFont, 44 )
-	checkButton:setFillColor( 0.75, 0.78, 1 )
-	createButton:addEventListener("tap", gotoCreateGroup)
-	checkButton:addEventListener("tap", gotoCheck)
-
-	backButton = display.newText( sceneGroup, "Back", 100, 50, native.systemFont, 44 )
-	backButton:setFillColor( 0.75, 0.78, 1 )
-	backButton:addEventListener("tap", backtoViewGroup)	
-
-	function  background:tap(event)
-		native.setKeyboardFocus( nil )
-	end
-
-	background:addEventListener("tap", background)
-end
+local myBack = widget.newButton
+{
+	left = 125,
+	top = 50,
+	width = 50,
+	height = 45,
+	defaultFile = "back.png",
+	overFile = "back2.png",
+	onEvent = backtoViewGroup,
+}
 
 local function fieldHandler( textField )
 	return function( event )
@@ -115,6 +88,42 @@ local function fieldHandler( textField )
 			native.setKeyboardFocus( nil )
 		end
 	end
+end
+
+-- create
+function scene:create( event )
+
+	local sceneGroup = self.view
+	-- Code here runs when the scene is first created but has not yet appeared on screen
+	physics.pause()
+
+	backGroup = display.newGroup()  -- Display group for the background image
+	sceneGroup:insert( backGroup )
+
+	uid = event.params.uid -- userid of current user
+	username = event.params.username
+	print(uid)
+
+	local background = display.newImageRect( backGroup, "background.png", 800, 1400 )
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
+
+	labelGroupname = display.newText( sceneGroup, "Groupname:", 217, 300, native.systemFont, 40)
+	sceneGroup:insert( labelGroupname )
+
+	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 520, native.systemFont, 44 )
+	createButton:setFillColor( 0.75, 0.78, 1 )
+
+	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 450, native.systemFont, 44 )
+	checkButton:setFillColor( 0.75, 0.78, 1 )
+	createButton:addEventListener("tap", createGroup)
+	checkButton:addEventListener("tap", gotoCheck)
+
+	function  background:tap(event)
+		native.setKeyboardFocus( nil )
+	end
+	sceneGroup:insert(myBack)
+	background:addEventListener("tap", background)
 end
 
 -- show()

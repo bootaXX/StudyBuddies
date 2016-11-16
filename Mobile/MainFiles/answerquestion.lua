@@ -8,17 +8,21 @@ physics.start()
 physics.setGravity( 0, 0 )
 local _W = display.viewableContentWidth
 local _H = display.viewableContentHeight
-local textMessage
-local message
+
+local textAnswerBox
+local answer
 local i = 1
+
 local uid
 local username
 local groupname
 local gid
+local subject
 local loadedmessage
 local decres
 local messageText
 local timerperform
+local lengthoftext
 local UIGroup
 UIGroup = display.newGroup()
 UIGroup.y = -5
@@ -38,7 +42,7 @@ local function fieldHandler( textField )
 	end
 end
 
-local function backtoChoice(sceneGroup)
+local function backtoTimeline(sceneGroup)
 	local options = {
 		parent = sceneGroup,
 		effect = "crossFade",
@@ -50,9 +54,9 @@ local function backtoChoice(sceneGroup)
 			gid = gid
 		}
 	}
-	timer.cancel(timerperform)
-	composer.removeScene("choice")
-    composer.gotoScene( "choice", options)
+	timer.pause(timerperform)
+	composer.removeScene("timeline")
+    composer.gotoScene( "timeline", options)
 end
 
 local myBack = widget.newButton
@@ -63,7 +67,7 @@ local myBack = widget.newButton
 	height = 45,
 	defaultFile = "back.png",
 	overFile = "back2.png",
-	onEvent = backtoChoice
+	onEvent = backtoTimeline
 }
 
 function scene:create (event)
@@ -75,6 +79,7 @@ function scene:create (event)
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
+	subject = event.params.subject
 
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
@@ -90,7 +95,7 @@ function scene:create (event)
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end
-
+	sceneGroup:insert(myBack)
 	background:addEventListener("tap", background)
 end
 
@@ -119,20 +124,20 @@ function scene:show(event)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
-		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
-		sceneGroup:insert(textMessage)
-		textMessage.placeholder = "Message"
-		textMessage.size = 40;
+		textAnswerBox = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
+		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
+		sceneGroup:insert(textAnswerBox)
+		textAnswerBox.placeholder = "Answer"
+		textAnswerBox.size = 40;
 
-		function textMessage:userInput(event)
+		function textAnswerBox:userInput(event)
 			if event.phase == "began" then
 				event.target.text =''
 			elseif event.phase == "ended" then
-				message = event.target.text
+				answer = event.target.text
 			elseif event.phase == "submitted" then
 			end
-		end
+		end	
 
 		local function handleButtonEvent( event )
 			if(event.phase == "ended") then
@@ -145,13 +150,13 @@ function scene:show(event)
 				end
 
 				local params = {}
-				params.body = "messagesent="..message.."&groupnamesent="..groupname.."&usernamesent="..username
-				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
-				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				params.body = "answersent="..answer.."&subjectsent="..subject.."&usernamesent="..username
+				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
 			end
 		end
 
-		local sendmessageButton = widget.newButton(
+		local sendanswerButton = widget.newButton(
 			{
 				x = 600,
 				y = 920,
@@ -163,12 +168,12 @@ function scene:show(event)
 				onEvent = handleButtonEvent
 			}
 		)
-		sceneGroup:insert(sendmessageButton)
+		sceneGroup:insert(sendanswerButton)
 
-		function loadMessages(message)
+		local function loadQuestionAndAnswer(answer)
 			local options = {
 				parent =sceneGroup,
-				text = message,
+				text = answer,
 				y = display.screenOriginY + 230,
 				x = display.viewableContentHeight * 0.3,
 				anchorX = display.viewableContentWidth * 0.5,
@@ -184,7 +189,7 @@ function scene:show(event)
 		end
 
 
-		local function reloadMessage( event )
+		local function reloadQuestionAndAnswer( event )
 			-- body
 			local decres2
 			local length = 1
@@ -195,20 +200,18 @@ function scene:show(event)
 				else
 					decres2 = json.decode(event.response)
 					length = decres2.lines
-					lddmessage = decres2.message
+					lddmessage = decres2.answers
 					if(length ~= i) then
 						display.remove(messageText)
-						loadMessages(lddmessage)
+						loadQuestionAndAnswer(lddmessage)
 					end
 				end
 			end
-
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
-
-		timerperform = timer.performWithDelay(500, reloadMessage, 0)	
-		textMessage:addEventListener("userInput", textMessage)
+		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
+		textAnswerBox:addEventListener("userInput", textAnswerBox)
 	end
 end
 
@@ -220,8 +223,8 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textMessage:removeSelf()
-		textMessage = nil
+		-- textAnswerBox:removeSelf()
+		-- textAnswerBox = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end

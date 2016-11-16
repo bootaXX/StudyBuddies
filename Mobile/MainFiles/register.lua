@@ -1,6 +1,6 @@
 
 local composer = require( "composer" )
-
+local widget = require( "widget" )
 local scene = composer.newScene()
 
 local physics = require( "physics" )
@@ -24,6 +24,10 @@ local lnameni
 local passni
 local url
 
+local UIGroup
+UIGroup = display.newGroup()
+UIGroup.y = -5
+
 local function gotoWelcome()
 	local function networkListener( event )
 		if ( event.isError ) then
@@ -33,10 +37,15 @@ local function gotoWelcome()
 		end
 	end
 	
-	-- network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
-	network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
+	network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
+	-- network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
 
-	composer.gotoScene("menu", { time=600, effect="crossFade" })
+	composer.gotoScene("menu", { time=300, effect="crossFade" })
+end
+
+local function goBack()
+	composer.removeScene("menu")
+	composer.gotoScene("menu", { time=300, effect="crossFade" })
 end
 
 local function gotoCheck()
@@ -44,29 +53,77 @@ local function gotoCheck()
 	-- body
 end
 
-local function fieldHandler( textField )
+local myBack = widget.newButton
+{
+	left = 125,
+	top = 50,
+	width = 50,
+	height = 45,
+	defaultFile = "back.png",
+	overFile = "back2.png",
+	onEvent = handleButtonEvent,
+}
+
+local myRegister = widget.newButton
+{
+	left = 230,
+	top = 900,
+	width = 300,
+	height = 50,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "REGISTER",
+	onEvent = handleButtonEvent,
+}
+
+local myCheck = widget.newButton
+{
+	left = 230,
+	top = 835,
+	width = 300,
+	height = 50,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "CHECK",
+	onEvent = handleButtonEvent,
+}
+
+local function fieldHandler( textField ) --edit
 	return function( event )
 		if ( "began" == event.phase ) then
-			-- This is the "keyboard has appeared" event
-			-- In some cases you may want to adjust the interface when the keyboard appears.
-		
-		elseif ( "ended" == event.phase ) then
-			
+			 -- Transition group upward to y=50
+        transition.to( UIGroup, { time=100, y=-110 } )
+
 		elseif ( "editing" == event.phase ) then
-		
-		elseif ( "submitted" == event.phase ) then
-			-- This event occurs when the user presses the "return" key (if available) on the onscreen keyboard
-			--print( textField().text )
-			
-			-- Hide keyboard
-			native.setKeyboardFocus( nil )
+
+		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
+			-- Dismiss (hide) the native keyboard
+            native.setKeyboardFocus( nil )
+            -- Transition group back down to y=300
+            transition.to( UIGroup, { time = 100, y = -5})
+		end
+	end
+end
+
+
+local function fieldHandler1( textField ) --edit
+	return function( event )
+		if ( "began" == event.phase ) then
+			 -- Transition group upward to y=50
+        transition.to( UIGroup, { time=100, y=-250} )
+		elseif ( "editing" == event.phase ) then
+
+		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
+            native.setKeyboardFocus( nil )
+            -- Transition group back down to y=300
+            transition.to( UIGroup, { time = 100, y = -5})
 		end
 	end
 end
 
 function scene:create( event )
 
-	local sceneGroup = self.view
+		local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 	physics.pause()
 
@@ -77,14 +134,10 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local register = display.newImageRect( backGroup, "c.png", 500, 80 )
+	local register = display.newImageRect( backGroup, "create.png", 550, 80 )
 	register.x = display.contentCenterX
 	register.y = 200
 	
-	registerButton = display.newText( sceneGroup, "Register", display.contentCenterX, 970, native.systemFont, 44 )
-	registerButton:setFillColor( 0.75, 0.78, 1 )
-	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 910, native.systemFont, 44 )
-	checkButton:setFillColor( 0.75, 0.78, 1 )
 
 	labelFirstname = display.newText( sceneGroup, "Firstname:", 217, 300, native.systemFont, 40)
 	sceneGroup:insert( labelFirstname )
@@ -95,8 +148,13 @@ function scene:create( event )
 	labelPasswords = display.newText( sceneGroup, "Password:", 217, 720, native.systemFont, 40)
 	sceneGroup:insert( labelPasswords )
 	
-	registerButton:addEventListener("tap", gotoWelcome)
-	checkButton:addEventListener("tap", gotoCheck)
+	sceneGroup:insert( myCheck )
+	sceneGroup:insert( myRegister )
+	sceneGroup:insert( myBack )
+	myBack:addEventListener("tap", goBack)
+	myRegister:addEventListener("tap", gotoWelcome)
+	myCheck:addEventListener("tap", gotoCheck)
+
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
@@ -131,13 +189,13 @@ function scene:show( event )
 		textLastname.placeHolder = "Last name"
 
 		textEmail = native.newTextField(375, 650, 500, 60)
-		textEmail:addEventListener("userInput", fieldHandler(function() return textEmail end))
+		textEmail:addEventListener("userInput", fieldHandler1(function() return textEmail end))
 		sceneGroup:insert( textEmail )
 		textEmail.size = 38
 		textEmail.placeHolder = "Username"
 
 		textPasswords = native.newTextField(375, 790, 500, 60)
-		textPasswords:addEventListener("userInput", fieldHandler(function() return textPasswords end))
+		textPasswords:addEventListener("userInput", fieldHandler1(function() return textPasswords end))
 		sceneGroup:insert( textPasswords )
 		textPasswords.size = 38
 		textPasswords.isSecure = true
