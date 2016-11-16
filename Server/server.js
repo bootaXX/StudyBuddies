@@ -176,7 +176,6 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	});
 });
 
-<<<<<<< HEAD
 //post question
 app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	console.log("Creating file for questions");
@@ -191,29 +190,11 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	var data = question + " by: "+username+"\n"+"*******************************************";
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
 		res.send("Question written");
-=======
-//post questions
-app.post("/studybuddies/groupchat/postquestions", function(req,res){
-	console.log("Opening file");
-	var gname = req.body.groupnamesent
-	var uname = req.body.usernamesent
-	var questions = req.body.questionsent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+gname+".txt","\n"+uname+": "+questions , function(err, fd){
-		var reps = {
-			"questions" : "Questions written",
-			"validation" : "Good"
-		}
-		return res.send(reps);
->>>>>>> origin/EditForFileWriting
 	});
 });
 
 //load questions
-<<<<<<< HEAD
 app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
-=======
-app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
->>>>>>> origin/EditForFileWriting
 	var buf = new Buffer(1024);
 	var subject = req.params.subject;
 	var results = [];
@@ -251,7 +232,6 @@ app.get("/studybuddies/groupchat/loadquestions/:gname",function(req,res){
 		});
 	});
 });
-<<<<<<< HEAD
 
 //view questions
 app.get("/studybuddies/groupchat/viewquestions/:gid",function(req,res){
@@ -277,21 +257,40 @@ app.post("/studybuddies/groupchat/writeanswer", function(req,res){
 	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
 		var reps = {
 			"message" : "Message written",
-=======
-// write answer
-app.post("/studybuddies/groupchat/writeanswer", function(req,res){
-	console.log("Opening file");
-	var gname = req.body.groupnamesent
-	var uname = req.body.usernamesent
-	var answer = req.body.answersent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+answer , function(err, fd){
-		var reps = {
-			"answer" : "Message written",
->>>>>>> origin/EditForFileWriting
 			"validation" : "Good"
 		}
 		return res.send(reps);
 	});
+});
+
+//post notes
+app.post("/studybuddies/postnotes", function(req,res){
+	console.log("Creating file for notes");
+	var gid = req.body.gid;
+	var notes = req.body.notes;
+	var title =req.body.titlee;
+	var username = req.body.username;
+
+	client.query("insert into group_notes(groupid, title, notes, username) values ('"+gid+"','"+title+"','"+notes+"','"+username+"');");
+	console.log("Inserted notes");
+	var data = notes;
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/notes/"+title+".txt", data, function(err, fd){
+		res.send("Question written");
+	});
+});
+//view notes
+app.get("/studybuddies/groupchat/viewnotes/:gid",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var query = client.query("SELECT notes from group_notes where groupid = " + gid + ";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'notes':results});
+      done();
+    });   
+	console.log("viewing questions..");
 });
 
 app.listen(8080, function(){
