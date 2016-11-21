@@ -146,8 +146,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "messagesent="..message.."&groupnamesent="..groupname.."&usernamesent="..username
-				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
-				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
 			end
 		end
 
@@ -203,8 +203,8 @@ function scene:show(event)
 				end
 			end
 
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 		end
 
 		timerperform = timer.performWithDelay(500, reloadMessage, 0)	

@@ -8,7 +8,9 @@ physics.setGravity( 0, 0 )
 local labelGroupname
 local createButton
 local textGroupname
+local textPassword
 local gnameni
+local passwordni
 
 local uid
 local username
@@ -21,9 +23,9 @@ local function createGroup()
 		end
 	end
 	local params = {}
-	params.body = "gname="..gnameni.."&uid="..uid
-	network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
-	-- network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	params.body = "gname="..gnameni.."&password="..passwordni.."&uid="..uid
+	-- network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
 
 	local options = {
 		effect = "crossFade",
@@ -111,10 +113,10 @@ function scene:create( event )
 	labelGroupname = display.newText( sceneGroup, "Groupname:", 217, 300, native.systemFont, 40)
 	sceneGroup:insert( labelGroupname )
 
-	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 520, native.systemFont, 44 )
+	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 570, native.systemFont, 44 )
 	createButton:setFillColor( 0.75, 0.78, 1 )
 
-	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 450, native.systemFont, 44 )
+	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 500, native.systemFont, 44 )
 	checkButton:setFillColor( 0.75, 0.78, 1 )
 	createButton:addEventListener("tap", createGroup)
 	checkButton:addEventListener("tap", gotoCheck)
@@ -143,6 +145,13 @@ function scene:show( event )
 		textGroupname.size = 38
 		textGroupname.placeholder = "Group name"
 
+		textPassword = native.newTextField(375, 450, 500, 60)
+		textPassword:addEventListener("userInput", fieldHandler(function() return textPassword end))
+		sceneGroup:insert( textPassword )
+		textPassword.size = 38
+		textPassword.isSecure = true
+		textPassword.placeholder = "Password"
+
 		function textGroupname:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
@@ -151,6 +160,16 @@ function scene:show( event )
 			elseif event.phase == "Submitted" then
 			end
 		end
+
+		function textPassword:userInput(event)
+			if event.phase == "began" then
+				event.target.text = ''
+			elseif event.phase == "ended" then
+				passwordni = event.target.text
+			elseif event.phase == "Submitted" then
+			end
+		end
+		textPassword:addEventListener("userInput", textPasswords)
 		textGroupname:addEventListener("userInput", textGroupname)
 	end
 end
@@ -166,6 +185,8 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 		textGroupname:removeSelf()
 		textGroupname = nil
+		textPassword:removeSelf()
+		textPassword = nil
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen

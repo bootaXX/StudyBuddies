@@ -100,7 +100,6 @@ function scene:create (event)
 end
 
 function scene:show(event)
-
 	local sceneGroup = self.view
 	local phase = event.phase
 
@@ -151,8 +150,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "answersent="..answer.."&subjectsent="..subject.."&usernamesent="..username
-				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
-				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
 			end
 		end
 
@@ -207,8 +206,8 @@ function scene:show(event)
 					end
 				end
 			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
 		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
 		textAnswerBox:addEventListener("userInput", textAnswerBox)
@@ -223,8 +222,10 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		-- textAnswerBox:removeSelf()
-		-- textAnswerBox = nil
+		function sceneGroup:finalize( event )
+	   		event.target.textField:removeSelf()
+		end
+		sceneGroup:addEventListener( "finalize" ) 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end

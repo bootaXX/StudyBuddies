@@ -26,7 +26,7 @@ local function handleButtonEventTimeline( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("timeline")
+		composer.removeScene("choice")
 		composer.gotoScene("timeline", options)
 	end
 end

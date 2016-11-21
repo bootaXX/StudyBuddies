@@ -21,7 +21,8 @@ const results=[];
 app.post("/studybuddies/groupchat/insert", function(req,res){
 	var gname = req.body.gname
 	var uid = req.body.uid
-	client.query("insert into groupchat(groupname) values ('"+gname+"');");
+	var password = req.body.password
+	client.query("insert into groupchat(groupname, password) values ('"+gname+"','"+password+"');");
 
 	var data = gname + "\n" + "*******************************************";
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
@@ -127,15 +128,11 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var gname = req.params.gname;
 	var results = [];
 
-	console.log("Going to open an existing file");
 	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
-		
-		console.log("File opened successfully!");
-		console.log("Going to read the file");
-
+		console.log("Reading File");
 		fs.read(fd, buf, 0, buf.length, 0, function(err, bytes){
 			if (err){
 				console.log(err);
@@ -199,15 +196,11 @@ app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 	var subject = req.params.subject;
 	var results = [];
 
-	console.log("Going to open an existing file");
 	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
-		
-		console.log("File opened successfully!");
-		console.log("Going to read the file");
-
+		console.log("Reading question");
 		fs.read(fd, buf, 0, buf.length, 0, function(err, bytes){
 			if (err){
 				console.log(err);

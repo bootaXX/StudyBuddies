@@ -46,8 +46,8 @@ local function postQuestion( event )
 		print("postQuestion")
 		local params = {}
 		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 	end
 	goBack()
 end
@@ -150,7 +150,7 @@ function scene:show( event )
 		sceneGroup:insert( textSubject )
 		textSubject.size = 38
 
-		textQuestion = native.newTextField(375, 550, 500, 260)
+		textQuestion = native.newTextBox(375, 550, 500, 260)
 		textQuestion:addEventListener("userInput", fieldHandler1(function() return textQuestion end))
 		sceneGroup:insert( textQuestion )
 		textQuestion.size = 30
