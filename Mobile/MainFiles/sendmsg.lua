@@ -41,7 +41,7 @@ end
 local function backtoChoice(sceneGroup)
 	local options = {
 		parent = sceneGroup,
-		effect = "crossFade",
+		effect = "slideRight",
 		time = 300,
 		params = {
 			uid = uid,

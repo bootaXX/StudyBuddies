@@ -1,7 +1,2 @@
-1 1=? by: uname3
+1 1=? by: uname1
 *******************************************
-uname3: 2
-uname3: hey
-uname3: hey
-uname3: diri
-uname3: diri

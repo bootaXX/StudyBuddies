@@ -148,13 +148,11 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 		textUsername = native.newTextField(385, 390, 400, 60)
 		textUsername:addEventListener("userInput", fieldHandler(function() return textUsername end))
-		sceneGroup:insert( textUsername )
 		textUsername.size = 38
 		textUsername.placeholder = "Username"
 
 		textPassword = native.newTextField(385, 470, 400, 60)
 		textPassword:addEventListener("userInput", fieldHandler(function() return textPassword end))
-		sceneGroup:insert( textPassword )
 		textPassword.size = 38
 		textPassword.isSecure = true
 		textPassword.placeholder = "Password"

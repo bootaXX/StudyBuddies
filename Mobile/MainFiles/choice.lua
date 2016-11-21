@@ -26,7 +26,7 @@ local function handleButtonEventTimeline( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("choice")
+		composer.removeScene("timeline")
 		composer.gotoScene("timeline", options)
 	end
 end
@@ -74,7 +74,7 @@ local function handleButtonEventGoBack( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "slideRight",
 			time = 300,
 			params = {
 				uid = uid,
@@ -83,6 +83,40 @@ local function handleButtonEventGoBack( event )
 		}
 		composer.removeScene("viewgroup")
 		composer.gotoScene("viewgroup", options)
+	end
+end
+
+local function handleButtonEventGoToCalendar( event )
+	local phase = event.phase
+
+	-- if "ended" == phase then
+	-- 	local options = {
+	-- 		effect = "crossFade",
+	-- 		time = 300,
+	-- 		params = {
+	-- 			uid = uid,
+	-- 			username = username
+	-- 		}
+	-- 	}
+	-- 	composer.removeScene("viewgroup")
+	-- 	composer.gotoScene("viewgroup", options)
+	-- end
+end
+
+local function handleButtonEventNewNote( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "crossFade",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username
+			}
+		}
+		composer.removeScene("newnote")
+		composer.gotoScene("newnote", options)
 	end
 end
 ------------------------------------------------------------------------------------------------------------------------
@@ -121,6 +155,31 @@ local myPost = widget.newButton
 	onEvent = handleButtonEventPostQuestion
 }
 
+local myCalendar = widget.newButton
+{
+	left = 200,
+	top = 480,	
+	width = 350,
+	height = 50,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "CALENDAR",
+	onEvent = handleButtonEventGoToCalendar,
+
+}
+local myCreateNotes = widget.newButton
+{
+	left = 200,
+	top = 540,	
+	width = 350,
+	height = 50,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "CREATE NOTES",
+	onEvent = handleButtonEventNewNote,
+
+}
+
 local myBack = widget.newButton
 {
 	left = 125,
@@ -135,7 +194,7 @@ local myBack = widget.newButton
 function scene:create( event )
 
 	local sceneGroup = self.view
-	
+
 	groupname = event.params.groupname
 	username = event.params.username
 	uid = event.params.uid
@@ -153,6 +212,8 @@ function scene:create( event )
 	sceneGroup:insert( myMessage )
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
+	sceneGroup:insert( myCalendar )
+	sceneGroup:insert( myCreateNotes )
 
 background:addEventListener("tap", background)
 	

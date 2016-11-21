@@ -150,7 +150,7 @@ function scene:show( event )
 		sceneGroup:insert( textSubject )
 		textSubject.size = 38
 
-		textQuestion = native.newTextBox(375, 550, 500, 260)
+		textQuestion = native.newTextField(375, 550, 500, 260)
 		textQuestion:addEventListener("userInput", fieldHandler1(function() return textQuestion end))
 		sceneGroup:insert( textQuestion )
 		textQuestion.size = 30

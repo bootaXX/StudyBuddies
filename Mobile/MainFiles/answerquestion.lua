@@ -125,9 +125,9 @@ function scene:show(event)
 		-- Code here runs when the scene is entirely on screen
 		textAnswerBox = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
 		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
-		sceneGroup:insert(textAnswerBox)
 		textAnswerBox.placeholder = "Answer"
 		textAnswerBox.size = 40;
+		sceneGroup:insert(textAnswerBox)
 
 		function textAnswerBox:userInput(event)
 			if event.phase == "began" then
@@ -222,10 +222,8 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		function sceneGroup:finalize( event )
-	   		event.target.textField:removeSelf()
-		end
-		sceneGroup:addEventListener( "finalize" ) 
+		textAnswerBox:removeSelf()
+		textAnswerBox = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end

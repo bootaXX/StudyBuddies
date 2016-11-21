@@ -56,6 +56,7 @@ local function gotoCreateGroupChat()
 		}
 	}
 	timer.pause(timerperform)
+	composer.removeScene("creategroupchat")
     composer.gotoScene( "creategroupchat", options)
 end
 
@@ -80,7 +81,6 @@ function scene:create( event )
 
 	uid = event.params.uid -- userid of current user
 	username = event.params.username -- username of current user
-	print(uid .. ": " .. username)
 
 	backGroup = display.newGroup()
 	sceneGroup:insert(backGroup)
@@ -115,7 +115,7 @@ function scene:create( event )
 						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
 					else
 						local options = {
-							effect = "crossFade",
+							effect = "fromRight",
 							time = 300,
 							params = {
 								uid = uid,
