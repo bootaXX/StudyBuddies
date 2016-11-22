@@ -4,7 +4,7 @@ var options = {promiseLib: Promise};
 var pgp = require('pg-promise')(options);
 var pg = require('pg');
 var path = require('path');
-var connectionString = 'postgres://postgres:12345@localhost:5432/studybuddies';
+var connectionString = 'postgres://postgres:rdr1598@localhost:5432/studybuddies';
 var app = express();
 var fs = require('fs');
 var URL = require('url-parse');
@@ -25,7 +25,7 @@ app.post("/studybuddies/groupchat/insert", function(req,res){
 	client.query("insert into groupchat(groupname, password) values ('"+gname+"','"+password+"');");
 
 	var data = gname + "\n" + "*******************************************";
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
+	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
@@ -155,7 +155,7 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var gname = req.params.gname;
 	var results = [];
 
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -191,7 +191,7 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	var gname = req.body.groupnamesent
 	var uname = req.body.usernamesent
 	var message = req.body.messagesent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+message , function(err, fd){
+	fs.appendFile("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+message , function(err, fd){
 		var reps = {
 			"message" : "Message written",
 			"validation" : "Good"
@@ -212,7 +212,7 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	client.query("insert into group_questions(groupid, subject, answer, username) values ('"+gid+"','"+subject+"','"+answer+"','"+username+"');");
 	console.log("Inserted question");
 	var data = question + " by: "+username+"\n"+"*******************************************";
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
+	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
 		res.send("Question written");
 	});
 });
@@ -223,7 +223,7 @@ app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 	var subject = req.params.subject;
 	var results = [];
 
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -274,7 +274,7 @@ app.post("/studybuddies/groupchat/writeanswer", function(req,res){
 	var subject = req.body.subjectsent
 	var uname = req.body.usernamesent
 	var answer = req.body.answersent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
+	fs.appendFile("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
 		var reps = {
 			"message" : "Message written",
 			"validation" : "Good"
@@ -291,12 +291,13 @@ app.post("/studybuddies/postnotes", function(req,res){
 	var title =req.body.titlee;
 	var username = req.body.username;
 
-	client.query("insert into group_notes(groupid, title, notes, username) values ('"+gid+"','"+title+"','"+notes+"','"+username+"');");
+	client.query("insert into group_notes(groupid, title, notes, username) values ("+gid+",'"+title+"','"+notes+"','"+username+"');");
 	console.log("Inserted notes");
 	// var data = notes;
-	// fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/notes/"+title+".txt", data, function(err, fd){
+	// fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/notes/"+title+".txt", data, function(err, fd){
 	// 	res.send("Question written");
 	// });
+	return res.send("done");
 });
 
 //view notes

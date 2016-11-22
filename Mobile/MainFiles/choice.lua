@@ -75,7 +75,8 @@ local function handleButtonEventGoBack( event )
 			time = 300,
 			params = {
 				uid = uid,
-				username = username
+				username = username,
+				gid = gid
 			}
 		}
 		composer.removeScene("choice")
@@ -109,7 +110,8 @@ local function handleButtonEventNewNote( event )
 			time = 300,
 			params = {
 				uid = uid,
-				username = username
+				username = username,
+				gid = gid
 			}
 		}
 		composer.gotoScene("newnote", options)

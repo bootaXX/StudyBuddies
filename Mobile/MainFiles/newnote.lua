@@ -2,12 +2,16 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
+local json = require("json")
+
 local textNote
 local username
 local uid
 local groupname
-local gid
+local gidsent
 local note
+local textTitle
+local titlet
 
 local function goMenu()
 	local options = {
@@ -17,13 +21,42 @@ local function goMenu()
 			uid = uid,
 			username = username,
 			groupname = groupname,
-			gid = gid
+			gid = gidsent
 		}
 	}
 	composer.removeScene("newnote")
     composer.gotoScene( "choice", options)
 end
 
+local function handleCreateNote(event)
+	if(event.phase == "ended") then
+		local function networkListener( event)
+			if(event.isError) then
+				print( "Network error: ",event.response )
+			else
+				print( "Response: ",event.response )
+				local options = {
+					effect = "slideRight",
+					time = 300,
+					params = {
+						uid = uid,
+						username = username,
+						groupname = groupname,
+						gid = gidsent
+					}
+				}
+				composer.removeScene("newnote")
+			    composer.gotoScene( "choice", options)
+			end
+		end
+		local params = {}
+		print(gidsent)
+		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username
+
+		network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
+
+	end
+end
 local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
@@ -53,8 +86,9 @@ local myPost = widget.newButton
 	defaultFile = "default.png",
 	overFile = "over.png",
 	label = "CREATE",
-	onEvent = goMenu,
+	onEvent = handleCreateNote,
 }
+
 
 local myBack = widget.newButton
 {
@@ -73,7 +107,7 @@ function scene:create( event )
 	
 	uid = event.params.uid
 	username = event.params.username
-	gid = event.params.gid
+	gidsent = event.params.gid
 	groupname = event.params.groupname
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
@@ -83,6 +117,8 @@ function scene:create( event )
 	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 150
+
+	local notetitle = display.newText( sceneGroup, "Title: ", 200, 250 ,native.systemFont, 30 )
 	
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
@@ -108,18 +144,38 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		textNote = native.newTextField(382, 520, 500, 660)
-		textNote:addEventListener("userInput", fieldHandler(function() return textNote end))
+		
+		textTitle = native.newTextField(450, 250, 300, 50)
+		textTitle:addEventListener("userInput", fieldHandler(function() return textTitle end))
+		sceneGroup:insert( textTitle )
+		textTitle.placeholder = "Title"
+		textTitle:addEventListener("userInput", textTitle)
+
+
+		function textTitle:userInput(event)
+			if event.phase == "began" then
+				event.target.text = ''
+			elseif event.phase == "ended" then
+				titlet = event.target.text
+			elseif event.phase == "Submitted" then
+			end
+		end
+
+		textNote = native.newTextBox(382, 600, 500, 560)
+		textNote.isEditable = true
 		textNote.size = 20
+
 		function textNote:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif event.phase == "ended" then
 				note = event.target.text
+				print("ended: "..note)
 			elseif event.phase == "Submitted" then 
 			end
 		end
 		textNote:addEventListener("userInput", textNote)
+		
 	end
 end
 
