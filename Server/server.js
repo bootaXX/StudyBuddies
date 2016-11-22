@@ -80,7 +80,7 @@ app.get("/studybuddies/groupchat/select",function(req,res){
     console.log("viewing groupnames..");
 });
 
-//join groupchat, if .. insert into junctable
+// check if the groupname entered is valid(in junctable or not) or invalid
 app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 	client.query("select groupid from groupchat where groupname = '" + req.params.gname+ "';", function (err, result){
 		console.log(result.rows);
@@ -102,17 +102,15 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 						bool = false;
 				}
 				if (bool) {
-					client.query("insert into junctable (userid, groupid) values (" + req.params.uid + "," + gid +");");
-					console.log("Inserted into junctable");
 					var reply = {
-						'callback' : "valid",
+						'callback' : "valid1",
 						'gid' : gid
 					}
 					res.send(reply);
 				}
 				else{
 					var reply = {
-						'callback' : "valid",
+						'callback' : "valid2",
 						'gid' : gid
 					}
 					res.send(reply);
@@ -121,6 +119,35 @@ app.get("/studybuddies/groupchat/join/:gname/:uid", function(req,res){
 		}
 	});
 });
+
+// verify the user in joining a group
+app.get("/studybuddies/groupchat/joinvalid/:gid/:uid/:password",function(req,res){
+	
+	var password = req.params.password;
+	var gid = req.params.gid;
+	var uid = req.params.uid;
+
+	client.query("select groupname from groupchat where password='"+password+"' and groupid="+gid+";",function(err,result){
+		console.log(result.rows);
+		if(result.rows == ""){
+			console.log("Here")
+			var reply = {
+				'callback' : "invalid"
+			}
+			res.send(reply);
+			console.log("Groupchat does not exist");
+		}
+		else{
+			client.query("insert into junctable (userid, groupid) values (" + req.params.uid + "," + gid +");");
+			console.log("Inserted into junctable");
+			var reply = {
+				'callback' : "valid",
+			}
+			res.send(reply);
+		}
+	});
+});
+
 
 //load messages
 app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){

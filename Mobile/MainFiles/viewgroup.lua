@@ -106,6 +106,19 @@ function scene:create( event )
 					gid = reply.gid
 					if(replymessage == "invalid") then
 						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
+					elseif(replymessage == "valid1") then
+						local options1 = {
+							effect = "fromRight",
+							time = 300,
+							params = {
+								uid = uid,
+								username = username,
+								groupname = groupname,
+								gid = gid
+							}
+						}
+						composer.removeScene("viewgroup")
+						composer.gotoScene("verifygroup", options1)
 					else
 						local options = {
 							effect = "fromRight",
