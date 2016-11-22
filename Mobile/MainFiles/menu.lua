@@ -17,9 +17,8 @@ local uname
 local pword 
 
 local function gotoRegister()
-	composer.removeScene("register")
     composer.gotoScene( "register", { 
-    	time=300, effect="crossFade"
+    	time=300, effect="fromRight"
     })
 end
 
@@ -51,8 +50,7 @@ local function onComplete( event )
 		if(i==1) then
 
 		elseif (i==2) then
-			composer.removeScene("register")
-			composer.gotoScene("register")
+			gotoRegister()
 		end
 	end
 end
@@ -77,7 +75,6 @@ local function gotoLogin()
 					}
 				}
 				print(jsonstr)
-				composer.removeScene("viewgroup")
 				composer.gotoScene("viewgroup", options)
 			end
 		end

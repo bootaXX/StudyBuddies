@@ -16,9 +16,9 @@ local UIGroup
 UIGroup = display.newGroup()
 UIGroup.y = -5
 -----------------------------------------------------------------------------------------------------------------------
-local function goBack()
+local function handleButtonEventGoBack(event)
 	local options = {
-		effect = "crossFade",
+		effect = "slideRight",
 		time = 300,
 		params = {
 			uid = uid,
@@ -27,13 +27,13 @@ local function goBack()
 			gid = gid
 		}
 	}
-	composer.removeScene("choice")
+	composer.removeScene("timeline")
 	composer.gotoScene("choice", options)
 end
 
 local function handleButtonEventToAnswerQuestion( event )
 	local options = {
-		effect = "crossFade",
+		effect = "fromRight",
 		time = 300,
 		params = {
 			uid = uid,
@@ -43,7 +43,7 @@ local function handleButtonEventToAnswerQuestion( event )
 			subject = subject
 		}
 	}
-	composer.removeScene("answerquestion")
+	composer.removeScene("timeline")
 	composer.gotoScene("answerquestion", options)
 end
 
@@ -54,7 +54,8 @@ local myBack = widget.newButton
 	width = 50,
 	height = 45,
 	defaultFile = "back.png",
-	overFile = "back2.png"
+	overFile = "back2.png",
+	onEvent = handleButtonEventGoBack
 }
 
 local answerQuestionButton = widget.newButton
@@ -103,7 +104,6 @@ function scene:create( event )
 
 	sceneGroup:insert(answerQuestionButton)
 	sceneGroup:insert(myBack)
-	myBack:addEventListener("tap", goBack)
 	background:addEventListener("tap", background)
 	
 end
@@ -121,7 +121,6 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		textChooseQuestion = native.newTextField(300, 875, 400, 65)
 		textChooseQuestion:addEventListener("userInput", fieldHandler(function() return textChooseQuestion end))
-		sceneGroup:insert( textChooseQuestion )
 		textChooseQuestion.size = 38
 		textChooseQuestion.placeholder = "Subject"
 		textChooseQuestion:addEventListener("userInput", textChooseQuestion)
@@ -165,8 +164,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textChooseQuestion:removeSelf()
-		textChooseQuestion = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 
@@ -179,7 +176,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
+	textChooseQuestion:removeSelf()
+	textChooseQuestion = nil
 end
 
 

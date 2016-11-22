@@ -28,13 +28,14 @@ local function createGroup()
 	network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
 
 	local options = {
-		effect = "crossFade",
+		effect = "slideDown",
 		time = 300,
 		params = {
 			uid = uid,
 			username = username
 		}
 	}
+	composer.removeScene("creategroupchat")
 	composer.gotoScene("viewgroup", options)
 	-- body
 end
@@ -44,14 +45,14 @@ local function backtoViewGroup( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "slideDown",
 			time = 300,
 			params = {
 				uid = uid,
 				username = username
 			}
 		}
-		composer.removeScene("viewgroup")
+		composer.removeScene("creategroupchat")
 		composer.gotoScene("viewgroup", options)
 	end
 end
@@ -141,13 +142,11 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 		textGroupname = native.newTextField(375, 370, 500, 60)
 		textGroupname:addEventListener("userInput", fieldHandler(function() return textGroupname end))
-		sceneGroup:insert( textGroupname )
 		textGroupname.size = 38
 		textGroupname.placeholder = "Group name"
 
 		textPassword = native.newTextField(375, 450, 500, 60)
 		textPassword:addEventListener("userInput", fieldHandler(function() return textPassword end))
-		sceneGroup:insert( textPassword )
 		textPassword.size = 38
 		textPassword.isSecure = true
 		textPassword.placeholder = "Password"
@@ -183,10 +182,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textGroupname:removeSelf()
-		textGroupname = nil
-		textPassword:removeSelf()
-		textPassword = nil
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
@@ -200,6 +195,10 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textGroupname:removeSelf()
+	textGroupname = nil
+	textPassword:removeSelf()
+	textPassword = nil
 
 end
 

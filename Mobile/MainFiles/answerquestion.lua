@@ -42,21 +42,24 @@ local function fieldHandler( textField )
 	end
 end
 
-local function backtoTimeline(sceneGroup)
-	local options = {
-		parent = sceneGroup,
-		effect = "crossFade",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username,
-			groupname = groupname,
-			gid = gid
+local function backtoTimeline(event)
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
 		}
-	}
-	timer.pause(timerperform)
-	composer.removeScene("timeline")
-    composer.gotoScene( "timeline", options)
+		timer.cancel(timerperform)
+		composer.removeScene("answerquestion")
+	    composer.gotoScene( "timeline", options)
+	end
 end
 
 local myBack = widget.newButton
@@ -127,7 +130,7 @@ function scene:show(event)
 		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
 		textAnswerBox.placeholder = "Answer"
 		textAnswerBox.size = 40;
-		sceneGroup:insert(textAnswerBox)
+		textAnswerBox:addEventListener("userInput", textAnswerBox)
 
 		function textAnswerBox:userInput(event)
 			if event.phase == "began" then
@@ -210,7 +213,6 @@ function scene:show(event)
 			network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
 		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
-		textAnswerBox:addEventListener("userInput", textAnswerBox)
 	end
 end
 
@@ -222,8 +224,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textAnswerBox:removeSelf()
-		textAnswerBox = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end
@@ -235,6 +235,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textAnswerBox:removeSelf()
+	textAnswerBox = nil
 
 end
 

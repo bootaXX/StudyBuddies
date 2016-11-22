@@ -21,7 +21,7 @@ UIGroup.y = -5
 
 local function goBack()
 	local options = {
-		effect = "crossFade",
+		effect = "slideRight",
 		time = 300,
 		params = {
 			uid = uid,
@@ -30,7 +30,7 @@ local function goBack()
 			gid = gid
 		}
 	}
-	composer.removeScene("choice")
+	composer.removeScene("question")
 	composer.gotoScene("choice", options)
 end
 
@@ -101,7 +101,7 @@ local myBack = widget.newButton
 	height = 45,
 	defaultFile = "back.png",
 	overFile = "back2.png",
-	onEvent = handleButtonEventBack
+	onEvent = goBack
 }
 function scene:create( event )
 
@@ -126,7 +126,6 @@ function scene:create( event )
 
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
-	myBack:addEventListener("tap", goBack)
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
@@ -142,6 +141,7 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
+		print(username)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
@@ -202,12 +202,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textSubject:removeSelf()
-		textSubject = nil
-		textAnswer:removeSelf()
-		textAnswer = nil
-		textQuestion:removeSelf()
-		textQuestion = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 
@@ -220,7 +214,12 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
+	textSubject:removeSelf()
+	textSubject = nil
+	textAnswer:removeSelf()
+	textAnswer = nil
+	textQuestion:removeSelf()
+	textQuestion = nil
 end
 
 

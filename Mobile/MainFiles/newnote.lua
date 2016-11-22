@@ -2,16 +2,12 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
-local labelNote
 local textNote
-
-local function handleButtonEvent( event )
-	local phase = event.phase
-
-	if "ended" == phase then
-		print("you pressed and released a button")
-	end
-end
+local username
+local uid
+local groupname
+local gid
+local note
 
 local function goMenu()
 	local options = {
@@ -24,7 +20,7 @@ local function goMenu()
 			gid = gid
 		}
 	}
-	composer.removeScene("choice")
+	composer.removeScene("newnote")
     composer.gotoScene( "choice", options)
 end
 
@@ -57,7 +53,7 @@ local myPost = widget.newButton
 	defaultFile = "default.png",
 	overFile = "over.png",
 	label = "CREATE",
-	onEvent = handleButtonEvent,
+	onEvent = goMenu,
 }
 
 local myBack = widget.newButton
@@ -75,6 +71,10 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	
+	uid = event.params.uid
+	username = event.params.username
+	gid = event.params.gid
+	groupname = event.params.groupname
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
@@ -84,18 +84,13 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 150
 	
-	--textAnswer.isSecure = true
-		
-
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
 
-	myPost:addEventListener("tap", goMenu)
 
-
-function  background:tap(event)
-	native.setKeyboardFocus( nil )
-end
+	function  background:tap(event)
+		native.setKeyboardFocus( nil )
+	end
 
 	background:addEventListener("tap", background)
 	
@@ -113,28 +108,19 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-	textNote = native.newTextField(382, 520, 500, 660)
-	textNote:addEventListener("userInput", fieldHandler(function() return textNote end))
-	sceneGroup:insert( textNote )
-	textNote.size = 20
-
-
-	function textNote:userInput(event)
-		if event.phase == "began" then
-			event.target.text = ''
-			--labelFeedback.text = "waiting"
-
-		elseif event.phase == "ended" then
-		--labelFeedback.text = "Thank you" .. " " .. event.target.text
-		elseif event.phase == "Submitted" then
-		--	labelFeedback.text = "Hello".. " " .. event.target.text
-		--elseif event.phase == "editing" then
-		--	labelFeedback.text = event.startPosition 
+		textNote = native.newTextField(382, 520, 500, 660)
+		textNote:addEventListener("userInput", fieldHandler(function() return textNote end))
+		textNote.size = 20
+		function textNote:userInput(event)
+			if event.phase == "began" then
+				event.target.text = ''
+			elseif event.phase == "ended" then
+				note = event.target.text
+			elseif event.phase == "Submitted" then 
 			end
-	end
+		end
 		textNote:addEventListener("userInput", textNote)
-	
-end
+	end
 end
 
 
@@ -146,8 +132,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textNote:removeSelf()
-		textNote = nil
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
@@ -161,6 +145,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textNote:removeSelf()
+	textNote = nil
 
 end
 

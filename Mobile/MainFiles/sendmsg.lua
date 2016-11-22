@@ -38,9 +38,8 @@ local function fieldHandler( textField )
 	end
 end
 
-local function backtoChoice(sceneGroup)
+local function backtoChoice(event)
 	local options = {
-		parent = sceneGroup,
 		effect = "slideRight",
 		time = 300,
 		params = {
@@ -50,8 +49,8 @@ local function backtoChoice(sceneGroup)
 			gid = gid
 		}
 	}
-	timer.cancel(timerperform)
-	composer.removeScene("choice")
+	-- timer.cancel(timerperform)
+	composer.removeScene("sendmsg")
     composer.gotoScene( "choice", options)
 end
 
@@ -98,10 +97,6 @@ function scene:show(event)
 
 	local sceneGroup = self.view
 	local phase = event.phase
-
-	local scrollGroup = display.newGroup()
-	sceneGroup:insert(scrollGroup)
-
 	local scrollView = widget.newScrollView(
 	   {
 	        x = display.contentCenterX,
@@ -112,6 +107,8 @@ function scene:show(event)
 	        listener = scrollListener
 	    }
 	)
+	local scrollGroup = display.newGroup()
+	sceneGroup:insert(scrollGroup)
 	sceneGroup:insert(scrollView)
 
 	if ( phase == "will" ) then
@@ -121,7 +118,6 @@ function scene:show(event)
 		-- Code here runs when the scene is entirely on screen
 		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
 		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
-		sceneGroup:insert(textMessage)
 		textMessage.placeholder = "Message"
 		textMessage.size = 40;
 
@@ -207,7 +203,7 @@ function scene:show(event)
 			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 		end
 
-		timerperform = timer.performWithDelay(500, reloadMessage, 0)	
+		timerperform = timer.performWithDelay(1000, reloadMessage, 0)	
 		textMessage:addEventListener("userInput", textMessage)
 	end
 end
@@ -220,8 +216,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textMessage:removeSelf()
-		textMessage = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end
@@ -233,6 +227,9 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	timer.cancel(timerperform)
+	textMessage:removeSelf()
+	textMessage = nil
 
 end
 

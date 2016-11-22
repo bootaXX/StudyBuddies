@@ -46,32 +46,25 @@ local function onComplete( event )
 end
 
 local function gotoCreateGroupChat()
-	composer.removeScene( "creategroupchat" )
 	local options = {
-		effect = "crossFade",
+		effect = "fromBottom",
 		time = 300,
 		params = {
 			uid = uid,
 			username = username
 		}
 	}
-	timer.pause(timerperform)
-	composer.removeScene("creategroupchat")
+	composer.removeScene("viewgroup")
     composer.gotoScene( "creategroupchat", options)
 end
 
 local function logout(sceneGroup)
 	local options = {
 		parent = sceneGroup,
-		effect = "crossFade",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username
-		}
+		effect = "fade",
+		time = 200
 	}
-	timer.cancel(timerperform)
-	composer.removeScene("menu")
+	composer.removeScene("viewgroup")
     composer.gotoScene( "menu", options)
 end
 
@@ -124,8 +117,7 @@ function scene:create( event )
 								gid = gid
 							}
 						}
-						timer.cancel(timerperform)
-						composer.removeScene("choice")
+						composer.removeScene("viewgroup")
 						composer.gotoScene("choice", options)
 					end
 				end
@@ -170,7 +162,6 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 		textJoinGroup = native.newTextField(300, 875, 400, 65)
 		textJoinGroup:addEventListener("userInput", fieldHandler(function() return textJoinGroup end))
-		sceneGroup:insert( textJoinGroup )
 		textJoinGroup.size = 38
 		textJoinGroup.placeholder = "Groupname"
 		textJoinGroup:addEventListener("userInput", textJoinGroup)
@@ -217,21 +208,18 @@ function scene:show( event )
 					if(decodedresponse2.chat[checker].groupname ~= decodedresponse1.chat[checker].groupname) then
 						timer.cancel(timerperform)
 						local options = {
-							parent = sceneGroup,
-							time = 300,
 							params = {
 								uid = uid,
 								username = username
 							}
 						}
-						timer.cancel(timerperform)
 						composer.removeScene("viewgroup")
 					    composer.gotoScene( "viewgroup", options)
 					end
 				end
 			end
 		end
-		timerperform = timer.performWithDelay(1000, reloadGroups, 0)
+		timerperform = timer.performWithDelay(2000, reloadGroups, 0)
 	end
 end
 
@@ -244,8 +232,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textJoinGroup:removeSelf()
-		textJoinGroup = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	end
@@ -257,6 +243,9 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	timer.cancel(timerperform)
+	textJoinGroup:removeSelf()
+	textJoinGroup = nil
 
 end
 

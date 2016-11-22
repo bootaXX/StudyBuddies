@@ -17,7 +17,7 @@ local function handleButtonEventTimeline( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "fromRight",
 			time = 300,
 			params = {
 				uid = uid,
@@ -26,7 +26,6 @@ local function handleButtonEventTimeline( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("timeline")
 		composer.gotoScene("timeline", options)
 	end
 end
@@ -36,7 +35,7 @@ local function handleButtonEventSendMessage( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "fromRight",
 			time = 300,
 			params = {
 				uid = uid,
@@ -45,7 +44,6 @@ local function handleButtonEventSendMessage( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("sendmsg")
 		composer.gotoScene("sendmsg", options)
 	end
 end
@@ -55,7 +53,7 @@ local function handleButtonEventPostQuestion( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "fromRight",
 			time = 300,
 			params = {
 				uid = uid,
@@ -64,7 +62,6 @@ local function handleButtonEventPostQuestion( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("question")
 		composer.gotoScene("question", options)
 	end
 end
@@ -81,7 +78,7 @@ local function handleButtonEventGoBack( event )
 				username = username
 			}
 		}
-		composer.removeScene("viewgroup")
+		composer.removeScene("choice")
 		composer.gotoScene("viewgroup", options)
 	end
 end
@@ -108,14 +105,13 @@ local function handleButtonEventNewNote( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "fromRight",
 			time = 300,
 			params = {
 				uid = uid,
 				username = username
 			}
 		}
-		composer.removeScene("newnote")
 		composer.gotoScene("newnote", options)
 	end
 end
@@ -228,6 +224,7 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
+		print(username)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen

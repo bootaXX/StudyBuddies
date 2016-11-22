@@ -40,12 +40,13 @@ local function gotoWelcome()
 	-- network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
 	network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
 
+	composer.removeScene("register")
 	composer.gotoScene("menu", { time=300, effect="crossFade" })
 end
 
 local function goBack()
-	composer.removeScene("menu")
-	composer.gotoScene("menu", { time=300, effect="crossFade" })
+	composer.removeScene("register")
+	composer.gotoScene("menu", { time=300, effect="slideRight" })
 end
 
 local function gotoCheck()
@@ -178,25 +179,21 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 		textFirstname = native.newTextField(375, 370, 500, 60)
 		textFirstname:addEventListener("userInput", fieldHandler(function() return textFirstname end))
-		sceneGroup:insert( textFirstname )
 		textFirstname.size = 38
 		textFirstname.placeHolder = "First name"
 
 		textLastname= native.newTextField(375, 510, 500, 60)
 		textLastname:addEventListener("userInput", fieldHandler(function() return textLastname end))
-		sceneGroup:insert( textLastname )
 		textLastname.size = 38
 		textLastname.placeHolder = "Last name"
 
 		textEmail = native.newTextField(375, 650, 500, 60)
 		textEmail:addEventListener("userInput", fieldHandler1(function() return textEmail end))
-		sceneGroup:insert( textEmail )
 		textEmail.size = 38
 		textEmail.placeHolder = "Username"
 
 		textPasswords = native.newTextField(375, 790, 500, 60)
 		textPasswords:addEventListener("userInput", fieldHandler1(function() return textPasswords end))
-		sceneGroup:insert( textPasswords )
 		textPasswords.size = 38
 		textPasswords.isSecure = true
 		textPasswords.placeHolder = "Password"
@@ -273,14 +270,6 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		textEmail:removeSelf()
-		textEmail = nil
-		textPasswords:removeSelf()
-		textPasswords = nil
-		textFirstname:removeSelf()
-		textFirstname = nil
-		textLastname:removeSelf()
-		textLastname = nil
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 	
@@ -292,6 +281,14 @@ end
 function scene:destroy( event )
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textEmail:removeSelf()
+	textEmail = nil
+	textPasswords:removeSelf()
+	textPasswords = nil
+	textFirstname:removeSelf()
+	textFirstname = nil
+	textLastname:removeSelf()
+	textLastname = nil
 
 end
 
