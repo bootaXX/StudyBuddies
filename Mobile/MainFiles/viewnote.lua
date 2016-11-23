@@ -40,7 +40,7 @@ function scene:create (event)
 
 	local sceneGroup = self.view
 
-	local background = display.newImageRect (sceneGroup, "background.jpg", display.viewableContentWidth, display.viewableContentHeight)
+	local background = display.newImageRect (sceneGroup, "background.png", display.viewableContentWidth, display.viewableContentHeight)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
@@ -66,7 +66,6 @@ function scene:show ( event )
 	elseif ( phase == "did" ) then 
 
 		local options = {
-			parent = sceneGroup,
 			x = display.contentCenterX,
 			y = display.contentCenterY,
 			fontSize = 16,

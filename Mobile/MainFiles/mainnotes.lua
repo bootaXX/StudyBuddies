@@ -73,8 +73,8 @@ local function handleButtonEventViewNote( event )
 				gid = gid
 			}
 		}
-		composer.removeScene("viewnotes")
-		composer.gotoScene("newnote", options)
+		composer.removeScene("mainnotes")
+		composer.gotoScene("viewnote", options)
 	end
 end
 
