@@ -25,14 +25,14 @@ local function backtoViewGroup( event )
 
 	if "ended" == phase then
 		local options = {
-			effect = "crossFade",
+			effect = "slideRight",
 			time = 300,
 			params = {
 				uid = uid,
 				username = username
 			}
 		}
-		composer.removeScene("viewgroup")
+		composer.removeScene("verifygroup")
 		composer.gotoScene("viewgroup", options)
 	end
 end
@@ -118,7 +118,7 @@ function scene:create( event )
 					local replymessage = reply.callback
 
 					if(replymessage == "invalid") then
-						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
+						local alert = native.showAlert("Error Input", "Invalid Password", {"Ok"}, onComplete)
 					else
 						local options = {
 							effect = "fromRight",
@@ -130,11 +130,12 @@ function scene:create( event )
 								gid = gid
 							}
 						}
-						composer.removeScene("choice")
+						composer.removeScene("verifygroup")
 						composer.gotoScene("choice", options)
 					end
 				end
 			end
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
 			network.request( ("http://localhost:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
 		end
 	end
@@ -173,7 +174,6 @@ function scene:show( event )
 
 		textPassword = native.newTextField(450, 400, 350, 50)
 		textPassword:addEventListener("userInput", fieldHandler(function() return textPassword end))
-		sceneGroup:insert( textPassword )
 		textPassword.size = 30
 		textPassword.isSecure = true
 		textPassword.placeholder = "Password"
@@ -201,9 +201,6 @@ function scene:hide( event )
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 
-		textPassword:removeSelf()
-		textPassword = nil
-
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 
@@ -216,6 +213,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textPassword:removeSelf()
+	textPassword = nil
 
 end
 

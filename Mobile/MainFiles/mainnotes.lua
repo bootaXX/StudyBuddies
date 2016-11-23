@@ -3,70 +3,81 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
 local json = require("json")
-
-local textNote
 local username
+local gid
 local uid
 local groupname
-local gidsent
-local note
-local textTitle
-local titlet
+local textChooseNote
+local notetitle
+local decodedresponse1
+local response1
+local dgroupname
 
-local function goMenu()
-	local options = {
-		effect = "slideRight",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username,
-			groupname = groupname,
-			gid = gidsent
-		}
-	}
-	composer.removeScene("newnote")
-    composer.gotoScene( "mainnotes", options)
-end
+local function handleButtonEvent( event )
+	local phase = event.phase
 
-local function handleCreateNote(event)
-	if(event.phase == "ended") then
-		local function networkListener( event)
-			if(event.isError) then
-				print( "Network error: ",event.response )
-			else
-				local reply = json.decode(event.response)
-				local replyvalidation = reply.validation
-				local replymessage = reply.message
-
-				if(replyvalidation == "invalid") then
-					local alert = native.showAlert("Error Input", replymessage, {"Ok"}, onComplete)
-				else
-					local alert2 = native.showAlert( "Successful", replymessage , {"Ok"},onComplete)
-					print( "Response: ",event.response )
-					local options = {
-						effect = "slideRight",
-						time = 300,
-						params = {
-							uid = uid,
-							username = username,
-							groupname = groupname,
-							gid = gidsent
-						}
-					}
-				end
-				composer.removeScene("newnote")
-			    composer.gotoScene( "mainnotes", options)
-			end
-		end
-		local params = {}
-		print(gidsent)
-		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username
-
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
-		network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
-
+	if "ended" == phase then
+		print("you pressed and released a button")
 	end
 end
+
+local function handleButtonEventgoBack( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
+		}
+		composer.removeScene("mainnotes")
+		composer.gotoScene("choice", options)
+	end
+end
+
+local function handleButtonEventCreateNote( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "fromRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
+		}
+		composer.removeScene("mainnotes")
+		composer.gotoScene("newnote", options)
+	end
+end
+
+local function handleButtonEventViewNote( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "fromRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
+		}
+		composer.removeScene("viewnotes")
+		composer.gotoScene("newnote", options)
+	end
+end
+
 local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
@@ -95,10 +106,23 @@ local myPost = widget.newButton
 	height = 75,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "CREATE",
-	onEvent = handleCreateNote,
+	fontSize = 30,
+	label = "ADD NOTES",
+	onEvent = handleButtonEventCreateNote,
 }
 
+local myViewNote = widget.newButton
+{
+	left = 520,
+	top = 800,
+	width = 150,
+	height = 75,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	fontSize = 30,
+	label = "View",
+	onEvent = handleButtonEventViewNote,
+}
 
 local myBack = widget.newButton
 {
@@ -108,38 +132,34 @@ local myBack = widget.newButton
 	height = 45,
 	defaultFile = "back.png",
 	overFile = "back2.png",
-	onEvent = goMenu,
+	onEvent = handleButtonEventgoBack,
 }
 
 function scene:create( event )
 
 	local sceneGroup = self.view
 	
-	uid = event.params.uid
 	username = event.params.username
-	gidsent = event.params.gid
+	gid = event.params.gid
+	uid = event.params.uid
 	groupname = event.params.groupname
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "notes.png", 500, 80 )
 	title.x = display.contentCenterX
-	title.y = 150
+	title.y = 150	
 
-	local notetitle = display.newText( sceneGroup, "Title: ", 200, 250 ,native.systemFont, 30 )
-	
 	sceneGroup:insert( myPost )
+	sceneGroup:insert( myViewNote )
 	sceneGroup:insert( myBack )
-
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end
-
 	background:addEventListener("tap", background)
-	
 end
 
 
@@ -154,38 +174,40 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		
-		textTitle = native.newTextField(450, 250, 300, 50)
-		textTitle:addEventListener("userInput", fieldHandler(function() return textTitle end))
-		sceneGroup:insert( textTitle )
-		textTitle.placeholder = "Title"
-		textTitle:addEventListener("userInput", textTitle)
+		textNoteQuestion = native.newTextField(300, 835, 400, 72)
+		textNoteQuestion:addEventListener("userInput", fieldHandler(function() return textNoteQuestion end))
+		textNoteQuestion.size = 38
+		textNoteQuestion.placeholder = "Note Title"
+		textNoteQuestion:addEventListener("userInput", textNoteQuestion)
 
-
-		function textTitle:userInput(event)
+		function textNoteQuestion:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif event.phase == "ended" then
-				titlet = event.target.text
+				notetitle = event.target.text
+				print(notetitle)
 			elseif event.phase == "Submitted" then
 			end
 		end
 
-		textNote = native.newTextBox(382, 600, 500, 560)
-		textNote.isEditable = true
-		textNote.size = 20
-
-		function textNote:userInput(event)
-			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				note = event.target.text
-				print("ended: "..note)
-			elseif event.phase == "Submitted" then 
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				decodedresponse1 = json.decode(event.response)
+				local i=1
+				while decodedresponse1.title[i] do
+					response1 = decodedresponse1.title[i].title
+					dgroupname = display.newText( sceneGroup, response1, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
+					sceneGroup:insert( dgroupname )
+					i = i+1
+				end
+				checker = i
 			end
 		end
-		textNote:addEventListener("userInput", textNote)
-		
+
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewlistnotes/"..gid), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/viewlistnotes/"..gid), "GET", networkListener)
 	end
 end
 
@@ -211,8 +233,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-	textNote:removeSelf()
-	textNote = nil
+	textNoteQuestion:removeSelf()
+	textNoteQuestion = nil
 
 end
 

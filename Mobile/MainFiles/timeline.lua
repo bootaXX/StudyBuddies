@@ -47,6 +47,21 @@ local function handleButtonEventToAnswerQuestion( event )
 	composer.gotoScene("answerquestion", options)
 end
 
+local function gotoCreateQuestion(event)
+	local options = {
+		effect = "fromRight",
+		time = 300,
+		params = {
+			uid = uid,
+			username = username,
+			groupname = groupname,
+			gid = gid
+		}
+	}
+	composer.removeScene("timeline")
+	composer.gotoScene("question", options)
+end
+
 local myBack = widget.newButton
 {
 	left = 125,
@@ -68,6 +83,19 @@ local answerQuestionButton = widget.newButton
 	fontSize = 25,
 	fillColor = { default={ 1, 0.5, 0.5, 0.5 }, over={ 1, 0.2, 0.5, 1 } },
 	onEvent = handleButtonEventToAnswerQuestion
+}
+
+local addQuestion = widget.newButton
+{
+	left = 250,
+	top = 900,
+	width = 250,
+	height = 65,
+	fontSize = 25,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "ADD QUESTION",
+	onEvent = gotoCreateQuestion,
 }
 
 local function fieldHandler( textField )
@@ -104,6 +132,7 @@ function scene:create( event )
 
 	sceneGroup:insert(answerQuestionButton)
 	sceneGroup:insert(myBack)
+	sceneGroup:insert(addQuestion)
 	background:addEventListener("tap", background)
 	
 end
@@ -119,7 +148,7 @@ function scene:show( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then
-		textChooseQuestion = native.newTextField(300, 875, 400, 65)
+		textChooseQuestion = native.newTextField(300, 875, 400, 60)
 		textChooseQuestion:addEventListener("userInput", fieldHandler(function() return textChooseQuestion end))
 		textChooseQuestion.size = 38
 		textChooseQuestion.placeholder = "Subject"

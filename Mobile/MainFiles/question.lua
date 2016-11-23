@@ -31,7 +31,7 @@ local function goBack()
 		}
 	}
 	composer.removeScene("question")
-	composer.gotoScene("choice", options)
+	composer.gotoScene("timeline", options)
 end
 
 local function postQuestion( event )
@@ -46,10 +46,22 @@ local function postQuestion( event )
 		print("postQuestion")
 		local params = {}
 		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+
+		local options = {
+		effect = "crossFade",
+		time = 300,
+		params = {
+			uid = uid,
+			username = username,
+			groupname = groupname,
+			gid = gid
+		}
+		}
+		composer.removeScene("question")
+		composer.gotoScene("timeline", options)
 	end
-	goBack()
 end
 
 local function fieldHandler( textField )

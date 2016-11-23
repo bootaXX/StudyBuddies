@@ -97,25 +97,17 @@ function scene:show(event)
 
 	local sceneGroup = self.view
 	local phase = event.phase
-	local scrollView = widget.newScrollView(
-	   {
-	        x = display.contentCenterX,
-	        y = display.contentCenterY * 0.95,
-	        width = display.viewableContentWidth * 0.8,
-	        height = display.viewableContentHeight * 0.7,
-	        horizontalScrollDisabled = true,
-	        listener = scrollListener
-	    }
-	)
-	local scrollGroup = display.newGroup()
-	sceneGroup:insert(scrollGroup)
-	sceneGroup:insert(scrollView)
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		local sendmessage = native.newTextBox(382, 450, 500, 560)
+		sendmessage.isEditable = false
+		sendmessage.size = 20
+		sceneGroup:insert(sendmessage)
+
 		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
 		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
 		textMessage.placeholder = "Message"
@@ -161,25 +153,6 @@ function scene:show(event)
 		)
 		sceneGroup:insert(sendmessageButton)
 
-		function loadMessages(message)
-			local options = {
-				parent =sceneGroup,
-				text = message,
-				y = display.screenOriginY + 230,
-				x = display.viewableContentHeight * 0.3,
-				anchorX = display.viewableContentWidth * 0.5,
-				anchorY = display.viewableContentHeight * 0.5,
-				font =native.systemFont,
-				fontSize = 30
-			}
-			messageText = display.newText(options)
-			messageText:setFillColor(1,0,0)
-
-			scrollGroup:insert(messageText)
-			scrollView:insert(scrollGroup)
-		end
-
-
 		local function reloadMessage( event )
 			-- body
 			local decres2
@@ -193,8 +166,7 @@ function scene:show(event)
 					length = decres2.lines
 					lddmessage = decres2.message
 					if(length ~= i) then
-						display.remove(messageText)
-						loadMessages(lddmessage)
+						sendmessage.text = lddmessage
 					end
 				end
 			end

@@ -1,5 +1,0 @@
-gname6
-*******************************************
-uname6: hello
-uname3: hi
-uname6: yey 

@@ -48,24 +48,6 @@ local function handleButtonEventSendMessage( event )
 	end
 end
 
-local function handleButtonEventPostQuestion( event )
-	local phase = event.phase
-
-	if "ended" == phase then
-		local options = {
-			effect = "fromRight",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid
-			}
-		}
-		composer.gotoScene("question", options)
-	end
-end
-
 local function handleButtonEventGoBack( event )
 	local phase = event.phase
 
@@ -101,7 +83,7 @@ local function handleButtonEventGoToCalendar( event )
 	-- end
 end
 
-local function handleButtonEventNewNote( event )
+local function handleButtonEventNotes( event )
 	local phase = event.phase
 
 	if "ended" == phase then
@@ -111,10 +93,11 @@ local function handleButtonEventNewNote( event )
 			params = {
 				uid = uid,
 				username = username,
-				gid = gid
+				gid = gid,
+				groupname = groupname
 			}
 		}
-		composer.gotoScene("newnote", options)
+		composer.gotoScene("mainnotes", options)
 	end
 end
 ------------------------------------------------------------------------------------------------------------------------
@@ -123,61 +106,51 @@ local myTimeline = widget.newButton
 	left = 200,
 	top = 300,
 	width = 350,
-	height = 50,
+	height = 80,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "TIMELINE",
+	label = "QUESTIONS",
+	fontSize = 30,
 	onEvent = handleButtonEventTimeline
 }
-
 local myMessage = widget.newButton
 {
 	left = 200,
-	top = 360,
+	top = 390,
 	width = 350,
-	height = 50,
+	height = 80,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "SEND MESSAGE",
+	label = "MESSAGES",
+	fontSize = 30,
 	onEvent = handleButtonEventSendMessage
 }
-local myPost = widget.newButton
-{
-	left = 200,
-	top = 420,	
-	width = 350,
-	height = 50,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "POST QUESTION",
-	onEvent = handleButtonEventPostQuestion
-}
-
 local myCalendar = widget.newButton
 {
 	left = 200,
 	top = 480,	
 	width = 350,
-	height = 50,
+	height = 80,
 	defaultFile = "default.png",
 	overFile = "over.png",
 	label = "CALENDAR",
+	fontSize = 30,
 	onEvent = handleButtonEventGoToCalendar,
 
 }
 local myCreateNotes = widget.newButton
 {
 	left = 200,
-	top = 540,	
+	top = 570,	
 	width = 350,
-	height = 50,
+	height = 80,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "CREATE NOTES",
-	onEvent = handleButtonEventNewNote,
+	label = "NOTES",
+	fontSize = 30,
+	onEvent = handleButtonEventNotes,
 
 }
-
 local myBack = widget.newButton
 {
 	left = 125,
@@ -208,7 +181,6 @@ function scene:create( event )
 
 	sceneGroup:insert( myTimeline )
 	sceneGroup:insert( myMessage )
-	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
 	sceneGroup:insert( myCalendar )
 	sceneGroup:insert( myCreateNotes )

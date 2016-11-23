@@ -106,26 +106,16 @@ function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 
-	local scrollGroup = display.newGroup()
-	sceneGroup:insert(scrollGroup)
-
-	local scrollView = widget.newScrollView(
-	   {
-	        x = display.contentCenterX,
-	        y = display.contentCenterY * 0.95,
-	        width = display.viewableContentWidth * 0.8,
-	        height = display.viewableContentHeight * 0.7,
-	        horizontalScrollDisabled = true,
-	        listener = scrollListener
-	    }
-	)
-	sceneGroup:insert(scrollView)
-
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		local answertext = native.newTextBox(382, 450, 500, 560)
+		answertext.isEditable = false
+		answertext.size = 20
+		sceneGroup:insert(answertext)
+
 		textAnswerBox = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
 		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
 		textAnswerBox.placeholder = "Answer"
@@ -153,8 +143,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "answersent="..answer.."&subjectsent="..subject.."&usernamesent="..username
-				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
-				network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
 			end
 		end
 
@@ -172,25 +162,6 @@ function scene:show(event)
 		)
 		sceneGroup:insert(sendanswerButton)
 
-		local function loadQuestionAndAnswer(answer)
-			local options = {
-				parent =sceneGroup,
-				text = answer,
-				y = display.screenOriginY + 230,
-				x = display.viewableContentHeight * 0.3,
-				anchorX = display.viewableContentWidth * 0.5,
-				anchorY = display.viewableContentHeight * 0.5,
-				font =native.systemFont,
-				fontSize = 30
-			}
-			messageText = display.newText(options)
-			messageText:setFillColor(1,0,0)
-
-			scrollGroup:insert(messageText)
-			scrollView:insert(scrollGroup)
-		end
-
-
 		local function reloadQuestionAndAnswer( event )
 			-- body
 			local decres2
@@ -204,13 +175,12 @@ function scene:show(event)
 					length = decres2.lines
 					lddmessage = decres2.answers
 					if(length ~= i) then
-						display.remove(messageText)
-						loadQuestionAndAnswer(lddmessage)
+						answertext.text = lddmessage
 					end
 				end
 			end
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
 		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
 	end
