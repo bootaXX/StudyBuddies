@@ -43,17 +43,17 @@ local function handleCreateNote(event)
 				else
 					local alert2 = native.showAlert( "Successful", replymessage , {"Ok"},onComplete)
 					print( "Response: ",event.response )
-					local options = {
-						effect = "slideRight",
-						time = 300,
-						params = {
-							uid = uid,
-							username = username,
-							groupname = groupname,
-							gid = gidsent
-						}
-					}
 				end
+				local options = {
+					effect = "slideRight",
+					time = 300,
+					params = {
+						uid = uid,
+						username = username,
+						groupname = groupname,
+						gid = gidsent
+					}
+				}
 				composer.removeScene("newnote")
 			    composer.gotoScene( "mainnotes", options)
 			end
@@ -132,6 +132,7 @@ function scene:create( event )
 	
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
+	sceneGroup:insert( notetitle )
 
 
 	function  background:tap(event)
@@ -154,13 +155,11 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		
 		textTitle = native.newTextField(450, 250, 300, 50)
 		textTitle:addEventListener("userInput", fieldHandler(function() return textTitle end))
 		sceneGroup:insert( textTitle )
 		textTitle.placeholder = "Title"
 		textTitle:addEventListener("userInput", textTitle)
-
 
 		function textTitle:userInput(event)
 			if event.phase == "began" then
@@ -211,6 +210,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textTitle:removeSelf()
+	textTitle = nil
 	textNote:removeSelf()
 	textNote = nil
 

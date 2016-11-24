@@ -7,7 +7,6 @@ local username
 local gid
 local uid
 local groupname
-local textChooseNote
 local notetitle
 local decodedresponse1
 local response1
@@ -60,22 +59,18 @@ local function handleButtonEventCreateNote( event )
 end
 
 local function handleButtonEventViewNote( event )
-	local phase = event.phase
-
-	if "ended" == phase then
-		local options = {
-			effect = "fromRight",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid
-			}
+	local options = {
+		effect = "fromRight",
+		time = 300,
+		params = {
+			uid = uid,
+			username = username,
+			groupname = groupname,
+			gid = gid
 		}
-		composer.removeScene("mainnotes")
-		composer.gotoScene("viewnote", options)
-	end
+	}
+	composer.removeScene("mainnotes")
+	composer.gotoScene("viewnote", options)
 end
 
 local function fieldHandler( textField )
@@ -111,19 +106,6 @@ local myPost = widget.newButton
 	onEvent = handleButtonEventCreateNote,
 }
 
-local myViewNote = widget.newButton
-{
-	left = 520,
-	top = 800,
-	width = 150,
-	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	fontSize = 30,
-	label = "View",
-	onEvent = handleButtonEventViewNote,
-}
-
 local myBack = widget.newButton
 {
 	left = 125,
@@ -153,7 +135,6 @@ function scene:create( event )
 	title.y = 150	
 
 	sceneGroup:insert( myPost )
-	sceneGroup:insert( myViewNote )
 	sceneGroup:insert( myBack )
 
 	function  background:tap(event)
@@ -169,26 +150,51 @@ function scene:show( event )
 	local sceneGroup = self.view
 	local phase = event.phase
 
+	local group = display.newGroup()
+	sceneGroup:insert(group)
+
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		textNoteQuestion = native.newTextField(300, 835, 400, 72)
-		textNoteQuestion:addEventListener("userInput", fieldHandler(function() return textNoteQuestion end))
-		textNoteQuestion.size = 38
-		textNoteQuestion.placeholder = "Note Title"
-		textNoteQuestion:addEventListener("userInput", textNoteQuestion)
+		local function onRowRender ( event )
+			local row = event.row
+			local rowSize = 24
+			local rowHeight = row.height / 2
 
-		function textNoteQuestion:userInput(event)
-			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				notetitle = event.target.text
-				print(notetitle)
-			elseif event.phase == "Submitted" then
+			local options_id = {
+				parent = row,
+				text = response1,
+				x = 30,
+				y = rowHeight + 40,
+				fontSize = 25
+			}
+			rowTitle = display.newText ( options_id )
+			rowTitle:setTextColor( 0, 0, 0 )
+			rowTitle.anchorX = 0
+			rowTitle.y = rowHeight * 0.85
+		end
+
+		local function onRowTouch( event )
+			local phase = event.phase
+			local row = event.target
+
+			if "press" == phase then
+				handleButtonEventViewNote(event)
 			end
 		end
+
+
+		local myTable = widget.newTableView {
+			width = display.viewableContentWidth * 0.7,
+			height = display.viewableContentHeight * 0.50,
+			x = display.contentCenterX,
+			y = 450,
+			onRowRender = onRowRender,
+			onRowTouch = onRowTouch
+		}
+		group:insert(myTable)
 
 		local function networkListener( event )
 			if ( event.isError ) then
@@ -198,9 +204,8 @@ function scene:show( event )
 				local i=1
 				while decodedresponse1.title[i] do
 					response1 = decodedresponse1.title[i].title
-					dgroupname = display.newText( sceneGroup, response1, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
-					sceneGroup:insert( dgroupname )
-					i = i+1
+					myTable:insertRow{}
+					i = i+1	
 				end
 				checker = i
 			end
@@ -232,8 +237,6 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-	textNoteQuestion:removeSelf()
-	textNoteQuestion = nil
 
 end
 
