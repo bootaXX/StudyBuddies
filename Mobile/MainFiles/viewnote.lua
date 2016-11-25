@@ -1,10 +1,17 @@
 local composer = require ("composer")
 local scene = composer.newScene()
 local widget = require ("widget")
+local json = require("json")
 
 local sampNote
 local titlee
-
+local note
+local uid
+local username
+local groupname
+local gid
+local rowIndex
+local decresponse
 ---------------------------------------------------------------------------------------------------------
 local function handleButtonEventGoBack( event )
 	local phase = event.phase
@@ -40,14 +47,19 @@ function scene:create (event)
 
 	local sceneGroup = self.view
 
+	uid = event.params.uid
+	username = event.params.username
+	groupname = event.params.groupname
+	gid = event.params.gid
+	rowIndex = event.params.rowIndex
+
 	local background = display.newImageRect (sceneGroup, "background.png", display.viewableContentWidth, display.viewableContentHeight)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 25)
+	titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 50)
 	sceneGroup:insert (titlee)
-
-		
+	sceneGroup:insert (myBack)
 		
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
@@ -64,18 +76,20 @@ function scene:show ( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then 
-
-		local options = {
-			x = display.contentCenterX,
-			y = display.contentCenterY,
-			fontSize = 16,
-			anchorX = 270,
-			text = note,
-			width = 220,
-		}
-		sampNote = display.newText ( options )
-		sceneGroup:insert (sampNote)
-	
+		textNote = native.newTextBox(382, 600, 500, 560)
+		textNote.isEditable = false
+		textNote.size = 20
+		local function networkListener( event )
+		    if ( event.isError ) then
+		        print( "Network error: ", event.response )
+		    else
+		        print ( "RESPONSE: " .. event.response )
+		        decresponse = json.decode(event.response)
+		        note = decresponse.notes[1].notes
+		        textNote.text = note
+		    end
+		end
+		network.request( "http://localhost:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
 	end
 end
 
@@ -100,6 +114,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	textNote:removeSelf()
+	textNote = nil
 
 end
 

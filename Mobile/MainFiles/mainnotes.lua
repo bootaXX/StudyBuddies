@@ -1,4 +1,3 @@
-
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
@@ -11,6 +10,7 @@ local notetitle
 local decodedresponse1
 local response1
 local dgroupname
+local currIndex
 
 local function handleButtonEvent( event )
 	local phase = event.phase
@@ -31,7 +31,8 @@ local function handleButtonEventgoBack( event )
 				uid = uid,
 				username = username,
 				groupname = groupname,
-				gid = gid
+				gid = gid,
+				currIndex = currIndex
 			}
 		}
 		composer.removeScene("mainnotes")
@@ -50,7 +51,8 @@ local function handleButtonEventCreateNote( event )
 				uid = uid,
 				username = username,
 				groupname = groupname,
-				gid = gid
+				gid = gid,
+				currIndex = currIndex
 			}
 		}
 		composer.removeScene("mainnotes")
@@ -58,7 +60,7 @@ local function handleButtonEventCreateNote( event )
 	end
 end
 
-local function handleButtonEventViewNote( event )
+local function handleButtonEventViewNote( event , rowIndex)
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -66,7 +68,8 @@ local function handleButtonEventViewNote( event )
 			uid = uid,
 			username = username,
 			groupname = groupname,
-			gid = gid
+			gid = gid,
+			rowIndex = rowIndex
 		}
 	}
 	composer.removeScene("mainnotes")
@@ -181,7 +184,7 @@ function scene:show( event )
 			local row = event.target
 
 			if "press" == phase then
-				handleButtonEventViewNote(event)
+				handleButtonEventViewNote(event, row.index)
 			end
 		end
 
@@ -207,7 +210,7 @@ function scene:show( event )
 					myTable:insertRow{}
 					i = i+1	
 				end
-				checker = i
+				currIndex = i
 			end
 		end
 		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewlistnotes/"..gid), "GET", networkListener)

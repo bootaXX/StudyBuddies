@@ -290,6 +290,7 @@ app.post("/studybuddies/postnotes", function(req,res){
 	var notes = req.body.notes;
 	var title =req.body.titlee;
 	var username = req.body.username;
+	var currIndex = req.body.currIndex;
 
 	if(notes=="" || title==""){
 		var reps = {
@@ -299,7 +300,7 @@ app.post("/studybuddies/postnotes", function(req,res){
 		return res.send(reps);
 	}
 	else{
-		client.query("insert into group_notes(groupid, title, notes, username) values ("+gid+",'"+title+"','"+notes+"','"+username+"');",function(err,result){
+		client.query("insert into group_notes(groupid, title, notes, username,rowIndex) values ("+gid+",'"+title+"','"+notes+"','"+username+"','"+currIndex+"');",function(err,result){
 			var reps = {
 				"message": "Successfully created notes.",
 				"validation":"valid"
@@ -312,11 +313,12 @@ app.post("/studybuddies/postnotes", function(req,res){
 });
 
 //view notes
-app.get("/studybuddies/groupchat/viewnotes/:gid/:titlee",function(req,res){
+app.get("/studybuddies/groupchat/viewnotes/:gid/:rowIndex",function(req,res){
 	var results = [];
 	var gid = req.params.gid;
-	var title = req.params.titlee;
-	var query = client.query("SELECT notes from group_notes where groupid = " + gid + "and title = '"+title+"';");
+	var rowIndex = req.params.rowIndex;
+	console.log(gid + "  " + rowIndex)
+	var query = client.query("SELECT notes from group_notes where groupid = " + gid +" and rowIndex = "+rowIndex+";");
 	query.on('row', (row) => {
     results.push(row);
     });

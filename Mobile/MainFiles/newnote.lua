@@ -12,6 +12,7 @@ local gidsent
 local note
 local textTitle
 local titlet
+local currIndex
 
 local function goMenu()
 	local options = {
@@ -60,7 +61,7 @@ local function handleCreateNote(event)
 		end
 		local params = {}
 		print(gidsent)
-		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username
+		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username.."&currIndex="..currIndex
 
 		-- network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
 		network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
@@ -119,6 +120,7 @@ function scene:create( event )
 	username = event.params.username
 	gidsent = event.params.gid
 	groupname = event.params.groupname
+	currIndex = event.params.currIndex
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
@@ -179,7 +181,6 @@ function scene:show( event )
 				event.target.text = ''
 			elseif event.phase == "ended" then
 				note = event.target.text
-				print("ended: "..note)
 			elseif event.phase == "Submitted" then 
 			end
 		end
