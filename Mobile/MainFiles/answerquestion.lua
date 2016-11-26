@@ -19,11 +19,12 @@ local groupname
 local gid
 local subject
 local loadedmessage
-local decres
 local messageText
 local timerperform
-local lengthoftext
 local UIGroup
+local currIndex
+local decres2
+local decres
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
@@ -82,8 +83,8 @@ function scene:create (event)
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	subject = event.params.subject
-
+	currIndex = event.params.currIndex
+	
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
 
@@ -111,6 +112,18 @@ function scene:show(event)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		local function networkListener2(event)
+			if(event.isError) then
+				print("Network error: ", event.response)
+			else
+				decres = json.decode(event.response)
+				subject = "Filipino"
+				print(decres)
+			end
+		end
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..currIndex), "GET", networkListener2)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..currIndex), "GET", networkListener2)
+
 		local answertext = native.newTextBox(382, 450, 500, 560)
 		answertext.isEditable = false
 		answertext.size = 20
@@ -143,8 +156,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "answersent="..answer.."&subjectsent="..subject.."&usernamesent="..username
-				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
-				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
 			end
 		end
 
@@ -179,8 +192,8 @@ function scene:show(event)
 					end
 				end
 			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
 		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
 	end

@@ -130,7 +130,6 @@ app.get("/studybuddies/groupchat/joinvalid/:gid/:uid/:password",function(req,res
 	client.query("select groupname from groupchat where password='"+password+"' and groupid="+gid+";",function(err,result){
 		console.log(result.rows);
 		if(result.rows == ""){
-			console.log("Here")
 			var reply = {
 				'callback' : "invalid"
 			}
@@ -202,19 +201,36 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 
 //post question
 app.post("/studybuddies/groupchat/postquestion",function(req,res){
-	console.log("Creating file for questions");
 	var gid = req.body.gid;
 	var question = req.body.question;
 	var subject =req.body.subject;
 	var answer = req.body.answer;
 	var username = req.body.username;
+	var rowIndex = req.body.currIndex;
 
-	client.query("insert into group_questions(groupid, subject, answer, username) values ('"+gid+"','"+subject+"','"+answer+"','"+username+"');");
+	client.query("insert into group_questions(groupid, subject, answer, username, rowindex) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+");");
 	console.log("Inserted question");
 	var data = question + " by: "+username+"\n"+"*******************************************";
+	console.log("Creating file for questions");
 	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
 		return res.send("Question written");
 	});
+});
+
+//get subject
+app.get("/studybuddies/groupchat/questions/getsubject/:gid/:currIndex", function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var currIndex = req.params.currIndex;
+	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+currIndex+";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'chat':results});
+      done();
+    });   
+	console.log("viewing questions..");
 });
 
 //load questions

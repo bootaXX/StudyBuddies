@@ -188,7 +188,6 @@ function scene:show( event )
 			end
 		end
 
-
 		local myTable = widget.newTableView {
 			width = display.viewableContentWidth * 0.7,
 			height = display.viewableContentHeight * 0.50,

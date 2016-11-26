@@ -7,12 +7,10 @@ local username
 local groupname
 local gid
 local textChooseQuestion
-local subject
 local response1
 local decodedresponse1
-local response2
-local decodedresponse2
 local UIGroup
+local currIndex
 UIGroup = display.newGroup()
 UIGroup.y = -5
 -----------------------------------------------------------------------------------------------------------------------
@@ -31,7 +29,7 @@ local function handleButtonEventGoBack(event)
 	composer.gotoScene("choice", options)
 end
 
-local function handleButtonEventToAnswerQuestion( event )
+local function handleButtonEventAnswerQuestion( event )
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -40,7 +38,8 @@ local function handleButtonEventToAnswerQuestion( event )
 			username = username,
 			groupname = groupname,
 			gid = gid,
-			subject = subject
+			subject = subject,
+			currIndex = currIndex
 		}
 	}
 	composer.removeScene("timeline")
@@ -55,7 +54,8 @@ local function gotoCreateQuestion(event)
 			uid = uid,
 			username = username,
 			groupname = groupname,
-			gid = gid
+			gid = gid,
+			currIndex = currIndex
 		}
 	}
 	composer.removeScene("timeline")
@@ -71,18 +71,6 @@ local myBack = widget.newButton
 	defaultFile = "back.png",
 	overFile = "back2.png",
 	onEvent = handleButtonEventGoBack
-}
-
-local answerQuestionButton = widget.newButton
-{
-	x = 600,
-	y = 875,
-	shape = "rect",
-	id = "answer",
-	label = "ANSWER",
-	fontSize = 25,
-	fillColor = { default={ 1, 0.5, 0.5, 0.5 }, over={ 1, 0.2, 0.5, 1 } },
-	onEvent = handleButtonEventToAnswerQuestion
 }
 
 local addQuestion = widget.newButton
@@ -130,7 +118,6 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 200
 
-	sceneGroup:insert(answerQuestionButton)
 	sceneGroup:insert(myBack)
 	sceneGroup:insert(addQuestion)
 	background:addEventListener("tap", background)
@@ -145,24 +132,48 @@ function scene:show( event )
 	local phase = event.phase
 	local checker
 
+	local group = display.newGroup()
+	sceneGroup:insert(group)
+
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then
-		textChooseQuestion = native.newTextField(300, 875, 400, 60)
-		textChooseQuestion:addEventListener("userInput", fieldHandler(function() return textChooseQuestion end))
-		textChooseQuestion.size = 38
-		textChooseQuestion.placeholder = "Subject"
-		textChooseQuestion:addEventListener("userInput", textChooseQuestion)
+		local function onRowRender ( event )
+			local row = event.row
+			local rowSize = 24
+			local rowHeight = row.height / 2
 
-		function textChooseQuestion:userInput(event)
-			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				subject = event.target.text
-				print(subject)
-			elseif event.phase == "Submitted" then
+			local options_id = {
+				parent = row,
+				text = response1,
+				x = 30,
+				y = rowHeight + 40,
+				fontSize = 25
+			}
+			rowTitle = display.newText ( options_id )
+			rowTitle:setTextColor( 0, 0, 0 )
+			rowTitle.anchorX = 0
+			rowTitle.y = rowHeight * 0.85
+		end
+
+		local function onRowTouch( event )
+			local phase = event.phase
+			local row = event.target
+
+			if "press" == phase then
+				handleButtonEventAnswerQuestion(event)
 			end
 		end
+
+		local myTable = widget.newTableView {
+			width = display.viewableContentWidth * 0.7,
+			height = display.viewableContentHeight * 0.50,
+			x = display.contentCenterX,
+			y = 480,
+			onRowRender = onRowRender,
+			onRowTouch = onRowTouch
+		}
+		group:insert(myTable)
 
 		local function networkListener( event )
 			if ( event.isError ) then
@@ -172,11 +183,10 @@ function scene:show( event )
 				local i=1
 				while decodedresponse1.chat[i] do
 					response1 = decodedresponse1.chat[i].subject
-					dgroupname = display.newText( sceneGroup, response1, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
-					sceneGroup:insert( dgroupname )
+					myTable:insertRow{}
 					i = i+1
 				end
-				checker = i
+				currIndex = i
 			end
 		end
 		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
@@ -205,8 +215,6 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-	textChooseQuestion:removeSelf()
-	textChooseQuestion = nil
 end
 
 
