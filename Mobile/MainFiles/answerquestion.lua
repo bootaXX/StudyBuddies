@@ -32,7 +32,7 @@ local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-250} )
+        transition.to( UIGroup, { time=100, y=-220} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -100,7 +100,18 @@ function scene:create (event)
 		native.setKeyboardFocus( nil )
 	end
 	sceneGroup:insert(myBack)
+	UIGroup:insert(myBack)
 	background:addEventListener("tap", background)
+	local function networkListener2(event)
+		if(event.isError) then
+			print("Network error: ", event.response)
+		else
+			decres = json.decode(event.response)
+			subject = decres.chat[1].subject
+		end
+	end
+	-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
+	network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
 end
 
 function scene:show(event)
@@ -112,27 +123,18 @@ function scene:show(event)
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		local function networkListener2(event)
-			if(event.isError) then
-				print("Network error: ", event.response)
-			else
-				decres = json.decode(event.response)
-				subject = decres.chat[1].subject
-			end
-		end
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
-
-		local answertext = native.newTextBox(382, 450, 500, 560)
+		local answertext = native.newTextBox(382, 500, 500, 560)
 		answertext.isEditable = false
 		answertext.size = 20
 		sceneGroup:insert(answertext)
+		UIGroup:insert(answertext)
 
-		textAnswerBox = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
+		textAnswerBox = native.newTextField(_W * 0.50, _H * 0.875, _W * 0.64, _H * 0.065)
 		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
 		textAnswerBox.placeholder = "Answer"
 		textAnswerBox.size = 40;
 		textAnswerBox:addEventListener("userInput", textAnswerBox)
+		UIGroup:insert(textAnswerBox)
 
 		function textAnswerBox:userInput(event)
 			if event.phase == "began" then
@@ -163,7 +165,7 @@ function scene:show(event)
 		local sendanswerButton = widget.newButton(
 			{
 				x = 600,
-				y = 920,
+				y = _H * 0.875,
 				shape = "rect",
 				id = "sendbutton",
 				label = "Send",
@@ -173,6 +175,7 @@ function scene:show(event)
 			}
 		)
 		sceneGroup:insert(sendanswerButton)
+		UIGroup:insert(sendanswerButton)
 
 		local function reloadQuestionAndAnswer( event )
 			-- body
@@ -219,6 +222,8 @@ function scene:destroy( event )
 	-- Code here runs prior to the removal of scene's view
 	textAnswerBox:removeSelf()
 	textAnswerBox = nil
+	UIGroup:removeSelf()
+	UIGroup = nil
 
 end
 

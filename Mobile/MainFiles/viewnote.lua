@@ -41,6 +41,16 @@ local myBack = widget.newButton
 	overFile = "back2.png",
 	onEvent = handleButtonEventGoBack
 }
+local export = widget.newButton
+{
+	left = 600,
+	top = 50,
+	width = 50,
+	height = 45,
+	defaultFile = "back.png",
+	overFile = "back2.png",
+	onEvent = handleButtonEventGoBack
+}
 ----------------------------------------------------------------------------------------------------------
 
 function scene:create (event)
@@ -60,6 +70,7 @@ function scene:create (event)
 	titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 50)
 	sceneGroup:insert (titlee)
 	sceneGroup:insert (myBack)
+	sceneGroup:insert (export)
 		
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )

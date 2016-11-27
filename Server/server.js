@@ -222,7 +222,7 @@ app.get("/studybuddies/groupchat/questions/getsubject/:gid/:rowIndex", function(
 	var results = [];
 	var gid = req.params.gid;
 	var rowIndex = req.params.rowIndex;
-	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+(rowIndex-1)+";");
+	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+rowIndex+";");
 	query.on('row', (row) => {
     results.push(row);
     });

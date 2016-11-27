@@ -49,11 +49,6 @@ local function goBack()
 	composer.gotoScene("menu", { time=300, effect="slideRight" })
 end
 
-local function gotoCheck()
-	print("Check")
-	-- body
-end
-
 local myBack = widget.newButton
 {
 	left = 125,
@@ -61,8 +56,7 @@ local myBack = widget.newButton
 	width = 50,
 	height = 45,
 	defaultFile = "back.png",
-	overFile = "back2.png",
-	onEvent = handleButtonEvent,
+	overFile = "back2.png"
 }
 
 local myRegister = widget.newButton
@@ -73,21 +67,9 @@ local myRegister = widget.newButton
 	height = 50,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "REGISTER",
-	onEvent = handleButtonEvent,
+	label = "REGISTER"
 }
 
-local myCheck = widget.newButton
-{
-	left = 230,
-	top = 835,
-	width = 300,
-	height = 50,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "CHECK",
-	onEvent = handleButtonEvent,
-}
 
 local function fieldHandler( textField ) --edit
 	return function( event )
@@ -139,7 +121,6 @@ function scene:create( event )
 	register.x = display.contentCenterX
 	register.y = 200
 	
-
 	labelFirstname = display.newText( sceneGroup, "Firstname:", 217, 300, native.systemFont, 40)
 	sceneGroup:insert( labelFirstname )
 	labelLastname = display.newText( sceneGroup, "Lastname:", 217, 440, native.systemFont, 40)
@@ -149,14 +130,17 @@ function scene:create( event )
 	labelPasswords = display.newText( sceneGroup, "Password:", 217, 720, native.systemFont, 40)
 	sceneGroup:insert( labelPasswords )
 	
-	sceneGroup:insert( myCheck )
 	sceneGroup:insert( myRegister )
 	sceneGroup:insert( myBack )
 	myBack:addEventListener("tap", goBack)
 	myRegister:addEventListener("tap", gotoWelcome)
-	myCheck:addEventListener("tap", gotoCheck)
 
-
+	UIGroup:insert(register)
+	UIGroup:insert(labelFirstname)
+	UIGroup:insert(labelLastname)
+	UIGroup:insert(labelEmail)
+	UIGroup:insert(labelPasswords)
+	UIGroup:insert(myBack)
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end
@@ -257,6 +241,11 @@ function scene:show( event )
 		textEmail:addEventListener("userInput", textEmail)
 		textPasswords:addEventListener("userInput", textPasswords)
 		textLastname:addEventListener("userInput", textLastname)
+
+		UIGroup:insert(textFirstname)
+		UIGroup:insert(textLastname)
+		UIGroup:insert(textEmail)
+		UIGroup:insert(textPasswords)
 	end
 end
 
@@ -289,6 +278,8 @@ function scene:destroy( event )
 	textFirstname = nil
 	textLastname:removeSelf()
 	textLastname = nil
+	UIGroup:removeSelf()
+	UIGroup = nil
 
 end
 

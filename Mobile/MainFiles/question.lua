@@ -142,6 +142,12 @@ function scene:create( event )
 	sceneGroup:insert( myPost )
 	sceneGroup:insert( myBack )
 
+	UIGroup:insert(labelSubject)
+	UIGroup:insert(labelQuestion)
+	UIGroup:insert(labelAnswer)
+	UIGroup:insert(myBack)
+	UIGroup:insert(title)
+
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end
@@ -165,15 +171,20 @@ function scene:show( event )
 		sceneGroup:insert( textSubject )
 		textSubject.size = 38
 
-		textQuestion = native.newTextField(375, 550, 500, 260)
+		textQuestion = native.newTextBox(375, 550, 500, 260)
 		textQuestion:addEventListener("userInput", fieldHandler1(function() return textQuestion end))
 		sceneGroup:insert( textQuestion )
+		textQuestion.isEditable = true
 		textQuestion.size = 30
 
 		textAnswer = native.newTextField(375, 820, 500, 60)
 		textAnswer:addEventListener("userInput", fieldHandler1(function() return textAnswer end))
 		sceneGroup:insert( textAnswer )
 		textAnswer.size = 38
+
+		UIGroup:insert(textSubject)
+		UIGroup:insert(textQuestion)
+		UIGroup:insert(textAnswer)
 
 		function textSubject:userInput(event)
 			if event.phase == "began" then
@@ -235,6 +246,8 @@ function scene:destroy( event )
 	textAnswer = nil
 	textQuestion:removeSelf()
 	textQuestion = nil
+	UIGroup:removeSelf()
+	UIGroup = nil
 end
 
 

@@ -153,6 +153,7 @@ function scene:create( event )
 		}
 	)
 	sceneGroup:insert(joingroupButton)
+	UIGroup:insert(joingroupButton)
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
@@ -178,6 +179,7 @@ function scene:show( event )
 		textJoinGroup.size = 38
 		textJoinGroup.placeholder = "Groupname"
 		textJoinGroup:addEventListener("userInput", textJoinGroup)
+		UIGroup:insert(textJoinGroup)
 
 		function textJoinGroup:userInput(event)
 			if event.phase == "began" then
@@ -259,6 +261,8 @@ function scene:destroy( event )
 	timer.cancel(timerperform)
 	textJoinGroup:removeSelf()
 	textJoinGroup = nil
+	UIGroup:removeSelf()
+	UIGroup = nil
 
 end
 

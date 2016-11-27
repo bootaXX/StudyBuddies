@@ -1,11 +1,8 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require("widget")
-local physics = require( "physics" )
 local json = require("json")
 
-physics.start()
-physics.setGravity( 0, 0 )
 local _W = display.viewableContentWidth
 local _H = display.viewableContentHeight
 local textMessage
@@ -49,7 +46,6 @@ local function backtoChoice(event)
 			gid = gid
 		}
 	}
-	-- timer.cancel(timerperform)
 	composer.removeScene("sendmsg")
     composer.gotoScene( "choice", options)
 end
@@ -68,7 +64,6 @@ local myBack = widget.newButton
 function scene:create (event)
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	physics.pause()
 
 	uid = event.params.uid
 	username = event.params.username
