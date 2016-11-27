@@ -6,9 +6,29 @@ settings =
 		supported = {"portrait"},
 	},
 
-	android = 
+	android =
+    {
+        plist =
+        {
+            -- Icon image files table
+            CFBundleIconFiles = {
+						"Icon-ldpi.png",
+						"Icon-mdpi.png",
+						"Icon-hdpi.png",
+						"Icon-xhdpi.png",
+						"Icon-xxhdpi.png",
+						"Icon-xxxhdpi.png",
+						"upload.png",
+            },
+            -- Required launch image files/definitions table (see section below)
+            UILaunchImages = {
+            },
+        }
+    },
+
+	android =
 	{
-		usesPermissions = 
+		usesPermissions =
 		{
 			"android.permission.INTERNET",
 		},
