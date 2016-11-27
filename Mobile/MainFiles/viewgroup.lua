@@ -147,8 +147,8 @@ function scene:create( event )
 			shape = "rect",
 			id = "joinbutton",
 			label = "JOIN",
-			fontSize = 25,
-			fillColor = { default={ 1, 0.5, 0.5, 0.5 }, over={ 1, 0.2, 0.5, 1 } },
+			fontSize = 30,
+			fillColor = { default={ 1, 1, 1, 1 }, over={ 0, 0, 0, 0 } },
 			onEvent = handleButtonEvent
 		}
 	)
