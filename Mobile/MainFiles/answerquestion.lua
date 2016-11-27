@@ -83,7 +83,7 @@ function scene:create (event)
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	currIndex = event.params.currIndex
+	rowIndex = event.params.rowIndex
 	
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
@@ -117,12 +117,11 @@ function scene:show(event)
 				print("Network error: ", event.response)
 			else
 				decres = json.decode(event.response)
-				subject = "Filipino"
-				print(decres)
+				subject = decres.chat[1].subject
 			end
 		end
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..currIndex), "GET", networkListener2)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..currIndex), "GET", networkListener2)
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
 
 		local answertext = native.newTextBox(382, 450, 500, 560)
 		answertext.isEditable = false

@@ -46,7 +46,7 @@ local function postQuestion( event )
 		end
 		print("postQuestion")
 		local params = {}
-		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex"..currIndex
+		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex
 		
 		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 		network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)

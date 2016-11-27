@@ -29,7 +29,7 @@ local function handleButtonEventGoBack(event)
 	composer.gotoScene("choice", options)
 end
 
-local function handleButtonEventAnswerQuestion( event )
+local function handleButtonEventAnswerQuestion( event , rowIndex)
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -39,7 +39,7 @@ local function handleButtonEventAnswerQuestion( event )
 			groupname = groupname,
 			gid = gid,
 			subject = subject,
-			currIndex = currIndex
+			rowIndex = rowIndex
 		}
 	}
 	composer.removeScene("timeline")
@@ -140,8 +140,8 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		local function onRowRender ( event )
 			local row = event.row
-			local rowSize = 24
-			local rowHeight = row.height / 2
+			local rowSize = 30
+			local rowHeight = row.height * 0.75
 
 			local options_id = {
 				parent = row,
@@ -161,7 +161,7 @@ function scene:show( event )
 			local row = event.target
 
 			if "press" == phase then
-				handleButtonEventAnswerQuestion(event)
+				handleButtonEventAnswerQuestion(event, row.index)
 			end
 		end
 
@@ -169,7 +169,7 @@ function scene:show( event )
 			width = display.viewableContentWidth * 0.7,
 			height = display.viewableContentHeight * 0.50,
 			x = display.contentCenterX,
-			y = 480,
+			y = 500,
 			onRowRender = onRowRender,
 			onRowTouch = onRowTouch
 		}

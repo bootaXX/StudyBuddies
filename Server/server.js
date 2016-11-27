@@ -218,11 +218,11 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 });
 
 //get subject
-app.get("/studybuddies/groupchat/questions/getsubject/:gid/:currIndex", function(req,res){
+app.get("/studybuddies/groupchat/questions/getsubject/:gid/:rowIndex", function(req,res){
 	var results = [];
 	var gid = req.params.gid;
-	var currIndex = req.params.currIndex;
-	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+currIndex+";");
+	var rowIndex = req.params.rowIndex;
+	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+(rowIndex-1)+";");
 	query.on('row', (row) => {
     results.push(row);
     });
@@ -349,7 +349,7 @@ app.get("/studybuddies/groupchat/viewnotes/:gid/:rowIndex",function(req,res){
 app.get("/studybuddies/groupchat/viewlistnotes/:gid",function(req,res){
 	var results = [];
 	var gid = req.params.gid;
-	var query = client.query("SELECT title from group_notes;");
+	var query = client.query("SELECT title from group_notes where groupid = "+gid+";");
 	query.on('row', (row) => {
     results.push(row);
     });

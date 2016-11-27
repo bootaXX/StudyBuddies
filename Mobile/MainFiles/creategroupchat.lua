@@ -57,11 +57,6 @@ local function backtoViewGroup( event )
 	end
 end
 
-local function gotoCheck()
-	print("Check")
-	-- body
-end
-
 local myBack = widget.newButton
 {
 	left = 125,
@@ -117,10 +112,7 @@ function scene:create( event )
 	createButton = display.newText( sceneGroup, "Create", display.contentCenterX, 570, native.systemFont, 44 )
 	createButton:setFillColor( 0.75, 0.78, 1 )
 
-	checkButton = display.newText( sceneGroup, "Check", display.contentCenterX, 500, native.systemFont, 44 )
-	checkButton:setFillColor( 0.75, 0.78, 1 )
 	createButton:addEventListener("tap", createGroup)
-	checkButton:addEventListener("tap", gotoCheck)
 
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
