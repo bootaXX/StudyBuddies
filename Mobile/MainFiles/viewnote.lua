@@ -12,6 +12,7 @@ local groupname
 local gid
 local rowIndex
 local decresponse
+local ftitle
 ---------------------------------------------------------------------------------------------------------
 local function handleButtonEventGoBack( event )
 	local phase = event.phase
@@ -23,7 +24,8 @@ local function handleButtonEventGoBack( event )
 			params = {
 				uid = uid,
 				username = username,
-				gid = gid
+				gid = gid,
+				groupname = groupname
 			}
 		}
 		composer.removeScene("viewnote")
@@ -90,6 +92,8 @@ function scene:show ( event )
 		textNote = native.newTextBox(382, 600, 500, 560)
 		textNote.isEditable = false
 		textNote.size = 20
+		sceneGroup:insert(textNote)
+
 		local function networkListener( event )
 		    if ( event.isError ) then
 		        print( "Network error: ", event.response )
@@ -98,9 +102,22 @@ function scene:show ( event )
 		        decresponse = json.decode(event.response)
 		        note = decresponse.notes[1].notes
 		        textNote.text = note
+		        ftitle = decresponse.notes[1].title
+
+		        local path = system.pathForFile(ftitle..".txt", system.DocumentsDirectory)
+		        --Open file handle
+		        local file, errorString = io.open(path,"w")
+		        if not file then
+		        	print("File error"..errorString)
+		        else
+		        	file:write(note)
+		        	io.close(file)
+		        end
+		        file = nil
 		    end
 		end
-		network.request( "http://localhost:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
+		network.request( "http://192.168.43.114:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
+		-- network.request( "http://localhost:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
 	end
 end
 

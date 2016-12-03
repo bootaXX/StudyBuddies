@@ -32,7 +32,7 @@ local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-220} )
+        transition.to( UIGroup, { time=100, y=-280} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -110,8 +110,8 @@ function scene:create (event)
 			subject = decres.chat[1].subject
 		end
 	end
-	-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
-	network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
+	network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
+	-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
 end
 
 function scene:show(event)
@@ -157,8 +157,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "answersent="..answer.."&subjectsent="..subject.."&usernamesent="..username
-				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
-				network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
+				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writeanswer"), "POST", networkListener, params)
 			end
 		end
 
@@ -194,8 +194,8 @@ function scene:show(event)
 					end
 				end
 			end
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadquestion/"..subject), "GET", networkListener1)
 		end
 		timerperform = timer.performWithDelay(500, reloadQuestionAndAnswer, 0)
 	end

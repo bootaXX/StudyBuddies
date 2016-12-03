@@ -48,8 +48,8 @@ local function postQuestion( event )
 		local params = {}
 		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex
 		
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 
 		local options = {
 			effect = "crossFade",
@@ -84,7 +84,7 @@ local function fieldHandler1( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-250} )
+        transition.to( UIGroup, { time=100, y=-280} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then

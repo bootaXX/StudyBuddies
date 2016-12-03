@@ -12,6 +12,24 @@ local groupname
 local uid
 local gid
 -----------------------------------------------------------------------------------------------------------------------
+local function webListener( event )
+    if event.url then
+        print( "You are visiting: " .. event.url )
+    end
+
+    if event.type then
+        print( "The event.type is " .. event.type ) -- print the type of request
+    end
+
+    if event.errorCode then
+        native.showAlert( "Error!", event.errorMessage, { "OK" } )
+    end
+end
+local function gotoWeb()
+	local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 510, 980 )
+	webView:request( "http://www.merriam-webster.com/" )
+	webView:addEventListener( "urlRequest", webListener )
+end
 local function handleButtonEventTimeline( event )
 	local phase = event.phase
 
@@ -69,18 +87,17 @@ end
 local function handleButtonEventGoToCalendar( event )
 	local phase = event.phase
 
-	-- if "ended" == phase then
-	-- 	local options = {
-	-- 		effect = "crossFade",
-	-- 		time = 300,
-	-- 		params = {
-	-- 			uid = uid,
-	-- 			username = username
-	-- 		}
-	-- 	}
-	-- 	composer.removeScene("viewgroup")
-	-- 	composer.gotoScene("viewgroup", options)
-	-- end
+	if "ended" == phase then
+		local options = {
+			effect = "crossFade",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username
+			}
+		}
+		composer.gotoScene("maincalendar", options)
+	end
 end
 
 local function handleButtonEventNotes( event )
@@ -98,6 +115,24 @@ local function handleButtonEventNotes( event )
 			}
 		}
 		composer.gotoScene("mainnotes", options)
+	end
+end
+
+local function handleButtonEventTableOfElements( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "fromRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				gid = gid,
+				groupname = groupname
+			}
+		}
+		composer.gotoScene("toe", options)
 	end
 end
 ------------------------------------------------------------------------------------------------------------------------
@@ -151,6 +186,32 @@ local myCreateNotes = widget.newButton
 	onEvent = handleButtonEventNotes,
 
 }
+local myDictionary = widget.newButton
+{
+	left = 200,
+	top = 660,	
+	width = 350,
+	height = 80,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "DICTIONARY",
+	fontSize = 30,
+	onEvent = gotoWeb
+
+}
+local myTableOfElements = widget.newButton
+{
+	left = 200,
+	top = 750,	
+	width = 350,
+	height = 80,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	label = "TABLE OF ELEMENTS",
+	fontSize = 30,
+	onEvent = handleButtonEventTableOfElements
+
+}
 local myBack = widget.newButton
 {
 	left = 125,
@@ -184,6 +245,8 @@ function scene:create( event )
 	sceneGroup:insert( myBack )
 	sceneGroup:insert( myCalendar )
 	sceneGroup:insert( myCreateNotes )
+	sceneGroup:insert( myDictionary )
+	sceneGroup:insert( myTableOfElements )
 
 background:addEventListener("tap", background)
 	

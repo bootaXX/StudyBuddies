@@ -334,7 +334,7 @@ app.get("/studybuddies/groupchat/viewnotes/:gid/:rowIndex",function(req,res){
 	var gid = req.params.gid;
 	var rowIndex = req.params.rowIndex;
 	console.log(gid + "  " + rowIndex)
-	var query = client.query("SELECT notes from group_notes where groupid = " + gid +" and rowIndex = "+rowIndex+";");
+	var query = client.query("SELECT title,notes from group_notes where groupid = " + gid +" and rowIndex = "+rowIndex+";");
 	query.on('row', (row) => {
     results.push(row);
     });
@@ -358,6 +358,24 @@ app.get("/studybuddies/groupchat/viewlistnotes/:gid",function(req,res){
       done();
     });   
 	console.log("viewing list of notes..");
+});
+
+//post plan
+app.post("/studybuddies/groupchat/postplan",function(req,res){
+	var gid = req.body.gid;
+	var question = req.body.question;
+	var subject =req.body.subject;
+	var answer = req.body.answer;
+	var username = req.body.username;
+	var rowIndex = req.body.currIndex;
+
+	client.query("insert into group_plans(groupid, subject, answer, username, rowindex) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+");");
+	console.log("Inserted plan");
+	var data = question + " by: "+username+"\n"+"*******************************************";
+	console.log("Creating file for questions");
+	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
+		return res.send("Plan written");
+	});
 });
 
 app.listen(8080, function(){

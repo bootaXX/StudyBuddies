@@ -3,7 +3,6 @@ gname1
 uname1: halloo
 uname2: hi
 uname3: yey
-uname1: ronald bayot
-uname2: bayot ka
-uname3: oten
 uname3: ez password
+uname1: hello
+uname1: gg na this

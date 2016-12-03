@@ -63,8 +63,8 @@ local function handleCreateNote(event)
 		print(gidsent)
 		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username.."&currIndex="..currIndex
 
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
-		network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
+		network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
+		-- network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
 
 	end
 end

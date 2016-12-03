@@ -24,7 +24,7 @@ local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-250} )
+        transition.to( UIGroup, { time=100, y=-280} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -102,11 +102,13 @@ function scene:show(event)
 		sendmessage.isEditable = false
 		sendmessage.size = 20
 		sceneGroup:insert(sendmessage)
+		UIGroup:insert(sendmessage)
 
 		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
 		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
 		textMessage.placeholder = "Message"
 		textMessage.size = 40;
+		UIGroup:insert(textMessage)
 
 		function textMessage:userInput(event)
 			if event.phase == "began" then
@@ -129,8 +131,8 @@ function scene:show(event)
 
 				local params = {}
 				params.body = "messagesent="..message.."&groupnamesent="..groupname.."&usernamesent="..username
-				-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
-				network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+				-- network.request( ("http://localhost:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
 			end
 		end
 
@@ -147,6 +149,7 @@ function scene:show(event)
 			}
 		)
 		sceneGroup:insert(sendmessageButton)
+		UIGroup:insert(sendmessageButton)
 
 		local function reloadMessage( event )
 			-- body
@@ -166,8 +169,8 @@ function scene:show(event)
 				end
 			end
 
-			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
-			network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/loadmessage/"..groupname), "GET", networkListener1)
 		end
 
 		timerperform = timer.performWithDelay(1000, reloadMessage, 0)	
@@ -197,7 +200,8 @@ function scene:destroy( event )
 	timer.cancel(timerperform)
 	textMessage:removeSelf()
 	textMessage = nil
-
+	UIGroup:removeSelf()
+	UIGroup = nil
 end
 
 
