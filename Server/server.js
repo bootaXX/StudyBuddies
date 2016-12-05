@@ -233,6 +233,22 @@ app.get("/studybuddies/groupchat/questions/getsubject/:gid/:rowIndex", function(
 	console.log("viewing questions..");
 });
 
+//view topics
+app.get("/studybuddies/groupchat/questions/viewtopics/:gid", function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var rowIndex = req.params.rowIndex;
+	var query = client.query("SELECT topic from group_topics where groupid = " + gid + ";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'chat':results});
+      done();
+    });   
+	console.log("viewing topics..");
+});
+
 //load questions
 app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 	var buf = new Buffer(1024);
