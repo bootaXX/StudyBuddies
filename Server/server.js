@@ -199,6 +199,32 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	});
 });
 
+//create topic
+app.post("/studybuddies/groupchat/questions/addtopic", function(req,res){
+	var results = [];
+	var gid = req.body.gid;
+	var topic = req.body.topic;
+	var rowindex = req.body.rowIndex;
+	client.query("insert into group_topics(groupid, topic, rowindex) values ("+gid+", '"+topic+"',"+rowindex+");");
+	console.log("Inserted topic");
+	return res.send("Added topic");
+});
+
+//view topics
+app.get("/studybuddies/groupchat/questions/viewtopics/:gid", function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var query = client.query("SELECT topic from group_topics where groupid = " + gid + ";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'chat':results});
+      done();
+    });   
+	console.log("viewing topics..");
+});
+
 //post question
 app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	var gid = req.body.gid;
@@ -231,22 +257,6 @@ app.get("/studybuddies/groupchat/questions/getsubject/:gid/:rowIndex", function(
       done();
     });   
 	console.log("viewing questions..");
-});
-
-//view topics
-app.get("/studybuddies/groupchat/questions/viewtopics/:gid", function(req,res){
-	var results = [];
-	var gid = req.params.gid;
-	var rowIndex = req.params.rowIndex;
-	var query = client.query("SELECT topic from group_topics where groupid = " + gid + ";");
-	query.on('row', (row) => {
-    results.push(row);
-    });
-    query.on('end', () => {
-      return res.send({'chat':results});
-      done();
-    });   
-	console.log("viewing topics..");
 });
 
 //load questions

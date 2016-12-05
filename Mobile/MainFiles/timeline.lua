@@ -29,7 +29,7 @@ local function handleButtonEventGoBack(event)
 	composer.gotoScene("choice", options)
 end
 
-local function handleButtonEventAnswerQuestion( event , rowIndex)
+local function handleButtonEventGoToTopic( event , rowIndex)
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -38,15 +38,14 @@ local function handleButtonEventAnswerQuestion( event , rowIndex)
 			username = username,
 			groupname = groupname,
 			gid = gid,
-			subject = subject,
 			rowIndex = rowIndex
 		}
 	}
 	composer.removeScene("timeline")
-	composer.gotoScene("answerquestion", options)
+	composer.gotoScene("viewquestions", options)
 end
 
-local function gotoCreateQuestion(event)
+local function gotoAddTopic(event)
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -59,7 +58,7 @@ local function gotoCreateQuestion(event)
 		}
 	}
 	composer.removeScene("timeline")
-	composer.gotoScene("question", options)
+	composer.gotoScene("createtopic", options)
 end
 
 local myBack = widget.newButton
@@ -73,7 +72,7 @@ local myBack = widget.newButton
 	onEvent = handleButtonEventGoBack
 }
 
-local addQuestion = widget.newButton
+local addTopic = widget.newButton
 {
 	left = 250,
 	top = 900,
@@ -82,8 +81,8 @@ local addQuestion = widget.newButton
 	fontSize = 25,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "ADD QUESTION",
-	onEvent = gotoCreateQuestion,
+	label = "ADD TOPIC",
+	onEvent = gotoAddTopic
 }
 
 local function fieldHandler( textField )
@@ -119,7 +118,7 @@ function scene:create( event )
 	title.y = 200
 
 	sceneGroup:insert(myBack)
-	sceneGroup:insert(addQuestion)
+	sceneGroup:insert(addTopic)
 	background:addEventListener("tap", background)
 	
 end
@@ -161,7 +160,7 @@ function scene:show( event )
 			local row = event.target
 
 			if "press" == phase then
-				handleButtonEventAnswerQuestion(event, row.index)
+				handleButtonEventGoToTopic(event, row.index)
 			end
 		end
 
@@ -182,14 +181,14 @@ function scene:show( event )
 				decodedresponse1 = json.decode(event.response)
 				local i=1
 				while decodedresponse1.chat[i] do
-					response1 = decodedresponse1.chat[i].subject
+					response1 = decodedresponse1.chat[i].topic
 					myTable:insertRow{}
 					i = i+1
 				end
 				currIndex = i
 			end
 		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/viewtopics/"..gid), "GET", networkListener)
 		-- network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
 	end
 end
