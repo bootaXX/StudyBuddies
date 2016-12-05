@@ -11,6 +11,8 @@ local response1
 local decodedresponse1
 local UIGroup
 local currIndex
+local topicid
+local rowIndex
 UIGroup = display.newGroup()
 UIGroup.y = -5
 -----------------------------------------------------------------------------------------------------------------------
@@ -55,7 +57,8 @@ local function gotoCreateQuestion(event)
 			username = username,
 			groupname = groupname,
 			gid = gid,
-			currIndex = currIndex
+			currIndex = currIndex,
+			topicid = topicid
 		}
 	}
 	composer.removeScene("viewquestions")
@@ -109,6 +112,7 @@ function scene:create( event )
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
+	rowIndex = event.params.rowIndex
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
@@ -136,6 +140,18 @@ function scene:show( event )
 	sceneGroup:insert(group)
 
 	if ( phase == "will" ) then
+		print(uid.." : "..gid)
+		local function networkListener2(event)
+			if(event.isError) then
+				print("Network error: ", event.response)
+			else
+				decres = json.decode(event.response)
+				topicid = decres.chat[1].topicid
+				print("topicid = "..topicid)
+			end
+		end
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndex), "GET", networkListener2)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndex), "GET", networkListener2)
 
 	elseif ( phase == "did" ) then
 		local function onRowRender ( event )
@@ -189,8 +205,8 @@ function scene:show( event )
 				currIndex = i
 			end
 		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid.."/"..topicid), "GET", networkListener)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid.."/"..topicid), "GET", networkListener)
 	end
 end
 

@@ -261,7 +261,7 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-		print(username)
+		print("choice " .. username .. " : " .. gid)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen

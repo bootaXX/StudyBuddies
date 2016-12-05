@@ -210,6 +210,22 @@ app.post("/studybuddies/groupchat/questions/addtopic", function(req,res){
 	return res.send("Added topic");
 });
 
+//get topicid
+app.get("/studybuddies/groupchat/questions/gettopicid/:gid/:rowIndex", function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var rowindex = req.params.rowIndex;
+	var query = client.query("SELECT topicid from group_topics where groupid = " + gid + " and rowindex = "+ rowindex +";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'chat':results});
+      done();
+    });   
+	console.log("retrieving topicid..");
+});
+
 //view topics
 app.get("/studybuddies/groupchat/questions/viewtopics/:gid", function(req,res){
 	var results = [];
@@ -233,8 +249,9 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	var answer = req.body.answer;
 	var username = req.body.username;
 	var rowIndex = req.body.currIndex;
+	var topicid = req.body.topicid;
 
-	client.query("insert into group_questions(groupid, subject, answer, username, rowindex) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+");");
+	client.query("insert into group_questions(groupid, subject, answer, username, rowindex, topicid) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+","+topicid+");");
 	console.log("Inserted question");
 	var data = question + " by: "+username+"\n"+"*******************************************";
 	console.log("Creating file for questions");
@@ -296,10 +313,11 @@ app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 });
 
 //view questions
-app.get("/studybuddies/groupchat/viewquestions/:gid",function(req,res){
+app.get("/studybuddies/groupchat/viewquestions/:gid/:topicid",function(req,res){
 	var results = [];
 	var gid = req.params.gid;
-	var query = client.query("SELECT subject from group_questions where groupid = " + gid + ";");
+	var topicid = req.params.topicid;
+	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and topicid = "+ topicid +";");
 	query.on('row', (row) => {
     results.push(row);
     });

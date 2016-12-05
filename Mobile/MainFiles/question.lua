@@ -16,6 +16,7 @@ local groupname
 local gid
 local UIGroup
 local currIndex
+local topicid
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
@@ -45,7 +46,7 @@ local function postQuestion( event )
 		end
 		print("postQuestion")
 		local params = {}
-		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex
+		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex.."&topicid="..topicid
 		
 		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
@@ -61,7 +62,7 @@ local function postQuestion( event )
 			}
 		}
 		composer.removeScene("question")
-		composer.gotoScene("timeline", options)
+		composer.gotoScene("viewquestions", options)
 	end
 end
 
@@ -125,6 +126,7 @@ function scene:create( event )
 	groupname = event.params.groupname
 	gid = event.params.gid
 	currIndex = event.params.currIndex
+	topicid = event.params.topicid
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX

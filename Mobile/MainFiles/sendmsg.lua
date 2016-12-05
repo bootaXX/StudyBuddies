@@ -36,18 +36,21 @@ local function fieldHandler( textField )
 end
 
 local function backtoChoice(event)
-	local options = {
-		effect = "slideRight",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username,
-			groupname = groupname,
-			gid = gid
+	local phase = event.phase
+	if (phase == "ended") then
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
 		}
-	}
-	composer.removeScene("sendmsg")
-    composer.gotoScene( "choice", options)
+		composer.removeScene("sendmsg")
+	    composer.gotoScene( "choice", options)
+	end
 end
 
 local myBack = widget.newButton

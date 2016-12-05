@@ -29,7 +29,7 @@ local function handleButtonEventGoBack(event)
 	composer.gotoScene("choice", options)
 end
 
-local function handleButtonEventGoToTopic( event , rowIndex)
+local function handleButtonEventGoToTopic(event, rowIndex)
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -135,6 +135,7 @@ function scene:show( event )
 	sceneGroup:insert(group)
 
 	if ( phase == "will" ) then
+		print(username .. " : " .. gid)
 
 	elseif ( phase == "did" ) then
 		local function onRowRender ( event )

@@ -10,34 +10,53 @@ local rowIndex
 local topic
 local textTopic
 -- ************************************************************
-local function addTopic()
-	local function networkListener( event )
-		if ( event.isError ) then
-			print( "Network error: ", event.response )
-		else
-			print ( "RESPONSE: " .. event.response )
+local function addTopic(event)
+	local phase = event.phase
+	if phase == "ended" then
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				print ( "RESPONSE: " .. event.response )
+			end
 		end
+		local params = {}
+		params.body = "gid="..gid.."&topic="..topic.."&rowIndex="..rowIndex
+
+		network.request( "http://192.168.43.114:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
+		-- network.request( "http://localhost:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
+
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
+		}
+		composer.removeScene("createtopic")
+		composer.gotoScene("timeline", options)
 	end
-	local params = {}
-	params.body = "gid="..gid.."&topic="..topic.."&rowIndex="..rowIndex
-	network.request( "http://192.168.43.114:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
-	-- network.request( "http://localhost:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
-	goBack()
 end
 
-local function goBack()
-	local options = {
-		effect = "slideRight",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username,
-			groupname = groupname,
-			gid = gid
+local function goBack(event)
+	local phase = event.phase
+	if (phase == "ended") then
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
 		}
-	}
-	composer.removeScene("question")
-	composer.gotoScene("timeline", options)
+		composer.removeScene("createtopic")
+		composer.gotoScene("timeline", options)
+	end
 end
 
 local function fieldHandler( textField )
@@ -113,14 +132,16 @@ function scene:show( event )
 	local sceneGroup = self.view
 	local phase = event.phase
 
-	if(phase == will) then
+	if(phase == "will") then
 	-- Code here runs when the scene is still off screen (but is about to come on screen)
-	elseif (phase == did) then
+	elseif (phase == "did") then
 	-- Code here runs when the scene is entirely on screen
-		textTopic = native.newTextField(375, 370, 500, 60)
+		textTopic = native.newTextField(375, 320, 500, 60)
 		textTopic:addEventListener("userInput", fieldHandler(function() return textTopic end))
+		sceneGroup:insert( textTopic )
 		textTopic.size = 38
-		textTopic.placeholder = "Group name"
+		textTopic.placeholder = "Topic"
+		print(currIndex)
 
 		function textTopic:userInput(event)
 			if event.phase == "began" then
@@ -136,9 +157,9 @@ function scene:show( event )
 end
 
 function scene:hide( event )
-	if (phase == will) then
+	if (phase == "will") then
 
-	elseif (phase == did) then
+	elseif (phase == "did") then
 
 	end
 	-- body
@@ -149,3 +170,15 @@ function scene:destroy( event )
 	textTopic:removeSelf()
 	textTopic = nil
 end
+
+-- -----------------------------------------------------------------------------------
+-- Scene event function listeners
+-- -----------------------------------------------------------------------------------
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
+
+-- -----------------------------------------------------------------------------------
+
+return scene
