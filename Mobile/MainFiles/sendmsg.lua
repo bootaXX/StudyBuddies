@@ -6,7 +6,7 @@ local json = require("json")
 local _W = display.viewableContentWidth
 local _H = display.viewableContentHeight
 local textMessage
-local message
+local message = ""
 local i = 1
 local uid
 local username
@@ -24,7 +24,7 @@ local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-280} )
+        transition.to( UIGroup, { time=100, y=-330} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -105,7 +105,7 @@ function scene:show(event)
 		-- Code here runs when the scene is entirely on screen
 		local sendmessage = native.newTextBox(382, 450, 500, 560)
 		sendmessage.isEditable = false
-		sendmessage.size = 20
+		sendmessage.size = 25
 		sceneGroup:insert(sendmessage)
 		UIGroup:insert(sendmessage)
 
@@ -117,10 +117,13 @@ function scene:show(event)
 
 		function textMessage:userInput(event)
 			if event.phase == "began" then
-				event.target.text =''
-			elseif event.phase == "ended" then
+				event.target.text = ''
+			elseif (event.phase == "ended") then
 				message = event.target.text
-			elseif event.phase == "submitted" then
+			elseif (event.phase == "submitted") then
+				event.target.text = ''
+			elseif event.phase == "editing" then
+		        message = event.newCharacters
 			end
 		end
 

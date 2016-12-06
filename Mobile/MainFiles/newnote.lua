@@ -13,6 +13,9 @@ local note
 local textTitle
 local titlet
 local currIndex
+local UIGroup
+UIGroup = display.newGroup()
+UIGroup.y = -5
 
 local function goMenu()
 	local options = {
@@ -71,18 +74,12 @@ end
 local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
-			-- This is the "keyboard has appeared" event
-			-- In some cases you may want to adjust the interface when the keyboard appears.
-		
+			transition.to( UIGroup, { time=100, y=-330} )
 		elseif ( "ended" == event.phase ) then
-			
+			transition.to( UIGroup, { time = 100, y = -5})
 		elseif ( "editing" == event.phase ) then
 		
 		elseif ( "submitted" == event.phase ) then
-			-- This event occurs when the user presses the "return" key (if available) on the onscreen keyboard
-			--print( textField().text )
-			
-			-- Hide keyboard
 			native.setKeyboardFocus( nil )
 		end
 	end
@@ -158,10 +155,10 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		textTitle = native.newTextField(450, 250, 300, 50)
-		textTitle:addEventListener("userInput", fieldHandler(function() return textTitle end))
-		sceneGroup:insert( textTitle )
 		textTitle.placeholder = "Title"
 		textTitle:addEventListener("userInput", textTitle)
+		sceneGroup:insert( textTitle )
+		UIGroup:insert(textTitle)
 
 		function textTitle:userInput(event)
 			if event.phase == "began" then
@@ -173,8 +170,11 @@ function scene:show( event )
 		end
 
 		textNote = native.newTextBox(382, 600, 500, 560)
+		textNote:addEventListener("userInput", fieldHandler(function() return textNote end))
 		textNote.isEditable = true
 		textNote.size = 20
+		sceneGroup:insert(textNote)
+		UIGroup:insert(textNote)
 
 		function textNote:userInput(event)
 			if event.phase == "began" then

@@ -7,7 +7,7 @@ local groupname
 local gid
 local currIndex
 local rowIndex
-local topic
+local topic = ""
 local textTopic
 -- ************************************************************
 local function addTopic(event)
@@ -145,10 +145,10 @@ function scene:show( event )
 
 		function textTopic:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				topic = event.target.text
-			elseif event.phase == "Submitted" then
+				event.target.text = topic
+			elseif (event.phase == "ended" or event.phase == "submitted")then
+			elseif event.phase == "editing" then
+		        topic = event.newCharacters
 			end
 		end
 		textTopic:addEventListener("userInput", textTopic)

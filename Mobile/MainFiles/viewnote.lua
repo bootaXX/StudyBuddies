@@ -2,6 +2,7 @@ local composer = require ("composer")
 local scene = composer.newScene()
 local widget = require ("widget")
 local json = require("json")
+local lfs = require "lfs"
 
 local sampNote
 local titlee
@@ -57,6 +58,18 @@ local export = widget.newButton
 
 function scene:create (event)
 
+	-- get raw path to app's Documents directory
+	local docs_path = system.pathForFile( "", system.ResourceDirectory )
+
+	-- change current working directory
+	local success = lfs.chdir( docs_path ) -- returns true on success
+	local new_folder_path
+	local dname = "Images"
+	if success then
+	    lfs.mkdir( dname )
+	    new_folder_path = lfs.currentdir() .. "/" .. dname
+	end
+
 	local sceneGroup = self.view
 
 	uid = event.params.uid
@@ -91,7 +104,7 @@ function scene:show ( event )
 	elseif ( phase == "did" ) then 
 		textNote = native.newTextBox(382, 600, 500, 560)
 		textNote.isEditable = false
-		textNote.size = 20
+		textNote.size = 30
 		sceneGroup:insert(textNote)
 
 		local function networkListener( event )

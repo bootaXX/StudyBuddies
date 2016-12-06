@@ -18,10 +18,10 @@ local textPasswords
 local textEmail
 local registerButton 
 
-local unameni
-local fnameni
-local lnameni
-local passni
+local unameni = ""
+local fnameni = ""
+local lnameni = ""
+local passni = ""
 local url
 
 local UIGroup
@@ -184,59 +184,48 @@ function scene:show( event )
 
 		function textFirstname:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				local path = system.pathForFile( "Firstname.txt", system.DocumentsDirectory )
-				local file = io.open( path, "w" )
-				file:write( event.target.text )
-				io.close( file )
-				file = nil
+				event.target.text = fnameni
+			elseif (event.phase == "ended") then
 				fnameni = event.target.text
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        fnameni = event.newCharacters
 			end
 		end
 
 		function textLastname:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				local path = system.pathForFile( "Lastname.txt", system.DocumentsDirectory )
-				local file = io.open( path, "w" )
-				file:write( event.target.text )
-				io.close( file )
-				file = nil
+				event.target.text = lnameni
+			elseif (event.phase == "ended") then
 				lnameni = event.target.text
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        lnameni = event.newCharacters
 			end
 		end
 
 		function textEmail:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				local path = system.pathForFile( "Username.txt", system.DocumentsDirectory )
-				local file = io.open( path, "w" )
-				file:write( event.target.text )
-				io.close( file )
-				file = nil
+				event.target.text = unameni
+			elseif (event.phase == "ended") then
 				unameni = event.target.text
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        unameni = event.newCharacters
 			end
 		end
 
 		function textPasswords:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
-				local path = system.pathForFile( "Password.txt", system.DocumentsDirectory )
-				local file = io.open( path, "w" )
-				file:write( event.target.text )
-				io.close( file )
-				file = nil
+				event.target.text = passni
+			elseif (event.phase == "ended") then
 				passni = event.target.text
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        passni = event.newCharacters
 			end
 		end
+
 		textFirstname:addEventListener("userInput", textFirstname)
 		textEmail:addEventListener("userInput", textEmail)
 		textPasswords:addEventListener("userInput", textPasswords)

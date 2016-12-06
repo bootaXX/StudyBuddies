@@ -22,9 +22,11 @@ local loadedmessage
 local messageText
 local timerperform
 local UIGroup
-local currIndex
+local rowIndexOfTimeline
 local decres2
 local decres
+local topicid
+local answer
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
@@ -32,7 +34,7 @@ local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-280} )
+        transition.to( UIGroup, { time=100, y=-330} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -43,7 +45,7 @@ local function fieldHandler( textField )
 	end
 end
 
-local function backtoTimeline(event)
+local function backtoViewQuestions(event)
 	local phase = event.phase
 
 	if "ended" == phase then
@@ -54,14 +56,40 @@ local function backtoTimeline(event)
 				uid = uid,
 				username = username,
 				groupname = groupname,
-				gid = gid
+				gid = gid,
+				rowIndexOfTimeline = rowIndexOfTimeline
 			}
 		}
 		timer.cancel(timerperform)
 		composer.removeScene("answerquestion")
-	    composer.gotoScene( "timeline", options)
+	    composer.gotoScene( "viewquestions", options)
 	end
 end
+
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
+local function showAnswer( event )
+	local alert = native.showAlert("ANSWER", "Answer : "..answer, {"Ok"}, onComplete)
+end
+
+local showAnswerButton = widget.newButton
+{
+	left = 450,
+	top = 50,
+	width = 250,
+	height = 65,
+	label = "SHOW ANSWER",
+	fontSize = 20,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	onEvent = showAnswer
+}
 
 local myBack = widget.newButton
 {
@@ -71,7 +99,7 @@ local myBack = widget.newButton
 	height = 45,
 	defaultFile = "back.png",
 	overFile = "back2.png",
-	onEvent = backtoTimeline
+	onEvent = backtoViewQuestions
 }
 
 function scene:create (event)
@@ -83,7 +111,9 @@ function scene:create (event)
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	rowIndex = event.params.rowIndex
+	rowIndexOfTimeline = event.params.rowIndexOfTimeline
+	rowIndexOfViewQuestion = event.params.rowIndexOfViewQuestion
+	topicid = event.params.topicid
 	
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
@@ -100,18 +130,22 @@ function scene:create (event)
 		native.setKeyboardFocus( nil )
 	end
 	sceneGroup:insert(myBack)
+	sceneGroup:insert(showAnswerButton)
+	UIGroup:insert(showAnswerButton)
 	UIGroup:insert(myBack)
 	background:addEventListener("tap", background)
+
 	local function networkListener2(event)
 		if(event.isError) then
 			print("Network error: ", event.response)
 		else
 			decres = json.decode(event.response)
-			subject = decres.chat[1].subject
+			subject = decres[1].subject
+			answer = decres[1].answer
 		end
 	end
-	network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
-	-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubject/"..gid.."/"..rowIndex), "GET", networkListener2)
+	network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
+	-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
 end
 
 function scene:show(event)
@@ -125,7 +159,7 @@ function scene:show(event)
 		-- Code here runs when the scene is entirely on screen
 		local answertext = native.newTextBox(382, 500, 500, 560)
 		answertext.isEditable = false
-		answertext.size = 20
+		answertext.size = 25
 		sceneGroup:insert(answertext)
 		UIGroup:insert(answertext)
 
@@ -138,10 +172,13 @@ function scene:show(event)
 
 		function textAnswerBox:userInput(event)
 			if event.phase == "began" then
-				event.target.text =''
-			elseif event.phase == "ended" then
+				event.target.text = ''
+			elseif (event.phase == "ended") then
 				answer = event.target.text
-			elseif event.phase == "submitted" then
+			elseif (event.phase == "submitted") then
+				event.target.text = ''
+			elseif event.phase == "editing" then
+		        answer = event.newCharacters
 			end
 		end	
 

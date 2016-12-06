@@ -260,17 +260,18 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	});
 });
 
-//get subject
-app.get("/studybuddies/groupchat/questions/getsubject/:gid/:rowIndex", function(req,res){
+//get subject and answer
+app.get("/studybuddies/groupchat/questions/getsubjectandanswer/:gid/:rowIndex/:topicid", function(req,res){
 	var results = [];
 	var gid = req.params.gid;
 	var rowIndex = req.params.rowIndex;
-	var query = client.query("SELECT subject from group_questions where groupid = " + gid + " and rowindex = "+rowIndex+";");
+	var topicid = req.params.topicid;
+	var query = client.query("SELECT subject,answer from group_questions where groupid = " + gid + " and rowindex = " + rowIndex + " and topicid = " + topicid + ";");
 	query.on('row', (row) => {
     results.push(row);
     });
     query.on('end', () => {
-      return res.send({'chat':results});
+      return res.send(JSON.stringify(results));
       done();
     });   
 	console.log("viewing questions..");

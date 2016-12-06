@@ -171,7 +171,7 @@ function scene:show( event )
 				text = response1,
 				x = 30,
 				y = rowHeight + 40,
-				fontSize = 25
+				fontSize = 30
 			}
 			rowTitle = display.newText ( options_id )
 			rowTitle:setTextColor( 0, 0, 0 )

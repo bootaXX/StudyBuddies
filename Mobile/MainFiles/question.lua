@@ -7,9 +7,9 @@ local labelAnswer
 local textQuestion
 local textAnswer
 local textSubject
-local question
-local answer
-local subject
+local question = ""
+local answer = ""
+local subject = ""
 local uid
 local username
 local groupname
@@ -17,6 +17,7 @@ local gid
 local UIGroup
 local currIndex
 local topicid
+local rowIndexOfTimeline
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
@@ -28,7 +29,8 @@ local function goBack()
 			uid = uid,
 			username = username,
 			groupname = groupname,
-			gid = gid
+			gid = gid,
+			rowIndexOfTimeline = rowIndexOfTimeline
 		}
 	}
 	composer.removeScene("question")
@@ -58,7 +60,8 @@ local function postQuestion( event )
 				uid = uid,
 				username = username,
 				groupname = groupname,
-				gid = gid
+				gid = gid,
+				rowIndexOfTimeline = rowIndexOfTimeline
 			}
 		}
 		composer.removeScene("question")
@@ -84,7 +87,7 @@ local function fieldHandler1( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
 			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-280} )
+        transition.to( UIGroup, { time=100, y=-330} )
 		elseif ( "editing" == event.phase ) then
 
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
@@ -125,6 +128,7 @@ function scene:create( event )
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
+	rowIndexOfTimeline = event.params.rowIndexOfTimeline
 	currIndex = event.params.currIndex
 	topicid = event.params.topicid
 
@@ -136,7 +140,7 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 150
 
-	labelSubject = display.newText( sceneGroup, "Subject", 195, 250, native.systemFont, 40)
+	labelSubject = display.newText( sceneGroup, "Question Title", 240, 250, native.systemFont, 40)
 	labelQuestion = display.newText( sceneGroup, "Question", 205, 390, native.systemFont, 40)
 	labelAnswer = display.newText( sceneGroup, "Answer", 200, 765, native.systemFont, 40)
 
@@ -189,29 +193,32 @@ function scene:show( event )
 
 		function textSubject:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
+				event.target.text = subject
+			elseif (event.phase == "ended") then
 				subject = event.target.text
-				print(subject)
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        subject = event.newCharacters
 			end
 		end
 		function textQuestion:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
+				event.target.text = question
+			elseif (event.phase == "ended") then
 				question = event.target.text
-				print(question)
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        question = event.newCharacters
 			end
 		end
 		function textAnswer:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
-			elseif event.phase == "ended" then
+				event.target.text = answer
+			elseif (event.phase == "ended") then
 				answer = event.target.text
-				print(answer)
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        answer = event.newCharacters
 			end
 		end
 		textSubject:addEventListener("userInput", textSubject)

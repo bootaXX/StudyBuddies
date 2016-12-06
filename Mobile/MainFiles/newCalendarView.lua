@@ -159,7 +159,6 @@ end
 
 -- Creates a new instance of a calendar widget
 function new( month, year )
-	
 	-- Group
 	local group = display.newGroup()
 	group.objects = {}

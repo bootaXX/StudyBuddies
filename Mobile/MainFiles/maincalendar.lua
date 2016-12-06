@@ -1,4 +1,4 @@
-
+	
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
@@ -64,7 +64,6 @@ function scene:create( event )
 	-- Create calendar widget
 	local newCalendarView = require('newCalendarView')
 	view = newCalendarView.new(month, year)
-
 	
 	background:addEventListener("tap", background)
 end

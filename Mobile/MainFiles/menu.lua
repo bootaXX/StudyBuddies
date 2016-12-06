@@ -13,8 +13,8 @@ local labelFeedback
 local textUsername
 local textPassword
 
-local uname 
-local pword 
+local uname = ""
+local pword = ""
 
 local function gotoRegister()
     composer.gotoScene( "register", { 
@@ -159,23 +159,29 @@ function scene:show( event )
 		function textUsername:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
-			elseif event.phase == "ended" then
+			elseif (event.phase == "ended") then
 				uname = event.target.text
-				print(uname)
-			elseif event.phase == "Submitted" then
+				print(uname.." : "..pword)
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        uname = event.newCharacters
+		        print(uname.." : "..pword)
 			end
 		end
 
 		function textPassword:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
-			elseif event.phase == "ended" then
+			elseif (event.phase == "ended") then
 				pword = event.target.text
-				print(pword)
-			elseif event.phase == "Submitted" then
+				print(uname.." : "..pword)
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        pword = event.newCharacters
+		        print(uname.." : "..pword)
 			end
 		end
-
+		print(uname.." : "..pword)
 		textUsername:addEventListener("userInput", textUsername)
 		textPassword:addEventListener("userInput", textPassword)
 	

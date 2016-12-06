@@ -25,13 +25,10 @@ UIGroup.y = -5
 local function fieldHandler( textField )
 	return function( event )
 		if ( "began" == event.phase ) then
-			 -- Transition group upward to y=50
-        transition.to( UIGroup, { time=100, y=-280} )
+        	transition.to( UIGroup, { time=100, y=-330} )
 		elseif ( "editing" == event.phase ) then
-
 		elseif ( "submitted" == event.phase or  "ended" == event.phase ) then
             native.setKeyboardFocus( nil )
-            -- Transition group back down to y=300
             transition.to( UIGroup, { time = 100, y = -5})
 		end
 	end
@@ -195,6 +192,12 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		local grouplist = native.newTextBox(382, 500, 500, 500)
+		grouplist.isEditable = false
+		grouplist.size = 30
+		sceneGroup:insert(grouplist)
+		UIGroup:insert(grouplist)
+
 		textJoinGroup = native.newTextField(300, 875, 400, 65)
 		textJoinGroup:addEventListener("userInput", fieldHandler(function() return textJoinGroup end))
 		textJoinGroup.size = 38
@@ -205,10 +208,11 @@ function scene:show( event )
 		function textJoinGroup:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
-			elseif event.phase == "ended" then
+			elseif (event.phase == "ended") then
 				groupname = event.target.text
-				print(groupname)
-			elseif event.phase == "Submitted" then
+			elseif (event.phase == "submitted") then
+			elseif event.phase == "editing" then
+		        groupname = event.newCharacters
 			end
 		end
 
@@ -218,12 +222,13 @@ function scene:show( event )
 			else
 				decodedresponse1 = json.decode(event.response)
 				local i=1
+				local groups = ""
 				while decodedresponse1.chat[i] do
 					response1 = decodedresponse1.chat[i].groupname
-					dgroupname = display.newText( sceneGroup, response1, display.contentCenterX, 400+(30*(i-1)), native.systemFont, 30 )
-					sceneGroup:insert( dgroupname )
+					groups = groups .. "\n" .. response1
 					i = i+1
 				end
+				grouplist.text = groups
 				checker = i
 			end
 		end
@@ -282,6 +287,8 @@ function scene:destroy( event )
 	timer.cancel(timerperform)
 	textJoinGroup:removeSelf()
 	textJoinGroup = nil
+	-- grouplist:removeSelf()
+	-- grouplist = nil
 	UIGroup:removeSelf()
 	UIGroup = nil
 

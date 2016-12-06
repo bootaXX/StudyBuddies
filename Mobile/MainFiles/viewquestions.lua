@@ -12,7 +12,8 @@ local decodedresponse1
 local UIGroup
 local currIndex
 local topicid
-local rowIndex
+local rowIndexOfTimeline
+local currIndex
 UIGroup = display.newGroup()
 UIGroup.y = -5
 -----------------------------------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ local function handleButtonEventGoBack(event)
 	composer.gotoScene("timeline", options)
 end
 
-local function handleButtonEventAnswerQuestion( event , rowIndex)
+local function handleButtonEventAnswerQuestion( event, rowIndexOfViewQuestion )
 	local options = {
 		effect = "fromRight",
 		time = 300,
@@ -41,7 +42,9 @@ local function handleButtonEventAnswerQuestion( event , rowIndex)
 			groupname = groupname,
 			gid = gid,
 			subject = subject,
-			rowIndex = rowIndex
+			rowIndexOfTimeline = rowIndexOfTimeline,
+			rowIndexOfViewQuestion = rowIndexOfViewQuestion,
+			topicid = topicid
 		}
 	}
 	composer.removeScene("viewquestions")
@@ -58,6 +61,7 @@ local function gotoCreateQuestion(event)
 			groupname = groupname,
 			gid = gid,
 			currIndex = currIndex,
+			rowIndexOfTimeline = rowIndexOfTimeline,
 			topicid = topicid
 		}
 	}
@@ -112,7 +116,7 @@ function scene:create( event )
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	rowIndex = event.params.rowIndex
+	rowIndexOfTimeline = event.params.rowIndexOfTimeline
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
@@ -150,8 +154,8 @@ function scene:show( event )
 				print("topicid = "..topicid)
 			end
 		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndex), "GET", networkListener2)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndex), "GET", networkListener2)
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
 
 	elseif ( phase == "did" ) then
 		local function onRowRender ( event )
@@ -164,7 +168,7 @@ function scene:show( event )
 				text = response1,
 				x = 30,
 				y = rowHeight + 40,
-				fontSize = 25
+				fontSize = 30
 			}
 			rowTitle = display.newText ( options_id )
 			rowTitle:setTextColor( 0, 0, 0 )
