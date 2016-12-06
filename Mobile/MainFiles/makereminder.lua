@@ -1,23 +1,53 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
-local labelQuestion
-local labelSubject
-local labelAnswer
-local textQuestion
-local textAnswer
-local textSubject
-local question
-local answer
-local subject
-local uid
-local username
-local groupname
-local gid
-local UIGroup
-local currIndex
+
+local textDate
+local textDetails
+local textTitle
+local textYear
+
+local ttitle  
+local tdate
+local tdetails
+local planIndex
+local tyear
+
+
 UIGroup = display.newGroup()
 UIGroup.y = -5
+
+local months = { 'January', 'February', 'March', 'April', 'May', 'June',
+		'July', 'August', 'September', 'October', 'November', 'December'}
+local days = {1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}
+local columnData =
+{
+    {
+        align = "center",
+        width = 120,
+        labelPadding = 20,
+        startIndex = 6,
+        labels = months
+    },
+    {
+        align = "center",
+        width = 50,
+        labelPadding = 20,
+        startIndex = 6,
+        labels = days
+    }
+}
+local pickerWheel = widget.newPickerWheel(
+{
+	left = display.contentWidth * 0.350,
+    top = display.contentHeight * 0.3,
+    columns = columnData,
+    style = "resizable",
+    height = 100,
+    width = 280,
+    rowHeight = 32,
+    fontSize = 25
+})  
 
 local function goBack()
 	local options = {
@@ -30,40 +60,11 @@ local function goBack()
 			gid = gid
 		}
 	}
-	composer.removeScene("question")
-	composer.gotoScene("timeline", options)
+	composer.removeScene("makereminder")
+	composer.gotoScene("maincalendar", options)
 end
 
-local function postQuestion( event )
-	if(event.phase == "ended") then
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				print( "RESPONSE: ", event.response )
-			end
-		end
-		print("postQuestion")
-		local params = {}
-		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex
-		
-		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
-		network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 
-		local options = {
-			effect = "crossFade",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid
-			}
-		}
-		composer.removeScene("question")
-		composer.gotoScene("timeline", options)
-	end
-end
 
 local function fieldHandler( textField )
 	return function( event )
@@ -93,8 +94,45 @@ local function fieldHandler1( textField )
 		end
 	end
 end
+local function post_Plans( event )
+	local values = pickerWheel:getValues()
+	-- Get the value for each column in the wheel, by column index
+	local currentMonth = values[1].value
+	local currentDay = values[2].value
+	print( currentMonth, currentDay)
+
+	if(event.phase == "ended") then
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				
+				print( "RESPONSE: ", event.response )
+			end
+		end
+		local params = {}
+		params.body = "gid="..gid.."&ptitle="..ttitle.."&month="..currentMonth.."&day="..currentDay.."&year="..tyear.."&detail="..tdetails.."&currIndex="..planIndex
+
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/writemessage"), "POST", networkListener, params)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/postplan"), "POST", networkListener, params)
+
+		local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
+		}
+		composer.removeScene("makereminder")
+		composer.gotoScene( "maincalendar", options)
+
+	end
+end
 ------------------------------------------------------------------------------------------------------------------------
-local myPost = widget.newButton
+local myCreate = widget.newButton
 {
 	left = 250,
 	top = 900,
@@ -102,8 +140,8 @@ local myPost = widget.newButton
 	height = 75,
 	defaultFile = "default.png",
 	overFile = "over.png",
-	label = "POST",
-	onEvent = postQuestion
+	label = "CREATE",
+	onEvent = post_Plans
 }
 
 local myBack = widget.newButton
@@ -124,7 +162,7 @@ function scene:create( event )
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	currIndex = event.params.currIndex
+	planIndex = event.params.currIndex
 
 	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
 	background.x = display.contentCenterX
@@ -134,16 +172,15 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 150
 
-	labelSubject = display.newText( sceneGroup, "Subject", 195, 250, native.systemFont, 40)
-	labelQuestion = display.newText( sceneGroup, "Question", 205, 390, native.systemFont, 40)
-	labelAnswer = display.newText( sceneGroup, "Answer", 200, 765, native.systemFont, 40)
+	labelTitle = display.newText( sceneGroup, "Title : ", 195, 250, native.systemFont, 30 )
+	labelSubject = display.newText( sceneGroup, "Date: ", 195, 390, native.systemFont, 30)
+	labelDetails = display.newText( sceneGroup, "Details: ", 205, 550, native.systemFont, 30)
 
-	sceneGroup:insert( myPost )
+	sceneGroup:insert( myCreate )
 	sceneGroup:insert( myBack )
+	sceneGroup:insert(pickerWheel)
 
-	UIGroup:insert(labelSubject)
-	UIGroup:insert(labelQuestion)
-	UIGroup:insert(labelAnswer)
+	UIGroup:insert(labelDetails)
 	UIGroup:insert(myBack)
 	UIGroup:insert(title)
 
@@ -165,56 +202,61 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		textSubject = native.newTextField(375, 320, 500, 60)
-		textSubject:addEventListener("userInput", fieldHandler(function() return textSubject end))
-		sceneGroup:insert( textSubject )
-		textSubject.size = 38
 
-		textQuestion = native.newTextBox(375, 550, 500, 260)
-		textQuestion:addEventListener("userInput", fieldHandler1(function() return textQuestion end))
-		sceneGroup:insert( textQuestion )
-		textQuestion.isEditable = true
-		textQuestion.size = 30
+		textTitle = native.newTextField(450, 250, 400, 40)
+		textTitle:addEventListener("userInput", fieldHandler(function() return textDate end))
+		sceneGroup:insert( textTitle )
+		textTitle.size = 30
 
-		textAnswer = native.newTextField(375, 820, 500, 60)
-		textAnswer:addEventListener("userInput", fieldHandler1(function() return textAnswer end))
-		sceneGroup:insert( textAnswer )
-		textAnswer.size = 38
+		textYear = native.newTextField( 500, 390, 100, 40 )
+		textYear:addEventListener("userInput", fieldHandler(function() return textDate end))
+		sceneGroup:insert( textYear )
+		textYear.size = 20
 
-		UIGroup:insert(textSubject)
-		UIGroup:insert(textQuestion)
-		UIGroup:insert(textAnswer)
+		textDetails = native.newTextBox(400, 700, 500, 200)
+		textDetails:addEventListener("userInput", fieldHandler1(function() return textDetails end))
+		sceneGroup:insert( textDetails )
+		textDetails.isEditable = true
+		textDetails.size = 30
 
-		function textSubject:userInput(event)
+
+
+		UIGroup:insert(textYear)
+		UIGroup:insert(textDetails)
+
+		function textTitle:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif event.phase == "ended" then
-				subject = event.target.text
-				print(subject)
+				ttitle = event.target.text
+				print(ttitle)
 			elseif event.phase == "Submitted" then
 			end
 		end
-		function textQuestion:userInput(event)
+
+		function textYear:userInput(event)
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif event.phase == "ended" then
-				question = event.target.text
-				print(question)
+				tyear = event.target.text
+				print(tyear)
 			elseif event.phase == "Submitted" then
 			end
 		end
-		function textAnswer:userInput(event)
+
+		function textDetails:userInput(event)
 			if event.phase == "began" then
-				event.target.text = ''
+				tdetails = event.target.text
 			elseif event.phase == "ended" then
-				answer = event.target.text
-				print(answer)
+				tdetails = event.target.text
+				print(tdetails)
 			elseif event.phase == "Submitted" then
 			end
+			tdetails = event.target.text
 		end
-		textSubject:addEventListener("userInput", textSubject)
-		textQuestion:addEventListener("userInput", textQuestion)
-		textAnswer:addEventListener("userInput", textAnswer)
+		textTitle:addEventListener( "userInput", textTitle )
+		textYear:addEventListener( "userInput", textYear )
+		textDetails:addEventListener("userInput", textDetails)
 	end
 end
 
@@ -239,12 +281,12 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-	textSubject:removeSelf()
-	textSubject = nil
-	textAnswer:removeSelf()
-	textAnswer = nil
-	textQuestion:removeSelf()
-	textQuestion = nil
+	textTitle:removeSelf( )
+	textTitle = nil
+	textYear:removeSelf()
+	textYear = nil
+	textDetails:removeSelf()
+	textDetails = nil
 	UIGroup:removeSelf()
 	UIGroup = nil
 end

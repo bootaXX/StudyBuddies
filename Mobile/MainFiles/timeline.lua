@@ -189,8 +189,8 @@ function scene:show( event )
 				currIndex = i
 			end
 		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid), "GET", networkListener)
 	end
 end
 

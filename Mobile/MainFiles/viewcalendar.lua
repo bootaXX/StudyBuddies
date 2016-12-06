@@ -13,6 +13,14 @@ local gid
 local rowIndex
 local decresponse
 local ftitle
+local detail
+local pmonth 
+local pday 
+local pyear 
+local view
+
+local months = { 'January', 'February', 'March', 'April', 'May', 'June',
+		'July', 'August', 'September', 'October', 'November', 'December'}
 ---------------------------------------------------------------------------------------------------------
 local function handleButtonEventGoBack( event )
 	local phase = event.phase
@@ -28,8 +36,8 @@ local function handleButtonEventGoBack( event )
 				groupname = groupname
 			}
 		}
-		composer.removeScene("viewnote")
-		composer.gotoScene("mainnotes", options)
+		composer.removeScene("viewcalendar")
+		composer.gotoScene("maincalendar", options)
 	end
 end
 ---------------------------------------------------------------------------------------------------------
@@ -43,16 +51,7 @@ local myBack = widget.newButton
 	overFile = "back2.png",
 	onEvent = handleButtonEventGoBack
 }
-local export = widget.newButton
-{
-	left = 600,
-	top = 50,
-	width = 50,
-	height = 45,
-	defaultFile = "back.png",
-	overFile = "back2.png",
-	onEvent = handleButtonEventGoBack
-}
+
 ----------------------------------------------------------------------------------------------------------
 
 function scene:create (event)
@@ -69,10 +68,11 @@ function scene:create (event)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 50)
-	sceneGroup:insert (titlee)
+	-- titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 50)
+	-- sceneGroup:insert (titlee)
 	sceneGroup:insert (myBack)
-	sceneGroup:insert (export)
+	local newCalendarView = require('newCalendarView')
+	
 		
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
@@ -89,7 +89,7 @@ function scene:show ( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then 
-		textNote = native.newTextBox(382, 600, 500, 560)
+		textNote = native.newTextBox(382, 600, 500, 200)
 		textNote.isEditable = false
 		textNote.size = 20
 		sceneGroup:insert(textNote)
@@ -100,24 +100,51 @@ function scene:show ( event )
 		    else
 		        print ( "RESPONSE: " .. event.response )
 		        decresponse = json.decode(event.response)
-		        note = decresponse.notes[1].notes
-		        textNote.text = note
-		        ftitle = decresponse.notes[1].title
+		        
+		        detail = decresponse.plans[1].detail
+		        ftitle = decresponse.plans[1].title
+		        pmonth = decresponse.plans[1].month
+		        pday = decresponse.plans[1].day
+		        pyear = decresponse.plans[1].year
+		        print( pmonth, pyear, event.response )
 
-		        local path = system.pathForFile(ftitle..".txt", system.DocumentsDirectory)
-		        --Open file handle
-		        local file, errorString = io.open(path,"w")
-		        if not file then
-		        	print("File error"..errorString)
-		        else
-		        	file:write(note)
-		        	io.close(file)
-		        end
-		        file = nil
+		        textNote.text =  detail
+
+		        local ctr
+		        if(pmonth == 'January') then 
+					ctr = 1
+				elseif (pmonth == 'February') then
+					ctr = 2
+				elseif (pmonth == 'March') then
+					ctr = 3
+				elseif (pmonth == 'April') then
+					ctr = 4
+				elseif (pmonth == 'May') then
+					ctr = 5
+				elseif (pmonth == 'June') then
+					ctr = 6
+				elseif (pmonth == 'July') then
+					ctr = 7
+				elseif (pmonth == 'August') then
+					ctr = 8
+				elseif (pmonth == 'September') then
+					ctr = 9
+				elseif (pmonth == 'October') then
+					ctr = 10
+				elseif (pmonth == 'November') then
+					ctr = 11
+				else 
+					ctr = 12
+				end 
+
+				view  =newCalendarView.new(ctr,pyear)
+
 		    end
 		end
 		-- network.request( "http://192.168.43.114:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
-		network.request( "http://localhost:8080/studybuddies/groupchat/viewnotes/"..gid.."/"..rowIndex, "GET", networkListener )
+		network.request( "http://localhost:8080/studybuddies/groupchat/viewplans/"..gid.."/"..rowIndex, "GET", networkListener )
+
+		
 	end
 end
 
@@ -144,6 +171,8 @@ function scene:destroy( event )
 	-- Code here runs prior to the removal of scene's view
 	textNote:removeSelf()
 	textNote = nil
+	view:removeSelf( )
+	view = nil
 
 end
 

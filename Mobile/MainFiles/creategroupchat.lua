@@ -24,8 +24,8 @@ local function createGroup()
 	end
 	local params = {}
 	params.body = "gname="..gnameni.."&password="..passwordni.."&uid="..uid
-	network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
-	-- network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	-- network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+	network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
 
 	local options = {
 		effect = "slideDown",

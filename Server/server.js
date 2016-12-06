@@ -4,7 +4,7 @@ var options = {promiseLib: Promise};
 var pgp = require('pg-promise')(options);
 var pg = require('pg');
 var path = require('path');
-var connectionString = 'postgres://postgres:12345@localhost:5432/studybuddies';
+var connectionString = 'postgres://postgres:rdr1598@localhost:5432/studybuddies';
 var app = express();
 var fs = require('fs');
 var URL = require('url-parse');
@@ -25,7 +25,7 @@ app.post("/studybuddies/groupchat/insert", function(req,res){
 	client.query("insert into groupchat(groupname, password) values ('"+gname+"','"+password+"');");
 
 	var data = gname + "\n" + "*******************************************";
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
+	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+gname+".txt", data, function (err) {
     if (err) 
         return console.log(err);
     console.log('file created');
@@ -154,7 +154,7 @@ app.get("/studybuddies/groupchat/loadmessage/:gname",function(req,res){
 	var gname = req.params.gname;
 	var results = [];
 
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+req.params.gname+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -190,7 +190,7 @@ app.post("/studybuddies/groupchat/writemessage", function(req,res){
 	var gname = req.body.groupnamesent
 	var uname = req.body.usernamesent
 	var message = req.body.messagesent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+message , function(err, fd){
+	fs.appendFile("C:/Users/User/Desktop/StudyBuddies/Server/messages/"+gname+".txt","\n"+uname+": "+message , function(err, fd){
 		var reps = {
 			"message" : "Message written",
 			"validation" : "Good"
@@ -212,7 +212,7 @@ app.post("/studybuddies/groupchat/postquestion",function(req,res){
 	console.log("Inserted question");
 	var data = question + " by: "+username+"\n"+"*******************************************";
 	console.log("Creating file for questions");
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
+	fs.writeFile("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
 		return res.send("Question written");
 	});
 });
@@ -255,7 +255,7 @@ app.get("/studybuddies/groupchat/loadquestion/:subject",function(req,res){
 	var subject = req.params.subject;
 	var results = [];
 
-	fs.open("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
+	fs.open("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt", 'r+', function(err, fd) {
 		if (err) {
 			return console.error(err);
 		}
@@ -306,7 +306,7 @@ app.post("/studybuddies/groupchat/writeanswer", function(req,res){
 	var subject = req.body.subjectsent
 	var uname = req.body.usernamesent
 	var answer = req.body.answersent
-	fs.appendFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
+	fs.appendFile("C:/Users/User/Desktop/StudyBuddies/Server/questions/"+subject+".txt","\n"+uname+": "+answer , function(err, fd){
 		var reps = {
 			"message" : "Message written",
 			"validation" : "Good"
@@ -349,6 +349,7 @@ app.get("/studybuddies/groupchat/viewnotes/:gid/:rowIndex",function(req,res){
 	var results = [];
 	var gid = req.params.gid;
 	var rowIndex = req.params.rowIndex;
+
 	console.log(gid + "  " + rowIndex)
 	var query = client.query("SELECT title,notes from group_notes where groupid = " + gid +" and rowIndex = "+rowIndex+";");
 	query.on('row', (row) => {
@@ -379,19 +380,51 @@ app.get("/studybuddies/groupchat/viewlistnotes/:gid",function(req,res){
 //post plan
 app.post("/studybuddies/groupchat/postplan",function(req,res){
 	var gid = req.body.gid;
-	var question = req.body.question;
-	var subject =req.body.subject;
-	var answer = req.body.answer;
-	var username = req.body.username;
-	var rowIndex = req.body.currIndex;
+	var title = req.body.ptitle
+	var month = req.body.month;
+	var day = req.body.day;
+	var year = req.body.year;
+	var details =req.body.detail;
+	var currIndex = req.body.currIndex;
 
-	client.query("insert into group_plans(groupid, subject, answer, username, rowindex) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+");");
+
+	client.query("insert into group_plans(group_id,title, month, day ,year,detail, rowIndex) values ("+gid+",'"+title+"','"+month+"',"+day+","+year+",'"+details+"',"+currIndex+");");
 	console.log("Inserted plan");
-	var data = question + " by: "+username+"\n"+"*******************************************";
-	console.log("Creating file for questions");
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
-		return res.send("Plan written");
-	});
+	return res.send("Plans created...");
+});
+
+//view plans
+app.get("/studybuddies/groupchat/viewplans/:gid/:rowIndex",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var rowIndex = req.params.rowIndex;
+
+	console.log(gid + "  " + rowIndex)
+	var query = client.query("SELECT title,detail,month,day,year from group_plans where group_id = " + gid +" and rowIndex = "+rowIndex+";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'plans':results});
+      done();
+    });   
+	console.log("viewing plans...");
+});
+
+//view titles of plans
+app.get("/studybuddies/groupchat/viewlistplans/:gid",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	console.log(gid )
+	var query = client.query("SELECT title from group_plans where group_id = " + gid +";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'plans':results});
+      done();
+    });   
+	console.log("viewing plans...");
 });
 
 app.listen(8080, function(){

@@ -135,8 +135,8 @@ function scene:create( event )
 					end
 				end
 			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
 		end
 	end
 	local joingroupButton = widget.newButton(

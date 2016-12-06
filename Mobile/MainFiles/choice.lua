@@ -93,7 +93,8 @@ local function handleButtonEventGoToCalendar( event )
 			time = 300,
 			params = {
 				uid = uid,
-				username = username
+				username = username,
+				gid = gid
 			}
 		}
 		composer.gotoScene("maincalendar", options)

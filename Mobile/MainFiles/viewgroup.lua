@@ -135,8 +135,8 @@ function scene:create( event )
 					end
 				end
 			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
 		end
 	end
 
@@ -207,13 +207,13 @@ function scene:show( event )
 			end
 		end
 
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+		network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener)
 
 		local function reloadGroups( event )
 			-- body
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener2)
+			-- network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/select"), "GET", networkListener)
+			network.request( ("http://localhost:8080/studybuddies/groupchat/select"), "GET", networkListener2)
 
 			local function networkListener2( event )
 				if (event.isError) then

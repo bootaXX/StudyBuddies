@@ -82,8 +82,8 @@ local function gotoLogin()
 		end
 	end
 
-	network.request( ("http://192.168.43.114:8080/studybuddies/buddy/login/"..uname.."/"..pword), "GET", networkListener)
-	-- network.request( ("http://localhost:8080/studybuddies/buddy/login/"..uname.."/"..pword), "GET", networkListener)
+	-- network.request( ("http://192.168.43.114:8080/studybuddies/buddy/login/"..uname.."/"..pword), "GET", networkListener)
+	network.request( ("http://localhost:8080/studybuddies/buddy/login/"..uname.."/"..pword), "GET", networkListener)
 end
 
 local function fieldHandler( textField )
