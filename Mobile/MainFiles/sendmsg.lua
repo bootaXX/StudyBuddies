@@ -84,6 +84,8 @@ function scene:create (event)
 	minibg:setFillColor(1,0,0)
 	minibg.alpha = 0
 
+	sceneGroup:insert(myBack)
+
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end

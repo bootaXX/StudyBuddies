@@ -45,28 +45,113 @@ local function onComplete( event )
 	end
 end
 
-local function gotoCreateGroupChat()
-	local options = {
-		effect = "fromBottom",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username
+local function gotoCreateGroupChat(event)
+	local phase = event.phase
+	if (phase == "ended") then
+		local options = {
+			effect = "fromBottom",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username
+			}
 		}
-	}
-	composer.removeScene("viewgroup")
-    composer.gotoScene( "creategroupchat", options)
+		composer.removeScene("viewgroup")
+	    composer.gotoScene( "creategroupchat", options)
+	end
 end
 
-local function logout(sceneGroup)
-	local options = {
-		parent = sceneGroup,
-		effect = "fade",
-		time = 200
-	}
-	composer.removeScene("viewgroup")
-    composer.gotoScene( "menu", options)
+local function logout(event)
+	local phase = event.phase
+	if(phase == "ended") then
+		local options = {
+			effect = "fade",
+			time = 200
+		}
+		composer.removeScene("viewgroup")
+    	composer.gotoScene( "menu", options)
+	end
 end
+
+local function handleButtonEvent( event )
+	if(event.phase == "ended") then
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				local reply = json.decode(event.response)
+				local replymessage = reply.callback
+				gid = reply.gid
+				if(replymessage == "invalid") then
+					local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
+				elseif(replymessage == "valid1") then
+					local options1 = {
+						effect = "fromRight",
+						time = 300,
+						params = {
+							uid = uid,
+							username = username,
+							groupname = groupname,
+							gid = gid
+						}
+					}
+					composer.removeScene("viewgroup")
+					composer.gotoScene("verifygroup", options1)
+				else
+					local options = {
+						effect = "fromRight",
+						time = 300,
+						params = {
+							uid = uid,
+							username = username,
+							groupname = groupname,
+							gid = gid
+						}
+					}
+					composer.removeScene("viewgroup")
+					composer.gotoScene("choice", options)
+				end
+			end
+		end
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+	end
+end
+
+local joingroupButton = widget.newButton{
+	left = 510,
+	top = 840,
+	width = 175,
+	height = 65,
+	label = "JOIN",
+	fontSize = 30,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	onEvent = handleButtonEvent
+}
+
+local logoutButton = widget.newButton{
+	left = 125,
+	top = 50,
+	width = 50,
+	height = 45,
+	defaultFile = "back.png",
+	overFile = "back2.png",
+	onEvent = logout
+}
+
+local createGroupButton = widget.newButton{
+	left = 250,
+	top = 925,
+	width = 250,
+	height = 65,
+	label = "CREATE GROUP",
+	fontSize = 30,
+	defaultFile = "default.png",
+	overFile = "over.png",
+	onEvent = gotoCreateGroupChat
+}
+
 
 function scene:create( event )
 	
@@ -86,73 +171,9 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 200
 
-	backButton = display.newText( sceneGroup, "Logout", 100, 50, native.systemFont, 44 )
-	backButton:setFillColor( 0.75, 0.78, 1 )
-	backButton:addEventListener("tap", logout)	
-
-	createGroupChatButton = display.newText( sceneGroup, "Create Group", display.contentCenterX, 950, native.systemFont, 44 )
-	createGroupChatButton:setFillColor( 0.75, 0.78, 1 )
-	createGroupChatButton:addEventListener("tap", gotoCreateGroupChat)
-
-	--eventhandler for buttonid = joinbutton
-	local function handleButtonEvent( event )
-		if(event.phase == "ended") then
-			local function networkListener( event )
-				if ( event.isError ) then
-					print( "Network error: ", event.response )
-				else
-					local reply = json.decode(event.response)
-					local replymessage = reply.callback
-					gid = reply.gid
-					if(replymessage == "invalid") then
-						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
-					elseif(replymessage == "valid1") then
-						local options1 = {
-							effect = "fromRight",
-							time = 300,
-							params = {
-								uid = uid,
-								username = username,
-								groupname = groupname,
-								gid = gid
-							}
-						}
-						composer.removeScene("viewgroup")
-						composer.gotoScene("verifygroup", options1)
-					else
-						local options = {
-							effect = "fromRight",
-							time = 300,
-							params = {
-								uid = uid,
-								username = username,
-								groupname = groupname,
-								gid = gid
-							}
-						}
-						composer.removeScene("viewgroup")
-						composer.gotoScene("choice", options)
-					end
-				end
-			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-		end
-	end
-
-	local joingroupButton = widget.newButton(
-		{
-			x = 600,
-			y = 875,
-			shape = "rect",
-			id = "joinbutton",
-			label = "JOIN",
-			fontSize = 30,
-			fillColor = { default={ 1, 1, 1, 1 }, over={ 0, 0, 0, 0 } },
-			onEvent = handleButtonEvent
-		}
-	)
+	sceneGroup:insert(logoutButton)
 	sceneGroup:insert(joingroupButton)
+	sceneGroup:insert(createGroupButton)
 	UIGroup:insert(joingroupButton)
 
 	function  background:tap(event)
