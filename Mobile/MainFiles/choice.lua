@@ -102,7 +102,7 @@ local function handleButtonEventNotes( event )
 	end
 end
 
-local function handleButtonEventNotes( event )
+local function handleButtonEventDictionary( event )
 	local phase = event.phase
 
 	if "ended" == phase then
@@ -144,10 +144,8 @@ local myTimeline = widget.newButton
 	top = 300,
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "QUESTIONS",
-	fontSize = 30,
+	defaultFile = "qs1.png",
+	overFile = "qs2.png",
 	onEvent = handleButtonEventTimeline
 }
 local myMessage = widget.newButton
@@ -156,10 +154,8 @@ local myMessage = widget.newButton
 	top = 390,
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "MESSAGES",
-	fontSize = 30,
+	defaultFile = "m1.png",
+	overFile = "m2.png",
 	onEvent = handleButtonEventSendMessage
 }
 local myCalendar = widget.newButton
@@ -168,10 +164,8 @@ local myCalendar = widget.newButton
 	top = 480,	
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "CALENDAR",
-	fontSize = 30,
+	defaultFile = "ca1.png",
+	overFile = "ca2.png",
 	onEvent = handleButtonEventGoToCalendar,
 
 }
@@ -181,10 +175,8 @@ local myCreateNotes = widget.newButton
 	top = 570,	
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "NOTES",
-	fontSize = 30,
+	defaultFile = "no1.png",
+	overFile = "no2.png",
 	onEvent = handleButtonEventNotes,
 
 }
@@ -194,11 +186,9 @@ local myDictionary = widget.newButton
 	top = 660,	
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "DICTIONARY",
-	fontSize = 30,
-	onEvent = gotoWeb
+	defaultFile = "d1.png",
+	overFile = "d2.png",
+	onEvent = handleButtonEventDictionary
 
 }
 local myTableOfElements = widget.newButton
@@ -207,10 +197,8 @@ local myTableOfElements = widget.newButton
 	top = 750,	
 	width = 350,
 	height = 80,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "TABLE OF ELEMENTS",
-	fontSize = 30,
+	defaultFile = "e1.png",
+	overFile = "e2.png",
 	onEvent = handleButtonEventTableOfElements
 
 }
@@ -234,11 +222,11 @@ function scene:create( event )
 	uid = event.params.uid
 	gid = event.params.gid
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 

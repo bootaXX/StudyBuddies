@@ -65,9 +65,8 @@ local myRegister = widget.newButton
 	top = 900,
 	width = 300,
 	height = 50,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "REGISTER"
+	defaultFile = "button2.png",
+	overFile = "obutton2.png",
 }
 
 
@@ -113,11 +112,11 @@ function scene:create( event )
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
 
-	local background = display.newImageRect( backGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( backGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local register = display.newImageRect( backGroup, "create.png", 550, 80 )
+	local register = display.newImageRect( backGroup, "create1.png", 550, 80 )
 	register.x = display.contentCenterX
 	register.y = 200
 	

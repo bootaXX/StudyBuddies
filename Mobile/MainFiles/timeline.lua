@@ -79,9 +79,8 @@ local addTopic = widget.newButton
 	width = 250,
 	height = 65,
 	fontSize = 25,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "ADD TOPIC",
+	defaultFile = "a1.png",
+	overFile = "a2.png",
 	onEvent = gotoAddTopic
 }
 
@@ -109,11 +108,11 @@ function scene:create( event )
 	groupname = event.params.groupname
 	gid = event.params.gid
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup,"5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 

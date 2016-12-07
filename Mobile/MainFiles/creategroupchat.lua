@@ -102,7 +102,7 @@ function scene:create( event )
 	username = event.params.username
 	print(uid)
 
-	local background = display.newImageRect( backGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( backGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 

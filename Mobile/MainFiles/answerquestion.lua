@@ -118,7 +118,7 @@ function scene:create (event)
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
 
-	local background = display.newImageRect(backGroup, "b3.jpg", _W, _H)
+	local background = display.newImageRect(backGroup, "3.jpg", _W, _H)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 

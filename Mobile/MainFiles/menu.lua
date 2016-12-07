@@ -28,10 +28,8 @@ local myRegister = widget.newButton
 	top = 620,
 	width = 300,
 	height = 50,
-	fontSize = 30,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "REGISTER",
+	defaultFile = "button2.png",
+	overFile = "obutton2.png",
 }
 
 local myLogin = widget.newButton
@@ -40,10 +38,8 @@ local myLogin = widget.newButton
 	top = 550,
 	width = 300,
 	height = 50,
-	fontSize = 30,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "LOGIN",
+	defaultFile = "button1.png",
+	overFile = "obutton1.png",
 }
 
 local function onComplete( event )
@@ -110,11 +106,11 @@ end
 function scene:create( event )
 		local sceneGroup = self.view
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 

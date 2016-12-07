@@ -164,11 +164,11 @@ function scene:create( event )
 	gid = event.params.gid
 	planIndex = event.params.currIndex
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 150
 
@@ -203,12 +203,12 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 
-		textTitle = native.newTextField(450, 250, 400, 40)
+		textTitle = native.newTextField(450, 250, 400, 50)
 		textTitle:addEventListener("userInput", fieldHandler(function() return textDate end))
 		sceneGroup:insert( textTitle )
 		textTitle.size = 30
 
-		textYear = native.newTextField( 500, 390, 100, 40 )
+		textYear = native.newTextField( 500, 390, 100, 50 )
 		textYear:addEventListener("userInput", fieldHandler(function() return textDate end))
 		sceneGroup:insert( textYear )
 		textYear.size = 20

@@ -18,6 +18,8 @@ local pmonth
 local pday 
 local pyear 
 local view
+local textDate
+local textNote
 
 local months = { 'January', 'February', 'March', 'April', 'May', 'June',
 		'July', 'August', 'September', 'October', 'November', 'December'}
@@ -64,7 +66,7 @@ function scene:create (event)
 	gid = event.params.gid
 	rowIndex = event.params.rowIndex
 
-	local background = display.newImageRect (sceneGroup, "background.png", display.viewableContentWidth, display.viewableContentHeight)
+	local background = display.newImageRect (sceneGroup, "5.jpg", display.viewableContentWidth, display.viewableContentHeight)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
@@ -94,6 +96,11 @@ function scene:show ( event )
 		textNote.size = 30
 		sceneGroup:insert(textNote)
 
+		textDate = native.newTextBox(382, 450, 500, 50)
+		textDate.isEditable = false
+		textDate.size = 30
+		sceneGroup:insert(textDate)
+
 		local function networkListener( event )
 		    if ( event.isError ) then
 		        print( "Network error: ", event.response )
@@ -109,6 +116,7 @@ function scene:show ( event )
 		        print( pmonth, pyear, event.response )
 
 		        textNote.text =  detail
+		        textDate.text = pmonth.." "..pday..", "..pyear
 
 		        local ctr
 		        if(pmonth == 'January') then 
@@ -171,6 +179,8 @@ function scene:destroy( event )
 	-- Code here runs prior to the removal of scene's view
 	textNote:removeSelf()
 	textNote = nil
+	textDate:removeSelf()
+	textDate = nil
 	view:removeSelf( )
 	view = nil
 

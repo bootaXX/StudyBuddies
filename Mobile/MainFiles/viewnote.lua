@@ -78,12 +78,10 @@ function scene:create (event)
 	gid = event.params.gid
 	rowIndex = event.params.rowIndex
 
-	local background = display.newImageRect (sceneGroup, "background.png", display.viewableContentWidth, display.viewableContentHeight)
+	local background = display.newImageRect (sceneGroup, "5.jpg", display.viewableContentWidth, display.viewableContentHeight)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	titlee = display.newText (sceneGroup, "Notes", display.contentCenterX, 90, native.systemFont, 50)
-	sceneGroup:insert (titlee)
 	sceneGroup:insert (myBack)
 	sceneGroup:insert (export)
 		
@@ -116,6 +114,8 @@ function scene:show ( event )
 		        note = decresponse.notes[1].notes
 		        textNote.text = note
 		        ftitle = decresponse.notes[1].title
+		        titlee = display.newText (sceneGroup, ftitle, display.contentCenterX, 90, native.systemFont, 50)
+				sceneGroup:insert (titlee)
 
 		        local path = system.pathForFile(ftitle..".txt", system.DocumentsDirectory)
 		        --Open file handle

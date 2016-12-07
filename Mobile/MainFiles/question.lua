@@ -104,9 +104,8 @@ local myPost = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "POST",
+	defaultFile = "p1.png",
+	overFile = "p2.png",
 	onEvent = postQuestion
 }
 
@@ -132,11 +131,11 @@ function scene:create( event )
 	currIndex = event.params.currIndex
 	topicid = event.params.topicid
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 150
 

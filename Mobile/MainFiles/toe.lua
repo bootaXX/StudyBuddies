@@ -66,6 +66,7 @@ function scene:create( event )
     toe = display.newImage( sceneGroup, "1.jpg", display.viewableContentWidth, display.viewableContentHeight)    -- Code here runs when the scene is first created but has not yet appeared on screen
     toe.x = display.contentCenterX
 	toe.y = display.contentCenterY
+    sceneGroup:insert(toe)
     sceneGroup:insert(myBack)
 
 end
@@ -96,6 +97,7 @@ function scene:show( event )
 	sceneGroup:insert(scrollView)
 	scrollGroup:insert(toe)
 	scrollView:insert(scrollGroup)
+    scrollView:insert(myBack)
 
 
 

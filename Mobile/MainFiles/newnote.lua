@@ -91,9 +91,8 @@ local myPost = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "CREATE",
+	defaultFile = "cr1.png",
+	overFile = "cr2.png",
 	onEvent = handleCreateNote,
 }
 
@@ -119,11 +118,11 @@ function scene:create( event )
 	groupname = event.params.groupname
 	currIndex = event.params.currIndex
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 150
 

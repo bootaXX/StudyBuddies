@@ -120,10 +120,8 @@ local joingroupButton = widget.newButton{
 	top = 820,
 	width = 175,
 	height = 65,
-	label = "JOIN",
-	fontSize = 30,
-	defaultFile = "default.png",
-	overFile = "over.png",
+	defaultFile = "j1.png",
+	overFile = "j2.png",
 	onEvent = handleButtonEvent
 }
 
@@ -142,10 +140,8 @@ local createGroupButton = widget.newButton{
 	top = 925,
 	width = 250,
 	height = 65,
-	label = "CREATE GROUP",
-	fontSize = 30,
-	defaultFile = "default.png",
-	overFile = "over.png",
+	defaultFile = "c1.png",
+	overFile = "c2.png",
 	onEvent = gotoCreateGroupChat
 }
 
@@ -160,14 +156,16 @@ function scene:create( event )
 	backGroup = display.newGroup()
 	sceneGroup:insert(backGroup)
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 
+	labelGroupname = display.newText( sceneGroup, "Hi, "..username.."!", 300, 75, native.systemFont, 35)
+	sceneGroup:insert( labelGroupname )
 	sceneGroup:insert(logoutButton)
 	sceneGroup:insert(joingroupButton)
 	sceneGroup:insert(createGroupButton)

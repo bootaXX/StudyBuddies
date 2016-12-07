@@ -102,10 +102,8 @@ local myPost = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	fontSize = 30,
-	label = "ADD NOTES",
+	defaultFile = "an1.png",
+	overFile = "an2.png",
 	onEvent = handleButtonEventCreateNote,
 }
 
@@ -129,11 +127,11 @@ function scene:create( event )
 	uid = event.params.uid
 	groupname = event.params.groupname
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "notes.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "notes1.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 150	
 

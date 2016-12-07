@@ -20,12 +20,6 @@ local function webListener( event )
         native.showAlert( "Error!", event.errorMessage, { "OK" } )
     end
 end
-
-
-local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 480, 880)
-webView:request( "http://www.merriam-webster.com/" )
-webView:addEventListener( "urlRequest", webListener )
-
 	
 local function goBack(event)
 	local phase = event.phase
@@ -66,10 +60,15 @@ function scene:create( event )
 	groupname = event.params.groupname
 	gid = event.params.gid
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 480, 880)
+	webView:request( "http://www.merriam-webster.com/" )
+	webView:addEventListener( "urlRequest", webListener )
+
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 	
+	sceneGroup:insert(webView)
 	sceneGroup:insert( myBack )
 	
 end

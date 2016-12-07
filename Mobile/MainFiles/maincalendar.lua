@@ -108,7 +108,7 @@ function scene:create( event )
     groupname = event.params.groupname
 
 	-- Background
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 

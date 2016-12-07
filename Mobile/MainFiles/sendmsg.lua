@@ -76,7 +76,7 @@ function scene:create (event)
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
 
-	local background = display.newImageRect(backGroup, "b3.jpg", _W, _H)
+	local background = display.newImageRect(backGroup, "3.jpg", _W, _H)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
@@ -121,7 +121,6 @@ function scene:show(event)
 			elseif (event.phase == "ended") then
 				message = event.target.text
 			elseif (event.phase == "submitted") then
-				event.target.text = ''
 			elseif event.phase == "editing" then
 		        message = event.newCharacters
 			end
