@@ -133,18 +133,6 @@ function scene:create (event)
 	UIGroup:insert(showAnswerButton)
 	UIGroup:insert(myBack)
 	background:addEventListener("tap", background)
-
-	local function networkListener2(event)
-		if(event.isError) then
-			print("Network error: ", event.response)
-		else
-			decres = json.decode(event.response)
-			subject = decres[1].subject
-			answerni = decres[1].answer
-		end
-	end
-	network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
-	-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
 end
 
 function scene:show(event)
@@ -156,6 +144,18 @@ function scene:show(event)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		local function networkListener2(event)
+			if(event.isError) then
+				print("Network error: ", event.response)
+			else
+				decres = json.decode(event.response)
+				subject = decres[1].subject
+				answerni = decres[1].answer
+			end
+		end
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
+		
 		local answertext = native.newTextBox(382, 500, 500, 560)
 		answertext.isEditable = false
 		answertext.size = 25
