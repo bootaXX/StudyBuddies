@@ -49,7 +49,7 @@ local pickerWheel = widget.newPickerWheel(
     width = 280,
     rowHeight = 32,
     fontSize = 25
-})  
+})
 
 
 local function goBack()
@@ -121,7 +121,7 @@ local function post_Plans( event )
 				if ( event.isError ) then
 					print( "Network error: ", event.response )
 				else
-					
+
 					print( "RESPONSE: ", event.response )
 				end
 			end
@@ -153,9 +153,8 @@ local myCreate = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "CREATE",
+	defaultFile = "cr1.png",
+	overFile = "cr2.png",
 	onEvent = post_Plans
 }
 
@@ -172,7 +171,7 @@ local myBack = widget.newButton
 function scene:create( event )
 
 	local sceneGroup = self.view
-	
+
 	uid = event.params.uid
 	username = event.params.username
 	groupname = event.params.groupname
@@ -193,7 +192,7 @@ function scene:create( event )
 
 	sceneGroup:insert( myCreate )
 	sceneGroup:insert( myBack )
-	
+
 
 	UIGroup:insert(labelDetails)
 	UIGroup:insert(myBack)
@@ -202,7 +201,7 @@ function scene:create( event )
 	function  background:tap(event)
 		native.setKeyboardFocus( nil )
 	end
-	background:addEventListener("tap", background)	
+	background:addEventListener("tap", background)
 end
 
 

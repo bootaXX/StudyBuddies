@@ -75,10 +75,8 @@ local myPost = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	fontSize = 30,
-	label = "ADD PLAN",
+	defaultFile = "ap1.png",
+	overFile = "ap2.png",
 	onEvent = handleButtonEventCreateReminder,
 }
 local myBack = widget.newButton
@@ -119,7 +117,7 @@ function scene:create( event )
 	sceneGroup:insert( myPost )
 	sceneGroup:insert (myBack)
 
-	
+
 	background:addEventListener("tap", background)
 end
 
@@ -186,7 +184,7 @@ function scene:show( event )
 				while decodedresponse1.plans[i] do
 					response1 = decodedresponse1.plans[i].title
 					myTable:insertRow{}
-					i = i+1	
+					i = i+1
 				end
 				currIndex = i
 			end
@@ -208,7 +206,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
-		
+
 	end
 end
 

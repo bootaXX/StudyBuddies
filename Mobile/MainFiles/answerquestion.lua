@@ -84,10 +84,8 @@ local showAnswerButton = widget.newButton
 	top = 50,
 	width = 250,
 	height = 65,
-	label = "SHOW ANSWER",
-	fontSize = 20,
-	defaultFile = "default.png",
-	overFile = "over.png",
+	defaultFile = "sa1.png",
+	overFile = "sa2.png",
 	onEvent = showAnswer
 }
 
@@ -114,7 +112,7 @@ function scene:create (event)
 	rowIndexOfTimeline = event.params.rowIndexOfTimeline
 	rowIndexOfViewQuestion = event.params.rowIndexOfViewQuestion
 	topicid = event.params.topicid
-	
+
 	backGroup = display.newGroup()  -- Display group for the background image
 	sceneGroup:insert( backGroup )
 
@@ -154,7 +152,7 @@ function scene:show(event)
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-		
+
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		local answertext = native.newTextBox(382, 500, 500, 560)
@@ -180,7 +178,7 @@ function scene:show(event)
 			elseif event.phase == "editing" then
 		        answer = event.newCharacters
 			end
-		end	
+		end
 
 		local function handleButtonEvent( event )
 			if(event.phase == "ended") then

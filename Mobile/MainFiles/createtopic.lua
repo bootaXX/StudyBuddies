@@ -75,11 +75,11 @@ local function fieldHandler( textField )
 		if ( "began" == event.phase ) then
 			-- This is the "keyboard has appeared" event
 			-- In some cases you may want to adjust the interface when the keyboard appears.
-		
+
 		elseif ( "ended" == event.phase ) then
-			
+
 		elseif ( "editing" == event.phase ) then
-		
+
 		elseif ( "submitted" == event.phase ) then
 			-- This event occurs when the user presses the "return" key (if available) on the onscreen keyboard
 			-- Hide keyboard
@@ -94,10 +94,8 @@ local myAdd = widget.newButton
 	top = 900,
 	width = 250,
 	height = 75,
-	fontSize = 25,
-	defaultFile = "default.png",
-	overFile = "over.png",
-	label = "ADD",
+	defaultFile = "ad1.png",
+	overFile = "ad2.png",
 	onEvent = addTopic
 }
 
