@@ -70,48 +70,60 @@ local function logout(event)
 	end
 end
 
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
 local function handleButtonEvent( event )
 	if(event.phase == "ended") then
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				local reply = json.decode(event.response)
-				local replymessage = reply.callback
-				gid = reply.gid
-				if(replymessage == "invalid") then
-					local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
-				elseif(replymessage == "valid1") then
-					local options1 = {
-						effect = "fromRight",
-						time = 300,
-						params = {
-							uid = uid,
-							username = username,
-							groupname = groupname,
-							gid = gid
-						}
-					}
-					composer.removeScene("viewgroup")
-					composer.gotoScene("verifygroup", options1)
+		if(groupname == nil) then
+			local alert = native.showAlert("Input Error", "Invalid Groupname: No input", {"Ok"}, onComplete)
+		else
+			local function networkListener( event )
+				if ( event.isError ) then
+					print( "Network error: ", event.response )
 				else
-					local options = {
-						effect = "fromRight",
-						time = 300,
-						params = {
-							uid = uid,
-							username = username,
-							groupname = groupname,
-							gid = gid
+					local reply = json.decode(event.response)
+					local replymessage = reply.callback
+					gid = reply.gid
+					if(replymessage == "invalid") then
+						local alert = native.showAlert("Error Input", "Invalid Groupname", {"Ok"}, onComplete)
+					elseif(replymessage == "valid1") then
+						local options1 = {
+							effect = "fromRight",
+							time = 300,
+							params = {
+								uid = uid,
+								username = username,
+								groupname = groupname,
+								gid = gid
+							}
 						}
-					}
-					composer.removeScene("viewgroup")
-					composer.gotoScene("choice", options)
+						composer.removeScene("viewgroup")
+						composer.gotoScene("verifygroup", options1)
+					else
+						local options = {
+							effect = "fromRight",
+							time = 300,
+							params = {
+								uid = uid,
+								username = username,
+								groupname = groupname,
+								gid = gid
+							}
+						}
+						composer.removeScene("viewgroup")
+						composer.gotoScene("choice", options)
+					end
 				end
 			end
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
 		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/join/"..groupname.."/"..uid), "GET", networkListener)
 	end
 end
 

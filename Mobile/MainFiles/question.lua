@@ -7,9 +7,9 @@ local labelAnswer
 local textQuestion
 local textAnswer
 local textSubject
-local question = ""
-local answer = ""
-local subject = ""
+local question=""
+local answer=""
+local subject=""
 local uid
 local username
 local groupname
@@ -37,35 +37,47 @@ local function goBack()
 	composer.gotoScene("timeline", options)
 end
 
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
 local function postQuestion( event )
 	if(event.phase == "ended") then
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				print( "RESPONSE: ", event.response )
+		if (subject==nil or question==nil or answer==nil or subject=="" or question=="" or answer=="") then
+			local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+		else
+			local function networkListener( event )
+				if ( event.isError ) then
+					print( "Network error: ", event.response )
+				else
+					print( "RESPONSE: ", event.response )
+				end
 			end
-		end
-		print("postQuestion")
-		local params = {}
-		params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex.."&topicid="..topicid
-		
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+			print("postQuestion")
+			local params = {}
+			params.body = "subject="..subject.."&question="..question.."&answer="..answer.."&gid="..gid.."&username="..username.."&currIndex="..currIndex.."&topicid="..topicid
+			
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/postquestion"), "POST", networkListener, params)
 
-		local options = {
-			effect = "crossFade",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid,
-				rowIndexOfTimeline = rowIndexOfTimeline
+			local options = {
+				effect = "crossFade",
+				time = 300,
+				params = {
+					uid = uid,
+					username = username,
+					groupname = groupname,
+					gid = gid,
+					rowIndexOfTimeline = rowIndexOfTimeline
+				}
 			}
-		}
-		composer.removeScene("question")
-		composer.gotoScene("viewquestions", options)
+			composer.removeScene("question")
+			composer.gotoScene("viewquestions", options)
+		end
 	end
 end
 

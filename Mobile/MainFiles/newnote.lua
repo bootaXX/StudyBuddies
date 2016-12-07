@@ -9,9 +9,9 @@ local username
 local uid
 local groupname
 local gidsent
-local note
+local note=""
 local textTitle
-local titlet
+local titlet=""
 local currIndex
 local UIGroup
 UIGroup = display.newGroup()
@@ -32,43 +32,54 @@ local function goMenu()
     composer.gotoScene( "mainnotes", options)
 end
 
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
 local function handleCreateNote(event)
 	if(event.phase == "ended") then
-		local function networkListener( event)
-			if(event.isError) then
-				print( "Network error: ",event.response )
-			else
-				local reply = json.decode(event.response)
-				local replyvalidation = reply.validation
-				local replymessage = reply.message
-
-				if(replyvalidation == "invalid") then
-					local alert = native.showAlert("Error Input", replymessage, {"Ok"}, onComplete)
+		if (titlet==nil or note==nil or titlet=="" or note=="") then
+			local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+		else
+			local function networkListener( event)
+				if(event.isError) then
+					print( "Network error: ",event.response )
 				else
-					local alert2 = native.showAlert( "Successful", replymessage , {"Ok"},onComplete)
-					print( "Response: ",event.response )
-				end
-				local options = {
-					effect = "slideRight",
-					time = 300,
-					params = {
-						uid = uid,
-						username = username,
-						groupname = groupname,
-						gid = gidsent
+					local reply = json.decode(event.response)
+					local replyvalidation = reply.validation
+					local replymessage = reply.message
+
+					if(replyvalidation == "invalid") then
+						local alert = native.showAlert("Error Input", replymessage, {"Ok"}, onComplete)
+					else
+						local alert2 = native.showAlert( "Successful", replymessage , {"Ok"},onComplete)
+						print( "Response: ",event.response )
+					end
+					local options = {
+						effect = "slideRight",
+						time = 300,
+						params = {
+							uid = uid,
+							username = username,
+							groupname = groupname,
+							gid = gidsent
+						}
 					}
-				}
-				composer.removeScene("newnote")
-			    composer.gotoScene( "mainnotes", options)
+					composer.removeScene("newnote")
+				    composer.gotoScene( "mainnotes", options)
+				end
 			end
+			local params = {}
+			print(gidsent)
+			params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username.."&currIndex="..currIndex
+
+			network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
+			-- network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
 		end
-		local params = {}
-		print(gidsent)
-		params.body = "gid="..gidsent.."&notes="..note.."&titlee="..titlet.."&username="..username.."&currIndex="..currIndex
-
-		network.request( ("http://192.168.43.114:8080/studybuddies/postnotes"), "POST", networkListener, params)
-		-- network.request( ("http://localhost:8080/studybuddies/postnotes"), "POST", networkListener, params)
-
 	end
 end
 local function fieldHandler( textField )

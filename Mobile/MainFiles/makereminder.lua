@@ -7,11 +7,11 @@ local textDetails
 local textTitle
 local textYear
 
-local ttitle  
+local ttitle = ""
 local tdate
-local tdetails
+local tdetails = ""
 local planIndex
-local tyear
+local tyear = ""
 
 
 UIGroup = display.newGroup()
@@ -97,6 +97,15 @@ local function fieldHandler1( textField )
 		end
 	end
 end
+
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
+
 local function post_Plans( event )
 	local values = pickerWheel:getValues()
 	-- Get the value for each column in the wheel, by column index
@@ -105,33 +114,36 @@ local function post_Plans( event )
 	print( currentMonth, currentDay)
 
 	if(event.phase == "ended") then
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				
-				print( "RESPONSE: ", event.response )
+		if(ttitle==nil or tyear==nil or tyear=="" or ttitle=="") then
+			local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+		else
+			local function networkListener( event )
+				if ( event.isError ) then
+					print( "Network error: ", event.response )
+				else
+					
+					print( "RESPONSE: ", event.response )
+				end
 			end
-		end
-		local params = {}
-		params.body = "gid="..gid.."&ptitle="..ttitle.."&month="..currentMonth.."&day="..currentDay.."&year="..tyear.."&detail="..tdetails.."&currIndex="..planIndex
+			local params = {}
+			params.body = "gid="..gid.."&ptitle="..ttitle.."&month="..currentMonth.."&day="..currentDay.."&year="..tyear.."&detail="..tdetails.."&currIndex="..planIndex
 
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postplan"), "POST", networkListener, params)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/postplan"), "POST", networkListener, params)
+			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/postplan"), "POST", networkListener, params)
+			-- network.request( ("http://localhost:8080/studybuddies/groupchat/postplan"), "POST", networkListener, params)
 
-		local options = {
-			effect = "slideRight",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid
+			local options = {
+				effect = "slideRight",
+				time = 300,
+				params = {
+					uid = uid,
+					username = username,
+					groupname = groupname,
+					gid = gid
+				}
 			}
-		}
-		composer.removeScene("makereminder")
-		composer.gotoScene( "maincalendar", options)
-
+			composer.removeScene("makereminder")
+			composer.gotoScene( "maincalendar", options)
+		end
 	end
 end
 ------------------------------------------------------------------------------------------------------------------------

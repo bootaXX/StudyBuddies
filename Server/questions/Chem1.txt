@@ -1,5 +1,4 @@
-1 1=? by: uname2
+what is an isotope? by: ards
 *******************************************
-ana: 2
-ana: as
-ana: sd
+ans: 
+ans: iso

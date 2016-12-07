@@ -14,29 +14,42 @@ local passwordni
 
 local uid
 local username
-local function createGroup()
-	local function networkListener( event )
-		if ( event.isError ) then
-			print( "Network error: ", event.response )
-		else
-			print ( "RESPONSE: " .. event.response )
+
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
 		end
 	end
-	local params = {}
-	params.body = "gname="..gnameni.."&password="..passwordni.."&uid="..uid
-	network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
-	-- network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+end
 
-	local options = {
-		effect = "slideDown",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username
+local function createGroup()
+	if(gnameni == nil or passwordni == nil) then
+		local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+	else
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				print ( "RESPONSE: " .. event.response )
+			end
+		end
+		local params = {}
+		params.body = "gname="..gnameni.."&password="..passwordni.."&uid="..uid
+		network.request( "http://192.168.43.114:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+		-- network.request( "http://localhost:8080/studybuddies/groupchat/insert", "POST", networkListener, params)
+
+		local options = {
+			effect = "slideDown",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username
+			}
 		}
-	}
-	composer.removeScene("creategroupchat")
-	composer.gotoScene("viewgroup", options)
+		composer.removeScene("creategroupchat")
+		composer.gotoScene("viewgroup", options)
+	end
 	-- body
 end
 

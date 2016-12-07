@@ -18,30 +18,42 @@ local textPasswords
 local textEmail
 local registerButton 
 
-local unameni = ""
-local fnameni = ""
-local lnameni = ""
-local passni = ""
+local unameni
+local fnameni
+local lnameni
+local passni
 local url
 
 local UIGroup
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
-local function gotoWelcome()
-	local function networkListener( event )
-		if ( event.isError ) then
-			print( "Network error: ", event.response )
-		else
-			print ( "RESPONSE: " .. event.response )
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
 		end
 	end
-	
-	network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
-	-- network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
+end
 
-	composer.removeScene("register")
-	composer.gotoScene("menu", { time=300, effect="crossFade" })
+local function gotoWelcome()
+	if(unameni==nil or passni==nil or fnameni==nil or lnameni==nil) then
+		local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+	else
+		local function networkListener( event )
+			if ( event.isError ) then
+				print( "Network error: ", event.response )
+			else
+				print ( "RESPONSE: " .. event.response )
+			end
+		end
+		
+		network.request( "http://192.168.43.114:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
+		-- network.request( "http://localhost:8080/studybuddies/buddy/insert/"..unameni.."/"..passni.."/"..fnameni.."/"..lnameni, "GET", networkListener)
+
+		composer.removeScene("register")
+		composer.gotoScene("menu", { time=300, effect="crossFade" })
+	end
 end
 
 local function goBack()

@@ -10,34 +10,45 @@ local rowIndex
 local topic = ""
 local textTopic
 -- ************************************************************
+local function onComplete( event )
+	if (event.action == "clicked") then
+		local i = event.index
+		if(i==1) then
+		end
+	end
+end
 local function addTopic(event)
 	local phase = event.phase
 	if phase == "ended" then
-		local function networkListener( event )
-			if ( event.isError ) then
-				print( "Network error: ", event.response )
-			else
-				print ( "RESPONSE: " .. event.response )
+		if (topic == nil or topic == "") then
+			local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
+		else
+			local function networkListener( event )
+				if ( event.isError ) then
+					print( "Network error: ", event.response )
+				else
+					print ( "RESPONSE: " .. event.response )
+				end
 			end
-		end
-		local params = {}
-		params.body = "gid="..gid.."&topic="..topic.."&rowIndex="..rowIndex
+			local params = {}
+			params.body = "gid="..gid.."&topic="..topic.."&rowIndex="..rowIndex
 
-		network.request( "http://192.168.43.114:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
-		-- network.request( "http://localhost:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
+			network.request( "http://192.168.43.114:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
+			-- network.request( "http://localhost:8080/studybuddies/groupchat/questions/addtopic", "POST", networkListener, params)
 
-		local options = {
-			effect = "slideRight",
-			time = 300,
-			params = {
-				uid = uid,
-				username = username,
-				groupname = groupname,
-				gid = gid
+			local options = {
+				effect = "slideRight",
+				time = 300,
+				params = {
+					uid = uid,
+					username = username,
+					groupname = groupname,
+					gid = gid
+				}
 			}
-		}
-		composer.removeScene("createtopic")
-		composer.gotoScene("timeline", options)
+			composer.removeScene("createtopic")
+			composer.gotoScene("timeline", options)
+		end
 	end
 end
 
