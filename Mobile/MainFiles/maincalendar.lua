@@ -18,19 +18,22 @@ local gid
 local groupname
 local currIndex
 -----------------------------------------------------------------------------------------------------------------------
-local function goBack()
-   local options = {
-		effect = "slideRight",
-		time = 300,
-		params = {
-			uid = uid,
-			username = username,
-			groupname = groupname,
-			gid = gid
+local function goBack(event)
+	local phase = event.phase
+	if(phase == "ended") then
+	   	local options = {
+			effect = "slideRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				groupname = groupname,
+				gid = gid
+			}
 		}
-	}
-	composer.removeScene("maincalendar")
-	composer.gotoScene("choice", options)
+		composer.removeScene("maincalendar")
+		composer.gotoScene("choice", options)
+	end
 end
 local function handleButtonEventCreateReminder( event )
 	-- body

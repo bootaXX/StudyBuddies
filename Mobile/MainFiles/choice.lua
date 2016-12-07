@@ -12,24 +12,6 @@ local groupname
 local uid
 local gid
 -----------------------------------------------------------------------------------------------------------------------
-local function webListener( event )
-    if event.url then
-        print( "You are visiting: " .. event.url )
-    end
-
-    if event.type then
-        print( "The event.type is " .. event.type ) -- print the type of request
-    end
-
-    if event.errorCode then
-        native.showAlert( "Error!", event.errorMessage, { "OK" } )
-    end
-end
-local function gotoWeb()
-	local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 510, 980 )
-	webView:request( "http://www.merriam-webster.com/" )
-	webView:addEventListener( "urlRequest", webListener )
-end
 local function handleButtonEventTimeline( event )
 	local phase = event.phase
 
@@ -117,6 +99,24 @@ local function handleButtonEventNotes( event )
 			}
 		}
 		composer.gotoScene("mainnotes", options)
+	end
+end
+
+local function handleButtonEventNotes( event )
+	local phase = event.phase
+
+	if "ended" == phase then
+		local options = {
+			effect = "fromRight",
+			time = 300,
+			params = {
+				uid = uid,
+				username = username,
+				gid = gid,
+				groupname = groupname
+			}
+		}
+		composer.gotoScene("Dictionary", options)
 	end
 end
 
