@@ -112,11 +112,11 @@ function scene:create( event )
 	currIndex = event.params.currIndex
 	rowIndex = currIndex
 
-	local background = display.newImageRect( sceneGroup, "background.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local title = display.newImageRect( sceneGroup, "cool.png", 500, 80 )
+	local title = display.newImageRect( sceneGroup, "studyBuddies.png", 500, 80 )
 	title.x = display.contentCenterX
 	title.y = 200
 
@@ -146,7 +146,9 @@ function scene:show( event )
 		function textTopic:userInput(event)
 			if event.phase == "began" then
 				event.target.text = topic
-			elseif (event.phase == "ended" or event.phase == "submitted")then
+			elseif (event.phase == "ended")then
+				topic = event.target.text
+			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
 		        topic = event.newCharacters
 			end
