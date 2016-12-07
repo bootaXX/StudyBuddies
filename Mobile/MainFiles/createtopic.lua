@@ -109,8 +109,7 @@ function scene:create( event )
 	username = event.params.username
 	groupname = event.params.groupname
 	gid = event.params.gid
-	currIndex = event.params.currIndex
-	rowIndex = currIndex
+	rowIndex = event.params.currIndex
 
 	local background = display.newImageRect( sceneGroup, "5.jpg", 800, 1400 )
 	background.x = display.contentCenterX

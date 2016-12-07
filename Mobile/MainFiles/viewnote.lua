@@ -57,19 +57,6 @@ local export = widget.newButton
 ----------------------------------------------------------------------------------------------------------
 
 function scene:create (event)
-
-	-- get raw path to app's Documents directory
-	local docs_path = system.pathForFile( "", system.ResourceDirectory )
-
-	-- change current working directory
-	local success = lfs.chdir( docs_path ) -- returns true on success
-	local new_folder_path
-	local dname = "Images"
-	if success then
-	    lfs.mkdir( dname )
-	    new_folder_path = lfs.currentdir() .. "/" .. dname
-	end
-
 	local sceneGroup = self.view
 
 	uid = event.params.uid

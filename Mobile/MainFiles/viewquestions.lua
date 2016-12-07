@@ -1,4 +1,4 @@
-local composer = require( "composer" )
+	local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require( "widget" )
 local json = require("json")
@@ -143,17 +143,6 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		print(uid.." : "..gid)
-		local function networkListener2(event)
-			if(event.isError) then
-				print("Network error: ", event.response)
-			else
-				decres = json.decode(event.response)
-				topicid = decres.chat[1].topicid
-				print("topicid = "..topicid)
-			end
-		end
-		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
-		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
 
 	elseif ( phase == "did" ) then
 		local function onRowRender ( event )
@@ -193,7 +182,15 @@ function scene:show( event )
 		}
 		group:insert(myTable)
 
-		local function networkListener( event )
+		local function networkListener2(event)
+			if(event.isError) then
+				print("Network error: ", event.response)
+			else
+				decres = json.decode(event.response)
+				topicid = decres.chat[1].topicid
+				print("topicid = "..topicid)
+			end
+			local function networkListener( event )
 			if ( event.isError ) then
 				print( "Network error: ", event.response )
 			else
@@ -209,6 +206,9 @@ function scene:show( event )
 		end
 		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/viewquestions/"..gid.."/"..topicid), "GET", networkListener)
 		-- network.request( ("http://localhost:8080/studybuddies/groupchat/viewquestions/"..gid.."/"..topicid), "GET", networkListener)
+		end
+		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
+		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/gettopicid/"..gid.."/"..rowIndexOfTimeline), "GET", networkListener2)
 	end
 end
 
