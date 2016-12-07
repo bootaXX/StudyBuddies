@@ -109,7 +109,7 @@ function scene:show(event)
 		sceneGroup:insert(sendmessage)
 		UIGroup:insert(sendmessage)
 
-		textMessage = native.newTextField(_W * 0.43, _H * 0.9, _W * 0.64, _H * 0.065)
+		textMessage = native.newTextField(_W * 0.48, _H * 0.85, _W * 0.64, _H * 0.065)
 		textMessage:addEventListener("userInput", fieldHandler(function() return textMessage end))
 		textMessage.placeholder = "Message"
 		textMessage.size = 40;
@@ -146,8 +146,8 @@ function scene:show(event)
 
 		local sendmessageButton = widget.newButton(
 			{
-				x = 600,
-				y = 920,
+				x = 580,
+				y = 870,
 				shape = "rect",
 				id = "sendbutton",
 				label = "Send",

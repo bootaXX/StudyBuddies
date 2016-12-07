@@ -163,7 +163,7 @@ function scene:show(event)
 		sceneGroup:insert(answertext)
 		UIGroup:insert(answertext)
 
-		textAnswerBox = native.newTextField(_W * 0.50, _H * 0.875, _W * 0.64, _H * 0.065)
+		textAnswerBox = native.newTextField(_W * 0.48, _H * 0.85, _W * 0.64, _H * 0.065)
 		textAnswerBox:addEventListener("userInput", fieldHandler(function() return textAnswerBox end))
 		textAnswerBox.placeholder = "Answer"
 		textAnswerBox.size = 40;
@@ -201,8 +201,8 @@ function scene:show(event)
 
 		local sendanswerButton = widget.newButton(
 			{
-				x = 600,
-				y = _H * 0.875,
+				x = 580,
+				y = 870,
 				shape = "rect",
 				id = "sendbutton",
 				label = "Send",

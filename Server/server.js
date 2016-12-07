@@ -408,19 +408,51 @@ app.get("/studybuddies/groupchat/viewlistnotes/:gid",function(req,res){
 //post plan
 app.post("/studybuddies/groupchat/postplan",function(req,res){
 	var gid = req.body.gid;
-	var question = req.body.question;
-	var subject =req.body.subject;
-	var answer = req.body.answer;
-	var username = req.body.username;
-	var rowIndex = req.body.currIndex;
+	var title = req.body.ptitle
+	var month = req.body.month;
+	var day = req.body.day;
+	var year = req.body.year;
+	var details =req.body.detail;
+	var currIndex = req.body.currIndex;
 
-	client.query("insert into group_plans(groupid, subject, answer, username, rowindex) values ("+gid+",'"+subject+"','"+answer+"','"+username+"',"+rowIndex+");");
+
+	client.query("insert into group_plans(group_id,title, month, day ,year,detail, rowIndex) values ("+gid+",'"+title+"','"+month+"',"+day+","+year+",'"+details+"',"+currIndex+");");
 	console.log("Inserted plan");
-	var data = question + " by: "+username+"\n"+"*******************************************";
-	console.log("Creating file for questions");
-	fs.writeFile("C:/Users/Pauline Sarana/Desktop/studybuddies/StudyBuddies/Server/questions/"+subject+".txt", data, function(err, fd){
-		return res.send("Plan written");
-	});
+	return res.send("Plans created...");
+});
+
+//view plans
+app.get("/studybuddies/groupchat/viewplans/:gid/:rowIndex",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	var rowIndex = req.params.rowIndex;
+
+	console.log(gid + "  " + rowIndex)
+	var query = client.query("SELECT title,detail,month,day,year from group_plans where group_id = " + gid +" and rowIndex = "+rowIndex+";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'plans':results});
+      done();
+    });   
+	console.log("viewing plans...");
+});
+
+//view titles of plans
+app.get("/studybuddies/groupchat/viewlistplans/:gid",function(req,res){
+	var results = [];
+	var gid = req.params.gid;
+	console.log(gid )
+	var query = client.query("SELECT title from group_plans where group_id = " + gid +";");
+	query.on('row', (row) => {
+    results.push(row);
+    });
+    query.on('end', () => {
+      return res.send({'plans':results});
+      done();
+    });   
+	console.log("viewing plans...");
 });
 
 app.listen(8080, function(){

@@ -116,8 +116,8 @@ local function handleButtonEvent( event )
 end
 
 local joingroupButton = widget.newButton{
-	left = 510,
-	top = 840,
+	left = 505,
+	top = 820,
 	width = 175,
 	height = 65,
 	label = "JOIN",
@@ -198,7 +198,7 @@ function scene:show( event )
 		sceneGroup:insert(grouplist)
 		UIGroup:insert(grouplist)
 
-		textJoinGroup = native.newTextField(300, 875, 400, 65)
+		textJoinGroup = native.newTextField(300, 853, 400, 65)
 		textJoinGroup:addEventListener("userInput", fieldHandler(function() return textJoinGroup end))
 		textJoinGroup.size = 38
 		textJoinGroup.placeholder = "Groupname"
