@@ -156,12 +156,10 @@ function scene:show( event )
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif (event.phase == "ended") then
-				uname = event.target.text
-				print(uname.." : "..pword)
+				-- uname = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        uname = event.newCharacters
-		        print(uname.." : "..pword)
+		        uname = uname..event.newCharacters
 			end
 		end
 
@@ -169,12 +167,10 @@ function scene:show( event )
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif (event.phase == "ended") then
-				pword = event.target.text
-				print(uname.." : "..pword)
+				-- pword = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        pword = event.newCharacters
-		        print(uname.." : "..pword)
+		        pword = pword..event.newCharacters
 			end
 		end
 		print(uname.." : "..pword)
