@@ -200,7 +200,7 @@ function scene:show( event )
 				fnameni = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        fnameni = event.newCharacters
+		        fnameni = fnameni..event.newCharacters
 			end
 		end
 
@@ -211,7 +211,7 @@ function scene:show( event )
 				lnameni = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        lnameni = event.newCharacters
+		        lnameni = lnameni..event.newCharacters
 			end
 		end
 
@@ -222,7 +222,7 @@ function scene:show( event )
 				unameni = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        unameni = event.newCharacters
+		        unameni = unameni..event.newCharacters
 			end
 		end
 
@@ -233,7 +233,7 @@ function scene:show( event )
 				passni = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        passni = event.newCharacters
+		        passni = passni..event.newCharacters
 			end
 		end
 

@@ -9,8 +9,8 @@ local labelGroupname
 local createButton
 local textGroupname
 local textPassword
-local gnameni
-local passwordni
+local gnameni = ""
+local passwordni = ""
 
 local uid
 local username
@@ -162,6 +162,8 @@ function scene:show( event )
 			elseif event.phase == "ended" then
 				gnameni = event.target.text
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        gnameni = gnameni..event.newCharacters
 			end
 		end
 
@@ -171,6 +173,8 @@ function scene:show( event )
 			elseif event.phase == "ended" then
 				passwordni = event.target.text
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        passwordni = passwordni..event.newCharacters
 			end
 		end
 		textPassword:addEventListener("userInput", textPasswords)

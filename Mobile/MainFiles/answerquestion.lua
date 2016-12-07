@@ -27,6 +27,7 @@ local decres2
 local decres
 local topicid
 local answer
+local answerni
 UIGroup = display.newGroup()
 UIGroup.y = -5
 
@@ -75,7 +76,7 @@ local function onComplete( event )
 end
 
 local function showAnswer( event )
-	local alert = native.showAlert("ANSWER", "Answer : "..answer, {"Ok"}, onComplete)
+	local alert = native.showAlert("ANSWER", "Answer : "..answerni, {"Ok"}, onComplete)
 end
 
 local showAnswerButton = widget.newButton
@@ -139,7 +140,7 @@ function scene:create (event)
 		else
 			decres = json.decode(event.response)
 			subject = decres[1].subject
-			answer = decres[1].answer
+			answerni = decres[1].answer
 		end
 	end
 	network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
@@ -174,9 +175,8 @@ function scene:show(event)
 			elseif (event.phase == "ended") then
 				answer = event.target.text
 			elseif (event.phase == "submitted") then
-				event.target.text = ''
 			elseif event.phase == "editing" then
-		        answer = event.newCharacters
+		        answer = answer..event.newCharacters
 			end
 		end
 

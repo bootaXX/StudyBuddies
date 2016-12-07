@@ -176,6 +176,8 @@ function scene:show( event )
 			elseif event.phase == "ended" then
 				titlet = event.target.text
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        titlet = titlet..event.newCharacters
 			end
 		end
 
@@ -191,7 +193,9 @@ function scene:show( event )
 				event.target.text = ''
 			elseif event.phase == "ended" then
 				note = event.target.text
-			elseif event.phase == "Submitted" then 
+			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        note = note..event.newCharacters 
 			end
 		end
 		textNote:addEventListener("userInput", textNote)

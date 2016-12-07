@@ -156,7 +156,7 @@ function scene:show( event )
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif (event.phase == "ended") then
-				-- uname = event.target.text
+				uname = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
 		        uname = uname..event.newCharacters
@@ -167,13 +167,12 @@ function scene:show( event )
 			if event.phase == "began" then
 				event.target.text = ''
 			elseif (event.phase == "ended") then
-				-- pword = event.target.text
+				pword = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
 		        pword = pword..event.newCharacters
 			end
 		end
-		print(uname.." : "..pword)
 		textUsername:addEventListener("userInput", textUsername)
 		textPassword:addEventListener("userInput", textPassword)
 	

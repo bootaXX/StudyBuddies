@@ -12,7 +12,7 @@ local dgroupname
 
 local uid
 local username
-local groupname
+local groupname = ""
 local gid
 
 local textJoinGroup
@@ -222,7 +222,7 @@ function scene:show( event )
 				groupname = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        groupname = event.newCharacters
+		        groupname = groupname..event.newCharacters
 			end
 		end
 

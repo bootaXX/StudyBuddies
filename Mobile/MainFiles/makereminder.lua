@@ -244,8 +244,9 @@ function scene:show( event )
 				event.target.text = ''
 			elseif event.phase == "ended" then
 				ttitle = event.target.text
-				print(ttitle)
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        ttitle = ttitle..event.newCharacters
 			end
 		end
 
@@ -254,8 +255,9 @@ function scene:show( event )
 				event.target.text = ''
 			elseif event.phase == "ended" then
 				tyear = event.target.text
-				print(tyear)
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        tyear = tyear..event.newCharacters
 			end
 		end
 
@@ -264,10 +266,10 @@ function scene:show( event )
 				tdetails = event.target.text
 			elseif event.phase == "ended" then
 				tdetails = event.target.text
-				print(tdetails)
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        tdetails = tdetails..event.newCharacters
 			end
-			tdetails = event.target.text
 		end
 		textTitle:addEventListener( "userInput", textTitle )
 		textYear:addEventListener( "userInput", textYear )

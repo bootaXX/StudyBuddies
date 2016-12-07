@@ -122,7 +122,7 @@ function scene:show(event)
 				message = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        message = event.newCharacters
+		        message = message..event.newCharacters
 			end
 		end
 

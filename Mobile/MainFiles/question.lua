@@ -209,7 +209,7 @@ function scene:show( event )
 				subject = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        subject = event.newCharacters
+		        subject = subject..event.newCharacters
 			end
 		end
 		function textQuestion:userInput(event)
@@ -219,7 +219,7 @@ function scene:show( event )
 				question = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        question = event.newCharacters
+		        question = question..event.newCharacters
 			end
 		end
 		function textAnswer:userInput(event)
@@ -229,7 +229,7 @@ function scene:show( event )
 				answer = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        answer = event.newCharacters
+		        answer = answer..event.newCharacters
 			end
 		end
 		textSubject:addEventListener("userInput", textSubject)

@@ -158,7 +158,7 @@ function scene:show( event )
 				topic = event.target.text
 			elseif (event.phase == "submitted") then
 			elseif event.phase == "editing" then
-		        topic = event.newCharacters
+		        topic = topic..event.newCharacters
 			end
 		end
 		textTopic:addEventListener("userInput", textTopic)

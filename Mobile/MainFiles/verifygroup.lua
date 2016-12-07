@@ -12,7 +12,7 @@ local createButton
 local textGroupname
 local textPassword
 local gnameni
-local passwordni
+local passwordni = ""
 local labelPassword
 local timerperform
 
@@ -107,36 +107,48 @@ function scene:create( event )
 	sceneGroup:insert(myBack)
 	background:addEventListener("tap", background)
 
+	local function onComplete( event )
+		if (event.action == "clicked") then
+			local i = event.index
+			if(i==1) then
+			end
+		end
+	end
+
 	local function handleJoinEvent(event)
 		if(event.phase == 'ended') then
-			local function networkListener(event)
-				if(event.isError) then
-					print("Network error: ", event.response)
-				else 
-					print(event.response)
-					local reply = json.decode(event.response)
-					local replymessage = reply.callback
+			if(passwordni == "") then
+				local alert = native.showAlert("Input Error", "Invalid Input", {"Ok"}, onComplete)
+			else
+				local function networkListener(event)
+					if(event.isError) then
+						print("Network error: ", event.response)
+					else 
+						print(event.response)
+						local reply = json.decode(event.response)
+						local replymessage = reply.callback
 
-					if(replymessage == "invalid") then
-						local alert = native.showAlert("Error Input", "Invalid Password", {"Ok"}, onComplete)
-					else
-						local options = {
-							effect = "fromRight",
-							time = 300,
-							params = {
-								uid = uid,
-								username = username,
-								groupname = groupname,
-								gid = gid
+						if(replymessage == "invalid") then
+							local alert = native.showAlert("Error Input", "Invalid Password", {"Ok"}, onComplete)
+						else
+							local options = {
+								effect = "fromRight",
+								time = 300,
+								params = {
+									uid = uid,
+									username = username,
+									groupname = groupname,
+									gid = gid
+								}
 							}
-						}
-						composer.removeScene("verifygroup")
-						composer.gotoScene("choice", options)
+							composer.removeScene("verifygroup")
+							composer.gotoScene("choice", options)
+						end
 					end
 				end
+				network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
+				-- network.request( ("http://localhost:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
 			end
-			network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
-			-- network.request( ("http://localhost:8080/studybuddies/groupchat/joinvalid/"..gid.."/"..uid.."/"..passwordni), "GET", networkListener)
 		end
 	end
 	local joingroupButton = widget.newButton(
@@ -186,6 +198,8 @@ function scene:show( event )
 			elseif event.phase == "ended" then
 				passwordni = event.target.text
 			elseif event.phase == "Submitted" then
+			elseif event.phase == "editing" then
+		        passwordni = passwordni..event.newCharacters
 			end
 		end
 	end
