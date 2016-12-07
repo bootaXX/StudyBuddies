@@ -18,10 +18,10 @@ local textPasswords
 local textEmail
 local registerButton 
 
-local unameni
-local fnameni
-local lnameni
-local passni
+local unameni = ""
+local fnameni = ""
+local lnameni = ""
+local passni = ""
 local url
 
 local UIGroup

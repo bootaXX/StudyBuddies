@@ -26,7 +26,7 @@ local rowIndexOfTimeline
 local decres2
 local decres
 local topicid
-local answer
+local answer = ""
 local answerni
 UIGroup = display.newGroup()
 UIGroup.y = -5
@@ -155,7 +155,7 @@ function scene:show(event)
 		end
 		network.request( ("http://192.168.43.114:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
 		-- network.request( ("http://localhost:8080/studybuddies/groupchat/questions/getsubjectandanswer/"..gid.."/"..rowIndexOfViewQuestion.."/"..topicid), "GET", networkListener2)
-		
+
 		local answertext = native.newTextBox(382, 500, 500, 560)
 		answertext.isEditable = false
 		answertext.size = 25
