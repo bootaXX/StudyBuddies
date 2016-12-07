@@ -57,8 +57,7 @@ local function handleButtonEventGoBack( event )
 			time = 300,
 			params = {
 				uid = uid,
-				username = username,
-				gid = gid
+				username = username
 			}
 		}
 		composer.removeScene("choice")

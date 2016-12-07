@@ -1,5 +1,3 @@
-Favorite pet? by: ans
+who is freud? by: jeanjeaan
 *******************************************
-ans: r
-ans: dear
-ans: 
+uname1: idk
