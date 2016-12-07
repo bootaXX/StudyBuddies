@@ -80,7 +80,7 @@ end
 
 local function handleButtonEvent( event )
 	if(event.phase == "ended") then
-		if(groupname == nil) then
+		if(groupname == nil or groupname=="") then
 			local alert = native.showAlert("Input Error", "Invalid Groupname: No input", {"Ok"}, onComplete)
 		else
 			local function networkListener( event )

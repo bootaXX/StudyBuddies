@@ -37,7 +37,7 @@ local function onComplete( event )
 end
 
 local function gotoWelcome()
-	if(unameni==nil or passni==nil or fnameni==nil or lnameni==nil) then
+	if(unameni==nil or passni==nil or fnameni==nil or lnameni==nil or unameni=="" or passni=="" or fnameni=="" or lnameni=="") then
 		local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
 	else
 		local function networkListener( event )

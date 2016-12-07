@@ -24,7 +24,7 @@ local function onComplete( event )
 end
 
 local function createGroup()
-	if(gnameni == nil or passwordni == nil) then
+	if(gnameni == nil or passwordni == nil or gnameni=="" or passwordni=="") then
 		local alert = native.showAlert("Input Error", "Invalid Input: Lacking input", {"Ok"}, onComplete)
 	else
 		local function networkListener( event )
